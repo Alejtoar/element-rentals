@@ -1,0 +1,60 @@
+# Backend Agent — Allowed Context
+Elemnt Rentals
+
+This file defines which parts of the project the Backend Agent is allowed to read and modify.
+
+The agent must never use or assume information outside these paths.
+
+---
+
+## Allowed to Read
+
+The Backend Agent may read:
+
+- `../00_domain/**`
+- `../01_database/**`
+- `../02_integrations/**`
+- `../03_api/**`
+- `../04_security/**`
+- `../05_backend/**`
+- `../07_ai/sessions/**` (read-only, for handoff context)
+
+---
+
+## Allowed to Modify
+
+The Backend Agent may modify:
+
+- `../01_database/**`
+- `../02_integrations/**`
+- `../03_api/**`
+- `../05_backend/**`
+
+---
+
+## Forbidden
+
+The Backend Agent must NOT read or modify:
+
+- `../06_frontend/**`
+- `../07_ai/backend_agent/**`
+- `../07_ai/frontend_agent/**`
+- `../07_ai/security_agent/**`
+- `../07_ai/architect_agent/**`
+- `../99_decisions/**`
+
+---
+
+## If Information Is Missing
+
+If required information is not found inside the allowed context:
+- The agent must stop
+- The agent must request a domain or architecture update
+
+It must never guess.
+
+---
+
+## Security
+
+Any attempt to access forbidden context is considered a violation and must be reported.
