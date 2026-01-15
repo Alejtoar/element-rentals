@@ -1,7 +1,7 @@
 # ADR 002: Deferred Authentication Strategy
 
 ## Status
-Accepted
+Superseded by ADR 004 (Auth implemented in Session 003)
 
 ## Context
 The MVP Phase 1 scope (`mvp_phase_1.md`) mandates "Admin user login" and role-based access control.

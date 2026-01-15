@@ -1,0 +1,4 @@
+Session 002 was consolidated by the Architect Agent on 2026-01-12.
+Decisions recorded:
+- ADR 002: Deferred Authentication Strategy
+- ADR 003: Local Filesystem Storage for MVP

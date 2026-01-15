@@ -1,0 +1,17 @@
+Session 004 was consolidated by the Architect Agent on 2026-01-14.
+
+Decisions recorded:
+- ADR 006: Lead Management and Metadata Traceability Strategy
+- ADR 007: Backend-Driven WhatsApp Link Generation
+- ADR 008: Circular Dependency Resolution Strategy
+- Updated ADR 005: Secure environment-based Admin Seeding
+
+Resolved Architectural Debt:
+- ✅ [RESOLVED] Refactor 'owners' and 'properties' modules to Layered Architecture.
+- ✅ [RESOLVED] Move hardcoded credentials to .env variables.
+
+Pending Architectural Debt / Actions:
+- [DEBT] Implement multi-role support and granular RBAC (Phase 2).
+- [DEBT] Implement token revocation/blacklist mechanism (Phase 2).
+- [SECURITY] Restrict CORS origins before production deployment.
+- [FEATURE] Complete implementation of Reservation and Payment Routers.

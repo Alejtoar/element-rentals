@@ -1,0 +1,15 @@
+Session 003 was consolidated by the Architect Agent on 2026-01-14.
+
+Decisions recorded:
+- ADR 004: JWT-based Authentication Implementation
+- ADR 005: Automated Administrative User Seeding
+
+Resolved Architectural Debt:
+- ✅ [RESOLVED in Session 004] Refactor 'owners' and 'properties' modules to Layered Architecture (Service/Repository).
+
+Pending Architectural Debt / Actions:
+- [DEBT] Implement multi-role support and granular RBAC (Phase 2).
+- [DEBT] Implement token revocation/blacklist mechanism (Phase 2).
+- [SECURITY] Restrict CORS origins before production deployment.
+- [SECURITY] Implement secure admin creation (Remove startup seeding) before production.
+
