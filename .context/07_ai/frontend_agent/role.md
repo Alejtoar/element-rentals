@@ -86,3 +86,9 @@ It must never invent:
 - User flows
 - Payment behavior
 - Language behavior
+
+
+## Rules
+- The frontend MUST consume the backend using a single environment variable:
+  `NEXT_PUBLIC_API_URL`
+- API versioning MUST NOT be hardcoded in components.

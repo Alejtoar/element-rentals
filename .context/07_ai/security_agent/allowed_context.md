@@ -52,3 +52,8 @@ It must:
 1. Document the issue
 2. Block the release
 3. Require fixes before proceeding
+
+## gitignore files
+
+- if you need to look at a gitignore file, ask to permission to use some commands to see the content of the file
+- if you need to modify a gitignore file, ask to permission or tell me to do it

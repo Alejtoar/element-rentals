@@ -1,0 +1,34 @@
+# Session 006 - Architectural Consolidation Report
+
+The Architect Agent has reviewed the handoffs from Session 006 and the security/QA audits.
+
+## 1. Handoffs Processed
+- `backend_handoff.md` (Session 006)
+- `frontend_handoff.md` (Session 006)
+- `qa_handoff.md` (Session 006)
+- `security_handoff.md` (Session 006 Audit)
+
+## 2. Accepted Decisions
+The following decisions have been formalized or updated in ADRs:
+- **ADR 006 Update**: Formalized the use of service-layer sanitization and truncation for user-provided metadata.
+- **ADR 010 Update**: Confirmed the resolution of the Tailwind v4 `border-border` conflict.
+- **ADR 012: Backend Computed Fields**: Decided to use SQLModel/Pydantic computed fields (like `main_image_url`) to simplify frontend logic and ensure consistency.
+- **ADR 013: Granular RBAC Alignment**: Formalized the shift from monolithic `admin` checks to `staff` and `finance` roles, aligned with `roles_permissions.md`.
+
+## 3. Rejected / Pending Corrections (BLOCKING)
+- **Path Traversal Vulnerability**: The implementation in `backend/app/properties/service.py` is REJECTED. It uses original filenames in path construction. This MUST be fixed by using only UUIDs and extensions before Session 007 can be considered complete.
+- **RBAC Role Inversion**: The implementation in `backend/app/reservations/router.py` is REJECTED. It incorrectly permits `finance` users to mutate reservations and restricts `staff` to read-only. This contradicts the security model in `roles_permissions.md`.
+- **CORS Configuration**: While the capability was added, the default remains `*`. A restricted `.env` configuration is required for all non-local environments.
+
+## 4. Architectural Debt
+- **Admin Seeding Security**: The automated seeding of the admin user on startup should be gated or moved to a CLI command for production environments.
+- **Metadata Traceability**: IP capture should support `X-Forwarded-For` for deployments behind proxies.
+
+## 5. Violation Resolution
+- **Resolved**: The Tailwind v4 build error identified in Session 005 is confirmed as resolved.
+- **Resolved**: Wildcard CORS in `main.py` has been replaced with setting-based configuration.
+
+---
+**Status:** Session 006 is now ARCHIVED.
+Knowledge is consolidated. 
+**CRITICAL**: The next session must prioritize the fixes for Path Traversal and RBAC Alignment.

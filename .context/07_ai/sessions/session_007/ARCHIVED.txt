@@ -1,0 +1,39 @@
+# Session 007 Archive - Property Enhancement & Security Hardening
+
+## Overview
+Session 007 focused on resolving critical security vulnerabilities identified in Session 006, specifically Path Traversal in image uploads and RBAC misalignment in Reservations/Payments. It also introduced foundational frontend features like the Property Gallery and "Featured" filtering, driven by backend computed fields.
+
+## Accepted Changes
+
+### 1. Security & Infrastructure
+- **Path Traversal Fix**: Implemented a mandatory UUID-based renaming strategy for all uploaded images in `backend/app/properties/service.py`. The original filename is discarded, leaving only the extension. (Formalized in ADR 003).
+- **RBAC Alignment**: Corrected the role inversion for Reservations (now `staff` only for mutations) and Payments (now `finance` only for mutations). Shared read-access for internal users was introduced. (Formalized in ADR 013).
+- **CORS Restricted**: Removed wildcard `*` from CORS configuration, moving to an environment-controlled allow-list in `.env`.
+- **Metadata Sanitization**: Integrated automated HTML stripping and length truncation for User-Agent and Referer metadata in the Leads module. (Formalized in ADR 006).
+- **Admin Seeding Gate**: The automatic admin seeding is now gated by an `AUTO_SEED_ADMIN` toggle to prevent accidental execution in production-like environments.
+
+### 2. Backend Features
+- **Computed Fields**: Expanded the use of `@computed_field` to provide `main_image_url` and an ordered `images` array directly in the API. (Updated ADR 012).
+- **Filtering API**: Extended `GET /properties/public` to support the `featured` boolean query parameter. (Formalized in ADR 014).
+
+### 3. Frontend Features
+- **Property Gallery**: Implemented a responsive, premium image gallery on the Property Detail page, supporting thumbnail interactions and smooth transitions.
+- **Advanced Filtering**: Added a glassmorphism-styled "Featured Only" toggle to the property catalog.
+- **i18n Consistency**: Verified that the `lang` parameter is correctly propagated to all deep components to ensure hydration consistency.
+
+### 4. QA & Stability
+- **Test Suite Migration**: Successfully migrated manual validation scripts to a formal integration suite in `backend/tests/integration/test_api/test_integration_suite.py`.
+- **Routing Fixes**: Resolved a FastAPI routing priority bug where `/public` was shadowed by the UUID path.
+- **Route Cleanup**: Fixed a whitespace issue in the `[id]` folder path that caused intermittent 404s.
+
+## Rejected / Deferred
+- **Admin Role for Properties**: A recommendation was made to allow the `staff` role to manage properties (currently restricted to `admin`). This was partially implemented but needs a full audit in Session 008.
+
+## Architectural Debt
+- **Content-Type Validation**: While UUID renaming prevents Path Traversal, strict validation of file magic numbers (signatures) for images is still pending implementation.
+- **Image Aspect Ratios**: The frontend currently uses `object-cover` which may crop non-standard images; a more robust aspect-ratio management strategy may be needed if we allow non-photographic content.
+
+---
+**Status**: CONSOLIDATED & ARCHIVED
+**Agent**: Architect Agent
+**Date**: 2026-01-19

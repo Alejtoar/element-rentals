@@ -9,8 +9,8 @@ class Lead(SQLModel):
     message: Optional[str] = None
     source: str = Field(default="website") # website, whatsapp, referral
     ip_address: Optional[str] = None
-    user_agent: Optional[str] = None
-    referer: Optional[str] = None
+    user_agent: Optional[str] = Field(default=None, max_length=512)
+    referer: Optional[str] = Field(default=None, max_length=1024)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class OwnerLead(Lead, table=True):

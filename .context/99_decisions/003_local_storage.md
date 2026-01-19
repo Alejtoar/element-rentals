@@ -17,18 +17,22 @@ We evaluated:
 We decided to implement the **`LocalStorageProvider`** pattern and serve images via **FastAPI `StaticFiles`**.
 
 - Images are saved to `backend/uploads`.
+- **Security Standard**: Every uploaded file is renamed to a random `uuid4()` string, discarding the original filename entirely (except for the extension). This prevents Path Traversal attacks and filename collisions.
 - The directory is mounted at `/static` in `main.py`.
 - The `StorageProvider` abstraction allows swapping to S3 in Phase 2 without changing controller logic.
 
 ## Consequences
 ### Positive
+- **Security**: The UUID strategy completely eliminates Path Traversal risks via the `filename` parameter.
 - **Simplicity**: Developers can run the full stack with just Python and Postgres; no AWS credentials needed.
 - **Speed**: image retrieval is instant over loopback/local network.
 
 ### Negative
-- **XSS Risk**: As noted by Security, serving user content from the same domain poses XSS risks if files are not strictly sanitized (mitigated partially by UUID filenames, but content-type validation is still pending).
-- **Deployment Constraints**: This architecture does not support ephemeral containers (e.g., Heroku, Serverless, AWS Lambda) as the local disk is not persistent between restarts/instances. The backend must run on a VM or persistent container for MVP.
+- **Metadata Loss**: The original user-provided filename is lost unless stored in a separate database field.
+- **XSS Risk**: As noted by Security, serving user content from the same domain poses XSS risks if files are not strictly sanitized.
+- **Deployment Constraints**: This architecture does not support ephemeral containers (e.g., Heroku, Serverless, AWS Lambda).
 
 ## References
 - `backend/app/media/storage.py`
-- `session_002/backend_handoff.md`
+- `backend/app/properties/service.py` (Implementation of UUID renaming)
+- `session_007/security_handoff.md`

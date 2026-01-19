@@ -14,6 +14,7 @@ from app.properties.router import router as properties_router
 from app.owners.router import router as owners_router
 from app.auth.router import router as auth_router
 from app.leads.router import router as leads_router
+from app.reservations.router import router as reservations_router, payment_router
 from app.users.service import UserService
 from app.db import engine
 from sqlmodel import Session
@@ -23,12 +24,9 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# CORS - Allow all for now in dev
-origins = ["*"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,14 +39,17 @@ app.mount("/static", StaticFiles(directory="uploads"), name="static")
 @app.on_event("startup")
 def on_startup():
     init_db()
-    with Session(engine) as session:
-        user_service = UserService(session)
-        user_service.create_admin_if_not_exists()
+    if settings.AUTO_SEED_ADMIN:
+        with Session(engine) as session:
+            user_service = UserService(session)
+            user_service.create_admin_if_not_exists()
 
-app.include_router(properties_router, prefix="/properties", tags=["properties"])
-app.include_router(owners_router, prefix="/owners", tags=["owners"])
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
-app.include_router(leads_router, prefix="/leads", tags=["leads"])
+app.include_router(properties_router, prefix=f"{settings.API_V1_STR}/properties", tags=["properties"])
+app.include_router(owners_router, prefix=f"{settings.API_V1_STR}/owners", tags=["owners"])
+app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+app.include_router(leads_router, prefix=f"{settings.API_V1_STR}/leads", tags=["leads"])
+app.include_router(reservations_router, prefix=settings.API_V1_STR)
+app.include_router(payment_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def root():

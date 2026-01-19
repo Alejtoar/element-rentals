@@ -6,7 +6,7 @@ from app.properties.schemas import PropertyCreate, PropertyRead, PropertyUpdate
 from app.properties.service import PropertyService
 import uuid
 
-from app.auth.dependencies import get_current_admin_user
+from app.auth.dependencies import get_current_admin_user, get_current_staff_user
 from app.users.models import User
 
 router = APIRouter()
@@ -16,7 +16,7 @@ def create_property(
     *, 
     session: Session = Depends(get_session), 
     property_in: PropertyCreate,
-    current_user: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = PropertyService(session)
     return service.create_property(property_in)
@@ -28,11 +28,26 @@ def read_properties(
     city: Optional[str] = None,
     max_guests: Optional[int] = None,
     active: Optional[bool] = None,
+    featured: Optional[bool] = None,
     offset: int = 0,
     limit: int = 100,
 ):
     service = PropertyService(session)
-    return service.get_properties(city, max_guests, active, offset, limit)
+    return service.get_properties(city, max_guests, active, featured, offset, limit)
+
+@router.get("/public", response_model=List[PropertyRead])
+def read_public_properties(
+    *,
+    session: Session = Depends(get_session),
+    city: Optional[str] = None,
+    max_guests: Optional[int] = None,
+    featured: Optional[bool] = None,
+    offset: int = 0,
+    limit: int = 100,
+):
+    service = PropertyService(session)
+    # Public properties are always active
+    return service.get_properties(city, max_guests, True, featured, offset, limit)
 
 @router.get("/{property_id}", response_model=PropertyRead)
 def read_property(*, session: Session = Depends(get_session), property_id: uuid.UUID):
@@ -45,7 +60,7 @@ def update_property(
     session: Session = Depends(get_session), 
     property_id: uuid.UUID, 
     property_in: PropertyUpdate,
-    current_user: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = PropertyService(session)
     return service.update_property(property_id, property_in)
@@ -69,7 +84,7 @@ def upload_property_image(
     property_id: uuid.UUID,
     file: UploadFile = File(...),
     is_main: bool = False,
-    current_user: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = PropertyService(session)
     return service.upload_image(property_id, file, is_main)

@@ -15,6 +15,7 @@ class PropertyRepository:
         city: Optional[str] = None, 
         max_guests: Optional[int] = None, 
         active: Optional[bool] = None, 
+        featured: Optional[bool] = None,
         offset: int = 0, 
         limit: int = 100
     ) -> List[Property]:
@@ -25,6 +26,8 @@ class PropertyRepository:
             query = query.where(Property.max_guests >= max_guests)
         if active is not None:
             query = query.where(Property.active == active)
+        if featured is not None:
+            query = query.where(Property.featured == featured)
         
         query = query.order_by(Property.featured.desc(), Property.created_at.desc())
         

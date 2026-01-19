@@ -57,3 +57,8 @@ If required information is missing:
 ## Security
 
 Any attempt to modify non-decision context is a violation and must be reported.
+
+## gitignore files
+
+- if you need to look at a gitignore file, ask to permission to use some commands to see the content of the file
+- if you need to modify a gitignore file, ask to permission or tell me to do it

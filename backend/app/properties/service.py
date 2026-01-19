@@ -25,10 +25,11 @@ class PropertyService:
         city: Optional[str] = None, 
         max_guests: Optional[int] = None, 
         active: Optional[bool] = None, 
+        featured: Optional[bool] = None,
         offset: int = 0, 
         limit: int = 100
     ) -> List[Property]:
-        return self.repository.get_all(city, max_guests, active, offset, limit)
+        return self.repository.get_all(city, max_guests, active, featured, offset, limit)
 
     def create_property(self, property_in: PropertyCreate) -> Property:
         property = Property.from_orm(property_in)
@@ -47,7 +48,8 @@ class PropertyService:
         
         storage = get_storage_provider()
         # Safe filename generation
-        filename = f"{property_id}_{uuid.uuid4()}_{file.filename}"
+        extension = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+        filename = f"{property_id}_{uuid.uuid4()}.{extension}"
         url = storage.upload_file(file, filename)
         
         if is_main:

@@ -4,7 +4,7 @@ from sqlmodel import Session
 from app.db import get_session
 from app.leads.schemas import OwnerLeadCreate, OwnerLeadRead, GuestLeadCreate, GuestLeadRead
 from app.leads.service import LeadService
-from app.auth.dependencies import get_current_admin_user
+from app.auth.dependencies import get_current_staff_user
 from app.users.models import User
 
 router = APIRouter()
@@ -53,7 +53,7 @@ def get_owner_leads(
     session: Session = Depends(get_session),
     offset: int = 0,
     limit: int = 100,
-    current_user: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = LeadService(session)
     return service.get_owner_leads(offset, limit)
@@ -64,7 +64,7 @@ def get_guest_leads(
     session: Session = Depends(get_session),
     offset: int = 0,
     limit: int = 100,
-    current_user: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = LeadService(session)
     return service.get_guest_leads(offset, limit)

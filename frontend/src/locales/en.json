@@ -1,0 +1,54 @@
+{
+    "hero": {
+        "badge": "Elevate Your Experience",
+        "title1": "Discover Exceptional Rentals",
+        "title2": "With Elemnt",
+        "subtitle": "Handpicked premium stays in the world's most beautiful locations. Designed for those who seek more than just a place to sleep.",
+        "cta_browse": "Browse Catalog",
+        "cta_list": "List Your Property"
+    },
+    "catalog": {
+        "featured_title": "Featured Stays",
+        "featured_subtitle": "Our most exclusive properties, verified for quality and comfort.",
+        "catalog_title": "Property Catalog",
+        "catalog_subtitle": "Explore our full collection of premium rentals.",
+        "filter_city": "City (e.g. Cartagena)",
+        "filter_guests": "Guests",
+        "filter_featured": "Featured Only",
+        "no_properties": "No properties found matching your criteria."
+    },
+    "property_card": {
+        "night": "night",
+        "guests": "Up to {count} guests",
+        "view_details": "View Details",
+        "whatsapp": "WhatsApp"
+    },
+    "leads": {
+        "owner_title": "List Your Property",
+        "owner_subtitle": "Want to maximize your property's potential? Partner with Elemnt Rentals today.",
+        "guest_title": "General Inquiry",
+        "guest_subtitle": "Have questions about our services or a specific property? We're here to help.",
+        "form": {
+            "name": "Full Name",
+            "phone": "Phone Number",
+            "location": "Property Location",
+            "message": "Message",
+            "message_placeholder_owner": "Tell us about your property...",
+            "message_placeholder_guest": "How can we help you?",
+            "submit_owner": "Send Inquiry",
+            "submit_whatsapp": "Contact via WhatsApp",
+            "submit_guest": "Submit Message",
+            "success_owner": "Lead sent successfully! We will contact you soon.",
+            "success_guest": "Message sent! Our team will reach out shortly."
+        }
+    },
+    "property_detail": {
+        "back_to_catalog": "Back to Catalog",
+        "inquire_now": "Inquire Now",
+        "book_whatsapp": "Book via WhatsApp",
+        "specifications": "Specifications",
+        "guests_label": "Guests",
+        "price_label": "Price per night",
+        "location_label": "Location"
+    }
+}

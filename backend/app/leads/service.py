@@ -21,8 +21,8 @@ class LeadService:
         lead = OwnerLead(
             **lead_in.dict(),
             ip_address=ip_address,
-            user_agent=user_agent,
-            referer=referer
+            user_agent=self._sanitize_metadata(user_agent, 512),
+            referer=self._sanitize_metadata(referer, 1024)
         )
         created_lead = self.repository.create_owner_lead(lead)
         self._notify_new_lead("Owner", created_lead)
@@ -38,12 +38,21 @@ class LeadService:
         lead = GuestLead(
             **lead_in.dict(),
             ip_address=ip_address,
-            user_agent=user_agent,
-            referer=referer
+            user_agent=self._sanitize_metadata(user_agent, 512),
+            referer=self._sanitize_metadata(referer, 1024)
         )
         created_lead = self.repository.create_guest_lead(lead)
         self._notify_new_lead("Guest", created_lead)
         return created_lead
+
+    def _sanitize_metadata(self, value: Optional[str], max_length: int) -> Optional[str]:
+        if value is None:
+            return None
+        import re
+        # Remove HTML tags to prevent basic XSS
+        sanitized = re.sub(r'<[^>]*?>', '', value)
+        # Truncate to max length
+        return sanitized[:max_length].strip()
 
     def get_owner_leads(self, offset: int = 0, limit: int = 100) -> List[OwnerLead]:
         return self.repository.get_owner_leads(offset, limit)

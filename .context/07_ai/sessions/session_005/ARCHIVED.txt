@@ -1,0 +1,32 @@
+# Session 005 - Architectural Consolidation Report
+
+The Architect Agent has reviewed the handoffs from Session 005 and the security audit of Session 004/005.
+
+## 1. Handoffs Processed
+- `backend_handoff.md` (Session 005)
+- `frontend_handoff.md` (Session 005)
+- `qa_handoff.md` (Session 005)
+- `security_handoff.md` (Session 004/005 Audit)
+
+## 2. Accepted Decisions
+The following decisions have been formalized in ADRs:
+- **ADR 009: Adoption of Next.js App Router**: Pivoted from simple React SPA to Next.js for better SEO and performance.
+- **ADR 010: Tailwind CSS v4 Adoption**: Choice of the latest CSS framework version for styling.
+- **ADR 011: Lightweight Dynamic i18n Strategy**: Implementation of dictionary-based i18n via `[lang]` routes.
+
+## 3. Rejected / Pending Corrections
+- **RBAC Strictness**: The implementation of "Finance" and "Staff" roles in the backend was accepted as a model, but their **application** in the `reservations` and `leads` routers was rejected (failed security audit) because it still relies on over-privileged `admin` checks. This must be corrected in the next session.
+- **CORS Configuration**: The use of wildcard origins (`"*"`) is rejected for production-like security. A configurable `BACKEND_CORS_ORIGINS` must be implemented.
+- **Tailwind Utility Conflict**: The use of non-standard or missing utility classes like `border-border` in Tailwind v4 must be fixed to resolve the frontend build failure.
+
+## 4. Architectural Debt
+- **Featured Property Filtering**: Currently, `featured` is a sort priority but not an explicit filter. If the business requires a "Featured Only" view, the API must be extended.
+- **Metadata Sanitization**: Storage of User-Agent and Referer needs length constraints and sanitization to prevent potential Stored XSS in the Admin UI.
+
+## 5. Violation Resolution
+- **Resolved (Session 003/004)**: Refactoring of `owners` and `properties` modules into the standard Layered Architecture (Repository, Service, Router) is confirmed as complete and compliant.
+
+---
+**Status:** Session 005 is now ARCHIVED and IMMUTABLE.
+Decisions are preserved in `99_decisions/`.
+Knowledge is consolidated.

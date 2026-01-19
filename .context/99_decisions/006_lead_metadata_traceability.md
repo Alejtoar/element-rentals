@@ -12,6 +12,7 @@ We decided to implement a centralized Lead Management system within the backend 
 - **Automated Metadata Capture**: The backend extracts `ip_address`, `user_agent`, and `referer` directly from HTTP headers for every lead submission.
 - **Service Layer Ownership**: Serialization and storage of this metadata is handled in the `LeadService` to ensure consistency across different lead types (Owner/Guest).
 - **Public/Private Split**: Lead creation endpoints are public, while retrieval is restricted to administrative accounts.
+- **Sanitization Strategy**: All user-provided metadata (User-Agent, Referer) is stripped of HTML tags and truncated to specific limits (512 for UA, 1024 for Referer) in the service layer before persistence.
 
 ## Alternatives Considered
 - **Frontend Metadata Extraction**: The frontend could send this data in the request body. **Rejected** because it is less reliable and more easily spoofed.
@@ -22,6 +23,7 @@ We decided to implement a centralized Lead Management system within the backend 
 - **Marketing Attribution**: Provides clear data on where leads came from (Referer).
 - **Security & Fraud Prevention**: IP tracking allows for rate limiting and identifying malicious patterns.
 - **Data Completeness**: No effort required from the frontend to provide basic traceability.
+- **XSS Prevention**: Backend-side sanitization ensures that malicious headers cannot be used for Stored XSS in internal admin tools.
 
 ### Negative
 - **Privacy Compliance**: Requires clear disclosure in the Privacy Policy regarding the collection of IP addresses and browser data.

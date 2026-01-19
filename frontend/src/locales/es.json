@@ -1,0 +1,54 @@
+{
+    "hero": {
+        "badge": "Eleva tu Experiencia",
+        "title1": "Descubre Alquileres Excepcionales",
+        "title2": "Con Elemnt",
+        "subtitle": "Estancias premium seleccionadas a mano en los lugares más bellos del mundo. Diseñadas para quienes buscan más que un lugar para dormir.",
+        "cta_browse": "Ver Catálogo",
+        "cta_list": "Publica tu Propiedad"
+    },
+    "catalog": {
+        "featured_title": "Estancias Destacadas",
+        "featured_subtitle": "Nuestras propiedades más exclusivas, verificadas por calidad y confort.",
+        "catalog_title": "Catálogo de Propiedades",
+        "catalog_subtitle": "Explora nuestra colección completa de alquileres premium.",
+        "filter_city": "Ciudad (ej. Cartagena)",
+        "filter_guests": "Huéspedes",
+        "filter_featured": "Solo Destacados",
+        "no_properties": "No se encontraron propiedades que coincidan con tus criterios."
+    },
+    "property_card": {
+        "night": "noche",
+        "guests": "Hasta {count} huéspedes",
+        "view_details": "Ver Detalles",
+        "whatsapp": "WhatsApp"
+    },
+    "leads": {
+        "owner_title": "Publica tu Propiedad",
+        "owner_subtitle": "¿Quieres maximizar el potencial de tu propiedad? Asóciate con Elemnt Rentals hoy mismo.",
+        "guest_title": "Consulta General",
+        "guest_subtitle": "¿Tienes preguntas sobre nuestros servicios o una propiedad específica? Estamos aquí para ayudarte.",
+        "form": {
+            "name": "Nombre Completo",
+            "phone": "Número de Teléfono",
+            "location": "Ubicación de la Propiedad",
+            "message": "Mensaje",
+            "message_placeholder_owner": "Cuéntanos sobre tu propiedad...",
+            "message_placeholder_guest": "¿Cómo podemos ayudarte?",
+            "submit_owner": "Enviar Consulta",
+            "submit_whatsapp": "Contactar por WhatsApp",
+            "submit_guest": "Enviar Mensaje",
+            "success_owner": "¡Solicitud enviada con éxito! Te contactaremos pronto.",
+            "success_guest": "¡Mensaje enviado! Nuestro equipo se pondrá en contacto en breve."
+        }
+    },
+    "property_detail": {
+        "back_to_catalog": "Volver al Catálogo",
+        "inquire_now": "Consultar Ahora",
+        "book_whatsapp": "Reservar por WhatsApp",
+        "specifications": "Especificaciones",
+        "guests_label": "Huéspedes",
+        "price_label": "Precio por noche",
+        "location_label": "Ubicación"
+    }
+}

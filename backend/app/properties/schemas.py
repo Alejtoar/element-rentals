@@ -2,6 +2,7 @@ import uuid
 from decimal import Decimal
 from typing import Optional, List
 from sqlmodel import SQLModel
+from pydantic import computed_field
 
 # Shared Base Model
 class PropertyBase(SQLModel):
@@ -41,3 +42,11 @@ class PropertyRead(PropertyBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     images: List[PropertyImageRead] = []
+
+    @computed_field
+    @property
+    def main_image_url(self) -> Optional[str]:
+        if not self.images:
+            return None
+        main = next((img for img in self.images if img.is_main), None)
+        return main.url if main else self.images[0].url
