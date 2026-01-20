@@ -31,6 +31,7 @@ def read_properties(
     featured: Optional[bool] = None,
     offset: int = 0,
     limit: int = 100,
+    current_user: User = Depends(get_current_staff_user)
 ):
     service = PropertyService(session)
     return service.get_properties(city, max_guests, active, featured, offset, limit)

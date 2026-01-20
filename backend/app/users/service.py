@@ -31,6 +31,7 @@ class UserService:
             admin_create = UserCreate(
                 email=admin_email,
                 password=settings.FIRST_ADMIN_PASSWORD,
+                full_name="Admin User",
                 role="admin",
                 is_active=True
             )

@@ -138,3 +138,14 @@ Not included in Phase 1:
 - Channel manager sync
 - Owner dashboards
 - Financial reporting
+
+---
+
+## Authentication Scope (Phase 1)
+
+Authentication is enforced only on protected admin endpoints.
+
+Public endpoints must remain accessible without authentication to support:
+- SEO
+- Lead generation
+- Guest browsing

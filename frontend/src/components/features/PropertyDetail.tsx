@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Property } from "@/types";
 import { api } from "@/api/client";
+import { getMediaUrl } from "@/lib/media";
 
 interface PropertyDetailProps {
     property: Property;
@@ -14,11 +15,11 @@ interface PropertyDetailProps {
 
 export default function PropertyDetail({ property, dict, lang }: PropertyDetailProps) {
     const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
-    const [selectedImage, setSelectedImage] = useState<string>(property.main_image_url || "");
+    const [selectedImage, setSelectedImage] = useState<string>(getMediaUrl(property.main_image_url));
 
     useEffect(() => {
         if (property.main_image_url) {
-            setSelectedImage(property.main_image_url);
+            setSelectedImage(getMediaUrl(property.main_image_url));
         }
     }, [property.main_image_url]);
 
@@ -62,6 +63,7 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                                 fill
                                 className="object-cover transition-all duration-500"
                                 priority
+                                unoptimized={true}
                             />
                         ) : (
                             <div className="w-full h-full bg-slate-100 flex items-center justify-center">
@@ -81,15 +83,16 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                             {images.sort((a, b) => a.order - b.order).map((img) => (
                                 <button
                                     key={img.id}
-                                    onClick={() => setSelectedImage(img.url)}
-                                    className={`relative aspect-square rounded-xl overflow-hidden glass border-2 transition-all ${selectedImage === img.url ? "border-primary scale-95" : "border-transparent opacity-70 hover:opacity-100"
+                                    onClick={() => setSelectedImage(getMediaUrl(img.url))}
+                                    className={`relative aspect-square rounded-xl overflow-hidden glass border-2 transition-all ${selectedImage === getMediaUrl(img.url) ? "border-primary scale-95" : "border-transparent opacity-70 hover:opacity-100"
                                         }`}
                                 >
                                     <Image
-                                        src={img.url}
+                                        src={getMediaUrl(img.url)}
                                         alt={`${property.name} thumbnail`}
                                         fill
                                         className="object-cover"
+                                        unoptimized={true}
                                     />
                                 </button>
                             ))}

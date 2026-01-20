@@ -27,13 +27,26 @@ Specifically in Session 007:
 ### Positive
 - **Cleaner Frontend**: Components can directly bind to `property.main_image_url`.
 - **Consistency**: The definition of "Main Image" is centralized in the backend.
-- **Gallery Ready**: The `images` array comes pre-sorted or with clear instructions (`order`) for display.
+- **Frontend Autonomy**: The backend provides relative paths (`/media/...`), and the frontend resolves these using a centralized utility, allowing the base API URL to change without database migrations.
 
 ### Negative
 - **Backend Coupling**: Changes to display logic require a backend deployment.
 - **Serialization Overhead**: Marginal increase in CPU time for the backend.
+- **Frontend Dependency**: Client-side components must use the `resolveMediaUrl` utility instead of direct string interpolation.
+
+## Media Resolution Utility
+To support this strategy, the frontend implements `src/lib/media.ts`:
+```typescript
+export function resolveMediaUrl(path: string | null): string {
+    if (!path) return '/placeholder.png';
+    if (path.startsWith('http')) return path;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
+    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+}
+```
 
 ## References
-- `backend/app/properties/schemas.py`
+- `backend/app/properties/models.py`
+- `frontend/src/lib/media.ts`
 - `session_007/backend_handoff.md`
-- `session_007/frontend_handoff.md`
+- `session_008/qa_hanfoff.md`

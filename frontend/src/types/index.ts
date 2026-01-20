@@ -40,3 +40,21 @@ export interface OwnerLead {
 export interface WhatsAppLinkResponse {
     url: string;
 }
+
+// Admin Authentication Types
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface AuthResponse {
+    access_token: string;
+    token_type: string;
+}
+
+export interface User {
+    id: string;
+    email: string;
+    full_name: string;
+    role: 'admin' | 'staff' | 'finance';
+}

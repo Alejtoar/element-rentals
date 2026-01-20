@@ -84,6 +84,7 @@ Represents a managed physical property.
 | id | UUID (PK) | |
 | owner_id | UUID (FK → Owner.id) | |
 | name | VARCHAR | Internal reference |
+| slug | VARCHAR | Unique SEO-friendly URL part |
 | nightly_price | DECIMAL | |
 | address | TEXT | |
 | city | VARCHAR | |
@@ -320,7 +321,9 @@ Internal system user.
 |-----|-----|-----|
 | id | UUID (PK) | |
 | email | VARCHAR | |
-| role | VARCHAR | admin, staff |
+| full_name | VARCHAR | Added for profile display |
+| hashed_password | VARCHAR | BCrypt hash |
+| role | VARCHAR | admin, staff, finance |
 | created_at | TIMESTAMP | |
 
 ---

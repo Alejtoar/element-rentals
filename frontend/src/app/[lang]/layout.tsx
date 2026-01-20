@@ -27,11 +27,11 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: Locale }>;
+  params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

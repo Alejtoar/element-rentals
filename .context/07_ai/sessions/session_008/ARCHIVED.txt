@@ -1,0 +1,39 @@
+# Session 008 Archive - Admin Infrastructure & Auth Stability
+
+## Overview
+Session 008 successfully established the administrative foundation for Elemnt Rentals. Key focuses included the implementation of a secure Admin Dashboard, JWT authentication flow (frontend and backend synchronization), and resolving critical environment mismatches that hindered development.
+
+## Accepted Changes
+
+### 1. Admin Infrastructure
+- **Admin Dashboard**: Created a dedicated `/[lang]/admin` sub-application with a persistent sidebar, glassmorphism UI, and dark-mode aesthetic.
+- **Authentication Flow**: Implemented OAuth2 Password Grant integrated with FastAPI. Login forms correctly handle `URLSearchParams` to ensure backend compatibility.
+- **Hybrid Auth Storage**: Established a dual-storage strategy (localStorage + Cookies) to support both client-side API calls and server-side Middleware protection. (Formalized in ADR 015).
+- **Protected Routes**: Middleware now prevents unauthenticated access to `/admin/*` routes while preserving i18n context during redirects.
+
+### 2. Stability & Schema
+- **User Schema Migration**: Resolved a "Login Bounce" by adding the `full_name` field to the `User` model, ensuring compatibility between backend responses and frontend layout expectations.
+- **Middleware Matcher**: Refined the Next.js middleware to exclude all files with extensions from locale-prefixing, fixing broken static assets in the `public/` directory.
+
+### 3. Media & Frontend UX
+- **Media Resolution**: Formalized the use of `src/lib/media.ts` to transform relative backend storage paths into absolute URLs using `NEXT_PUBLIC_API_URL`. (Updated ADR 012).
+- **Hero Enhancement**: Added a premium luxury background image and refined typography to the landing page.
+- **Hydration Resilience**: Implemented `suppressHydrationWarning` on the root layout to handle browser-extension-injected attributes gracefully.
+
+### 4. QA & Security
+- **Security Audit**: Addressed initial "blocking" reports. All admin endpoints (including property listings) are now properly protected by RBAC dependencies (`get_current_staff_user`).
+- **Integration Test Coverage**: Verified frontend-to-backend connectivity for all auth and public catalog flows.
+
+## Rejected / Deferred
+- **Alembic Migrations**: Transition from manual SQLite patches to formal migrations was deferred to Session 009.
+- **Property CRUD**: Create/Edit/Delete operations were identified as the next priority but postponed to ensure infrastructure stability first.
+- **HttpOnly Cookies**: Full migration to server-only tokens is slated for Phase 2 hardening.
+
+## Architectural Debt
+- **Manual DB Patches**: The `dev.db` contains manual schema changes that are not yet tracked in code (Alembic).
+- **Admin Role Audit**: Continue reviewing if `staff` role should have full Property management permissions or if it should be more granular.
+
+---
+**Status**: CONSOLIDATED & ARCHIVED
+**Agent**: Architect Agent
+**Date**: 2026-01-19

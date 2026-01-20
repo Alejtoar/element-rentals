@@ -87,3 +87,20 @@ Not in Phase 1:
 - Booking calendars
 - Payments
 - Owner dashboards
+
+---
+
+## Authentication Entry Point (Phase 1)
+
+The public website must be accessible without authentication.
+
+Authentication is required ONLY for:
+- Admin dashboard
+- Property management
+- Internal operations
+
+The login page must NOT be the default landing page.
+
+Login access is provided via:
+- A secondary "Admin" button in the navigation bar
+- Direct access to /login or /admin routes

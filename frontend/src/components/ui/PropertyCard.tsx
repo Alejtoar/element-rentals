@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Property } from "@/types";
 import { Button } from "./Button";
+import { getMediaUrl } from "@/lib/media";
 import Image from "next/image";
 
 interface PropertyCardProps {
@@ -22,10 +23,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
             <div className="relative h-64 w-full">
                 {property.main_image_url ? (
                     <Image
-                        src={property.main_image_url}
+                        src={getMediaUrl(property.main_image_url)}
                         alt={property.name}
                         fill
                         className="object-cover"
+                        unoptimized={true}
                     />
                 ) : (
                     <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
