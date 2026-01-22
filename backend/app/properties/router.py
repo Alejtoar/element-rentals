@@ -55,6 +55,11 @@ def read_property(*, session: Session = Depends(get_session), property_id: uuid.
     service = PropertyService(session)
     return service.get_property_by_id(property_id)
 
+@router.get("/public/{slug}", response_model=PropertyRead)
+def read_public_property_by_slug(*, session: Session = Depends(get_session), slug: str):
+    service = PropertyService(session)
+    return service.get_property_by_slug(slug)
+
 @router.patch("/{property_id}", response_model=PropertyRead)
 def update_property(
     *, 
@@ -89,3 +94,14 @@ def upload_property_image(
 ):
     service = PropertyService(session)
     return service.upload_image(property_id, file, is_main)
+
+@router.delete("/{property_id}", status_code=204)
+def delete_property(
+    *, 
+    session: Session = Depends(get_session), 
+    property_id: uuid.UUID,
+    current_user: User = Depends(get_current_staff_user)
+):
+    service = PropertyService(session)
+    service.delete_property(property_id)
+    return None

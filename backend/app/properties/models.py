@@ -11,6 +11,7 @@ class Property(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     owner_id: uuid.UUID = Field(foreign_key="owner.id")
     name: str
+    slug: str = Field(index=True, unique=True)
     nightly_price: Decimal = Field(default=0, max_digits=10, decimal_places=2)
     address: str
     city: str

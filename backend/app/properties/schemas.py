@@ -30,6 +30,7 @@ class PropertyUpdate(SQLModel):
     active: Optional[bool] = None
     featured: Optional[bool] = None
     owner_id: Optional[uuid.UUID] = None
+    slug: Optional[str] = None
 
 # Read
 class PropertyImageRead(SQLModel):
@@ -41,6 +42,7 @@ class PropertyImageRead(SQLModel):
 class PropertyRead(PropertyBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+    slug: str
     images: List[PropertyImageRead] = []
 
     @computed_field

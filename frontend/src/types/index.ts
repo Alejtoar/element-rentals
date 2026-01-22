@@ -7,6 +7,7 @@ export interface PropertyImage {
 
 export interface Property {
     id: string;
+    slug: string;
     name: string;
     description: string;
     address: string;
@@ -35,6 +36,22 @@ export interface OwnerLead {
     location: string;
     message?: string;
     source: string;
+}
+
+export interface GuestLeadRead extends GuestLead {
+    id: string;
+    created_at: string;
+    ip_address?: string;
+    user_agent?: string;
+    referer?: string;
+}
+
+export interface OwnerLeadRead extends OwnerLead {
+    id: string;
+    created_at: string;
+    ip_address?: string;
+    user_agent?: string;
+    referer?: string;
 }
 
 export interface WhatsAppLinkResponse {

@@ -1,9 +1,11 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { api } from "@/api/client";
+import { api, getAuthToken } from "@/api/client";
 import { getMediaUrl } from "@/lib/media";
-import { Property } from "@/types";
+import { Property, User } from "@/types";
+import { PropertyForm } from "@/components/admin/PropertyForm";
+import { Button } from "@/components/ui/Button";
 
 interface PropertiesPageProps {
     params: Promise<{ lang: string }>;
@@ -13,8 +15,23 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
     const { lang } = use(params);
     const [properties, setProperties] = useState<Property[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState("");
     const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const currentUser = await api.auth.getCurrentUser();
+                setUser(currentUser);
+            } catch (err) {
+                console.error("Failed to fetch user");
+            }
+        };
+        fetchUser();
+    }, []);
 
     useEffect(() => {
         loadProperties();
@@ -38,6 +55,26 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
         }
     };
 
+    const handleAdd = () => {
+        setEditingProperty(null);
+        setIsFormOpen(true);
+    };
+
+    const handleEdit = (property: Property) => {
+        setEditingProperty(property);
+        setIsFormOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this property?")) return;
+        try {
+            await api.properties.delete(id);
+            loadProperties();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to delete property");
+        }
+    };
+
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -46,12 +83,33 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
         }).format(price);
     };
 
+    if (isFormOpen && user) {
+        return (
+            <div className="p-8 flex items-center justify-center min-h-[80vh]">
+                <PropertyForm
+                    property={editingProperty || undefined}
+                    user={user}
+                    onSuccess={() => {
+                        setIsFormOpen(false);
+                        loadProperties();
+                    }}
+                    onCancel={() => setIsFormOpen(false)}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="p-8">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white mb-2">Properties</h1>
-                <p className="text-slate-400">Manage all properties in the system</p>
+            <div className="mb-8 flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold text-white mb-2">Properties</h1>
+                    <p className="text-slate-400">Manage all properties in the system</p>
+                </div>
+                <Button onClick={handleAdd}>
+                    Add Property
+                </Button>
             </div>
 
             {/* Filters */}
@@ -112,6 +170,7 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                     <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">Price/Night</th>
                                     <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">Status</th>
                                     <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">Featured</th>
+                                    <th className="text-right px-6 py-4 text-sm font-semibold text-slate-300">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,6 +234,28 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                                         <span className="text-xs">Featured</span>
                                                     </span>
                                                 )}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleEdit(property)}
+                                                        className="p-2 text-slate-400 hover:text-purple-400 transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(property.id)}
+                                                        className="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

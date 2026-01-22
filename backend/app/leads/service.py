@@ -61,5 +61,21 @@ class LeadService:
         return self.repository.get_guest_leads(offset, limit)
 
     def _notify_new_lead(self, lead_type: str, lead: Union[OwnerLead, GuestLead]):
-        # Mocking notification trigger as per MVP scope
-        logger.info(f"NOTIFICATION: New {lead_type} lead captured from {lead.name} ({lead.phone}) via {lead.source}")
+        from app.notifications.service import WebhookNotifier
+        notifier = WebhookNotifier()
+        
+        lead_data = lead.dict()
+        
+        # If it's a guest lead with a property_id, try to get the property name
+        if lead_type.lower() == "guest" and getattr(lead, "property_id", None):
+            try:
+                from app.properties.repository import PropertyRepository
+                repo = PropertyRepository(self.repository.session)
+                prop = repo.get_by_id(lead.property_id)
+                if prop:
+                    lead_data["property_name"] = prop.name
+            except Exception as e:
+                logger.error(f"Failed to fetch property name for lead notification: {e}")
+
+        notifier.notify_lead(lead_type.lower(), lead_data)
+        logger.info(f"NOTIFICATION SENT: New {lead_type} lead captured from {lead.name}")

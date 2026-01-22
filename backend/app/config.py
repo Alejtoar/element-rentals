@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     
     # WhatsApp
     WHATSAPP_PHONE: str
+    NOTIFICATIONS_WEBHOOK_URL: Optional[str] = None
     
     # Seeding
     FIRST_ADMIN_EMAIL: str = "admin@elemnt.com"

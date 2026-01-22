@@ -10,6 +10,10 @@ class PropertyRepository:
     def get_by_id(self, property_id: UUID) -> Optional[Property]:
         return self.session.get(Property, property_id)
 
+    def get_by_slug(self, slug: str) -> Optional[Property]:
+        statement = select(Property).where(Property.slug == slug)
+        return self.session.exec(statement).first()
+
     def get_all(
         self, 
         city: Optional[str] = None, 
@@ -60,3 +64,7 @@ class PropertyRepository:
         self.session.commit()
         self.session.refresh(image)
         return image
+
+    def delete(self, property: Property) -> None:
+        self.session.delete(property)
+        self.session.commit()

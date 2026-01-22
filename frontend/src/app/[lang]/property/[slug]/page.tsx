@@ -8,16 +8,16 @@ import PropertyDetailContent from "@/components/features/PropertyDetail";
 interface Props {
     params: Promise<{
         lang: Locale;
-        id: string;
+        slug: string;
     }>;
 }
 
 export default async function PropertyPage({ params }: Props) {
-    const { lang, id } = await params;
+    const { lang, slug } = await params;
     const dict = await getDictionary(lang);
 
     try {
-        const property = await api.properties.getById(id);
+        const property = await api.properties.getBySlug(slug);
 
         if (!property) {
             return notFound();

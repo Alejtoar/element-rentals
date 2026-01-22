@@ -1,0 +1,46 @@
+# Session 009 Archive - Operational Maturity & SEO Optimization
+
+## Overview
+Session 009 transition Elemnt Rentals into an operationally stable platform. Major achievements include the implementation of database versioning (Alembic), SEO-friendly property routing, enhanced image security, and granular staff permissions. Significant attention was paid to the "Property CRUD" vertical slice, ensuring that staff can manage listings securely and efficiently.
+
+## Accepted Changes
+
+### 1. Database & Infrastructure
+- **Alembic Versioning**: Initialized Alembic for database migrations. Created `init_schema` and `add_slug_to_property` migrations. Fixed critical `sqlmodel` import issues discovered during QA.
+- **Transactional Integrity**: Verified that migrations apply correctly to fresh SQLite/PostgreSQL databases.
+
+### 2. SEO & Routing
+- **Human-Readable Slugs**: Properties are now accessible via keyword-rich slugs (e.g., `/en/property/luxury-villa-akumal`) rather than UUIDs. (Formalized in ADR 016).
+- **Collision Handling**: Implemented suffix logic (`-1`, `-2`) to ensure slug uniqueness.
+- **Backward Compatibility**: UUID-based API lookups remain supported for technical stability.
+
+### 3. Security Hardening
+- **Signature Validation**: Image uploads now use "Magic Number" validation via the `filetype` library, preventing extension-spoofing attacks.
+- **RBAC Alignment**: Expanded `staff` role permissions to allow property mutation (POST, PATCH, DELETE) while maintaining restrictions on financial and system data.
+
+### 4. Property Management (CRUD)
+- **Multi-step Admin Form**: Implemented a 4-step glassmorphism form in the frontend for property creation/editing.
+- **Image Integration**: Integrated image uploads directly into the property creation flow.
+
+### 5. Leads & Notifications
+- **Lead Metadata**: Enhanced Guest and Owner lead capture with IP, User-Agent, and Referer traceability.
+- **Webhook Notifier**: Implemented a flexible `WebhookNotifier` (Slack/Discord compatible) for real-time lead alerts.
+
+## Resolved Critical Issues
+- **Migration Failure**: Fixed `NameError: name 'sqlmodel' is not defined` in initial migration.
+- **Property Creation 500**: Resolved Pydantic/SQLModel compatibility issue by replacing `from_orm` with proper dictionary unpacking and validation.
+
+## Rejected / Deferred
+- **HttpOnly Cookies**: Full migration to `HttpOnly` tokens remains slated for Phase 2 hardening (ADR 015).
+- **Owner Selector**: Staff creating properties currently default to their own ID as owner. A dropdown for selecting other owners is deferred to Session 011.
+- **Webhook Live Test**: Full end-to-end live testing with a production webhook URL is deferred until production environment setup.
+
+## Architectural Memory
+- **ADR 016 (Property Slugs)**: Documented the decision for immutable-by-default, auto-generated slugs.
+- **ADR 013 (RBAC)**: Verified alignment with granular role requirements.
+- **Database Schema**: Updated to include `slug` for Property and `full_name` for User.
+
+---
+**Status**: CONSOLIDATED & ARCHIVED
+**Agent**: Architect Agent
+**Date**: 2026-01-21

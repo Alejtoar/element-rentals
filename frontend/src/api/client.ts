@@ -1,4 +1,4 @@
-import { Property, GuestLead, OwnerLead, WhatsAppLinkResponse, LoginCredentials, AuthResponse, User } from "../types";
+import { Property, GuestLead, OwnerLead, WhatsAppLinkResponse, LoginCredentials, AuthResponse, User, GuestLeadRead, OwnerLeadRead } from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -76,6 +76,10 @@ export const api = {
             const response = await fetch(`${API_BASE_URL}/properties/${id}`);
             return handleResponse<Property>(response);
         },
+        getBySlug: async (slug: string): Promise<Property> => {
+            const response = await fetch(`${API_BASE_URL}/properties/public/${slug}`);
+            return handleResponse<Property>(response);
+        },
         // Admin endpoints
         getAll: async (params: { city?: string; active?: boolean; owner_id?: string } = {}): Promise<Property[]> => {
             const token = getAuthToken();
@@ -92,6 +96,57 @@ export const api = {
                 },
             });
             return handleResponse<Property[]>(response);
+        },
+        create: async (property: Partial<Property> & { owner_id: string }): Promise<Property> => {
+            const token = getAuthToken();
+            const response = await fetch(`${API_BASE_URL}/properties`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(property),
+            });
+            return handleResponse<Property>(response);
+        },
+        update: async (id: string, property: Partial<Property>): Promise<Property> => {
+            const token = getAuthToken();
+            const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(property),
+            });
+            return handleResponse<Property>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+        uploadImage: async (id: string, file: File, isMain: boolean = false): Promise<Property> => {
+            const token = getAuthToken();
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch(`${API_BASE_URL}/properties/${id}/images?is_main=${isMain}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: formData,
+            });
+            return handleResponse<Property>(response);
         },
     },
     leads: {
@@ -110,6 +165,28 @@ export const api = {
                 body: JSON.stringify(lead),
             });
             return handleResponse<void>(response);
+        },
+        getGuest: async (offset: number = 0, limit: number = 100): Promise<GuestLeadRead[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/leads/guest?offset=${offset}&limit=${limit}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<GuestLeadRead[]>(response);
+        },
+        getOwner: async (offset: number = 0, limit: number = 100): Promise<OwnerLeadRead[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/leads/owner?offset=${offset}&limit=${limit}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<OwnerLeadRead[]>(response);
         },
     },
     whatsapp: {

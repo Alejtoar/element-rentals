@@ -63,7 +63,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
                     </span>
                 </div>
                 <div className="flex gap-2">
-                    <Link href={`/${lang}/property/${property.id}`} className="flex-1">
+                    <Link href={`/${lang}/property/${property.slug}`} className="flex-1">
                         <Button variant="outline" size="sm" className="w-full h-full">{dict.view_details}</Button>
                     </Link>
                     <Button
