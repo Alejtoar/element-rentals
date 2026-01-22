@@ -26,7 +26,7 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
     useEffect(() => {
         const fetchWhatsapp = async () => {
             try {
-                const response = await api.whatsapp.getPropertyLink(property.id, lang);
+                const response = await api.whatsapp.getPropertyLink(property.id, lang, "PropertyDetail");
                 setWhatsappUrl(response.url);
             } catch (error) {
                 console.error("Error fetching WhatsApp link:", error);

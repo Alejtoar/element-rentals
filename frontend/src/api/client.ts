@@ -190,8 +190,10 @@ export const api = {
         },
     },
     whatsapp: {
-        getPropertyLink: async (propertyId: string, lang: "en" | "es" = "es"): Promise<WhatsAppLinkResponse> => {
-            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/whatsapp-link?lang=${lang}&type=guest`);
+        getPropertyLink: async (propertyId: string, lang: "en" | "es" = "es", source?: string): Promise<WhatsAppLinkResponse> => {
+            const searchParams = new URLSearchParams({ lang });
+            if (source) searchParams.append("source", source);
+            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/whatsapp-link?${searchParams.toString()}`);
             return handleResponse<WhatsAppLinkResponse>(response);
         },
         getOwnerLink: async (lang: "en" | "es" = "es"): Promise<WhatsAppLinkResponse> => {

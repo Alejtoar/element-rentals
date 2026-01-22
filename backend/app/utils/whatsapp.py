@@ -19,11 +19,16 @@ def generate_whatsapp_link(
     property_name: Optional[str] = None,
     source: Optional[str] = None
 ) -> str:
+    # Truncate inputs to prevent URL length issues and basic DoS
+    safe_property_name = (property_name or "")[:100]
+    safe_source = (source or "")[:50]
+    
     template = TEMPLATES.get(lang, TEMPLATES["es"]).get(lead_type, "")
-    message = template.format(property_name=property_name or "")
+    message = template.format(property_name=safe_property_name)
     
-    if source:
-        message += f" (Ref: {source})"
+    if safe_source:
+        message += f" (Ref: {safe_source})"
     
+    # urllib.parse.quote handles the URL encoding of characters
     encoded_message = urllib.parse.quote(message)
     return f"https://wa.me/{settings.WHATSAPP_PHONE}?text={encoded_message}"

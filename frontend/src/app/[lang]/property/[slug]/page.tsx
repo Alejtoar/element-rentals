@@ -24,8 +24,8 @@ export default async function PropertyPage({ params }: Props) {
         }
 
         return (
-            <main className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8 bg-background">
-                <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 rounded-3xl" />}>
+            <main className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+                <Suspense fallback={<div className="animate-pulse h-96 bg-foreground/5 rounded-3xl" />}>
                     <PropertyDetailContent
                         property={property}
                         dict={dict}

@@ -60,7 +60,7 @@ export const LeadForms: React.FC<LeadFormsProps> = ({ dict, lang }) => {
     };
 
     return (
-        <section className="py-24 bg-slate-50 dark:bg-slate-900/50">
+        <section className="py-24">
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                     {/* Owner Lead Form */}

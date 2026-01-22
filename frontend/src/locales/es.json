@@ -50,5 +50,15 @@
         "guests_label": "Huéspedes",
         "price_label": "Precio por noche",
         "location_label": "Ubicación"
+    },
+    "footer": {
+        "rights": "© 2026 Elemnt Rentals. Todos los derechos reservados.",
+        "tagline": "Hospitalidad premium y alquileres vacacionales.",
+        "admin_login": "Inicio Admin",
+        "social": {
+            "instagram": "Instagram",
+            "linkedin": "LinkedIn",
+            "privacy": "Política de Privacidad"
+        }
     }
 }

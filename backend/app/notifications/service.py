@@ -1,5 +1,8 @@
 import requests
 import logging
+import json
+import uuid
+from datetime import datetime, date
 from typing import Dict, Any, Optional
 from app.config import settings
 
@@ -26,10 +29,26 @@ class WebhookNotifier:
             if "discord.com" in self.webhook_url:
                 data = {"content": message}
             
-            response = requests.post(self.webhook_url, json=data, timeout=5)
+            # Custom JSON serialization to handle local types if any
+            def json_serial(obj):
+                if isinstance(obj, (datetime, date)):
+                    return obj.isoformat()
+                if isinstance(obj, uuid.UUID):
+                    return str(obj)
+                raise TypeError(f"Type {type(obj)} not serializable")
+
+            json_payload = json.dumps(data, default=json_serial)
+            response = requests.post(
+                self.webhook_url, 
+                data=json_payload, 
+                headers={"Content-Type": "application/json"},
+                timeout=5
+            )
             response.raise_for_status()
-        except Exception as e:
-            logger.error(f"Failed to send webhook notification: {e}")
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"Webhook notification failed with status {e.response.status_code}")
+        except Exception:
+            logger.error("Failed to send webhook notification due to a connection or internal error")
 
     def notify_lead(self, lead_type: str, lead_data: Dict[str, Any]):
         message = f"🚀 *New {lead_type.capitalize()} Lead Received!*"

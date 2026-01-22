@@ -20,7 +20,7 @@ class LeadService:
     ) -> OwnerLead:
         lead = OwnerLead(
             **lead_in.dict(),
-            ip_address=ip_address,
+            ip_address=self._sanitize_ip(ip_address),
             user_agent=self._sanitize_metadata(user_agent, 512),
             referer=self._sanitize_metadata(referer, 1024)
         )
@@ -37,7 +37,7 @@ class LeadService:
     ) -> GuestLead:
         lead = GuestLead(
             **lead_in.dict(),
-            ip_address=ip_address,
+            ip_address=self._sanitize_ip(ip_address),
             user_agent=self._sanitize_metadata(user_agent, 512),
             referer=self._sanitize_metadata(referer, 1024)
         )
@@ -51,8 +51,19 @@ class LeadService:
         import re
         # Remove HTML tags to prevent basic XSS
         sanitized = re.sub(r'<[^>]*?>', '', value)
+        # Remove null bytes and other control characters
+        sanitized = "".join(char for char in sanitized if ord(char) >= 32 or char in "\n\r\t")
         # Truncate to max length
         return sanitized[:max_length].strip()
+
+    def _sanitize_ip(self, ip: Optional[str]) -> Optional[str]:
+        if ip is None:
+            return None
+        # Basic regex to allow only valid IP characters (dots, colons, numbers)
+        # Prevents headers injection if the IP comes from a manipulated header
+        import re
+        sanitized = re.sub(r'[^0-9a-fA-F.:%]', '', ip)
+        return sanitized[:45] # Max length for IPv6 with scope ID
 
     def get_owner_leads(self, offset: int = 0, limit: int = 100) -> List[OwnerLead]:
         return self.repository.get_owner_leads(offset, limit)
@@ -64,7 +75,8 @@ class LeadService:
         from app.notifications.service import WebhookNotifier
         notifier = WebhookNotifier()
         
-        lead_data = lead.dict()
+        import json
+        lead_data = json.loads(lead.json())
         
         # If it's a guest lead with a property_id, try to get the property name
         if lead_type.lower() == "guest" and getattr(lead, "property_id", None):

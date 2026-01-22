@@ -48,7 +48,7 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
 
     const handleWhatsApp = async (id: string) => {
         try {
-            const { url } = await api.whatsapp.getPropertyLink(id, lang);
+            const { url } = await api.whatsapp.getPropertyLink(id, lang, "Catalog");
             window.open(url, "_blank");
         } catch (error) {
             console.error("Failed to generate WhatsApp link", error);
@@ -114,8 +114,8 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
                         <button
                             onClick={() => setFilters({ ...filters, featured: !filters.featured })}
                             className={`flex items-center gap-2 px-6 py-2 rounded-2xl font-medium transition-all ${filters.featured
-                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                    : "bg-foreground/5 hover:bg-foreground/10 text-foreground/60"
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                : "bg-foreground/5 hover:bg-foreground/10 text-foreground/60"
                                 }`}
                         >
                             <svg className="w-4 h-4" fill={filters.featured ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">

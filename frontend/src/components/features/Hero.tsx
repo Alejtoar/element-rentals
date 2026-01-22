@@ -15,16 +15,8 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ dict }) => {
     return (
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-            {/* Background Image */}
-            <div className="absolute inset-0 -z-20">
-                <img
-                    src="/back-ground-1.jfif"
-                    alt="Luxury vacation rental"
-                    className="w-full h-full object-cover"
-                />
-                {/* Dark overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
-            </div>
+            {/* Background is now handled by GlobalBackground in RootLayout */}
+            {/* We can keep a subtle overlay if needed, or rely on GlobalBackground's overlay */}
 
             {/* Animated gradient accents */}
             <div className="absolute top-0 left-0 w-full h-full -z-10">
