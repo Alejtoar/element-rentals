@@ -8,7 +8,7 @@ interface FooterProps {
         admin_login: string;
         social: {
             instagram: string;
-            linkedin: string;
+            facebook: string;
             privacy: string;
         };
     };
@@ -48,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ dict, lang }) => {
                                 <li>
                                     <a href="#" className="hover:text-primary transition-colors flex items-center gap-2 group">
                                         <span className="w-1 h-1 bg-primary/0 group-hover:bg-primary rounded-full transition-all" />
-                                        {dict.social.linkedin}
+                                        {dict.social.facebook}
                                     </a>
                                 </li>
                             </ul>

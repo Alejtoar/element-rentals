@@ -32,4 +32,6 @@ We decided to implement a centralized Lead Management system within the backend 
 ## References
 - `backend/app/leads/router.py`
 - `backend/app/leads/service.py`
+- `backend/app/notifications/service.py`
 - `session_004/backend_handoff.md`
+- `session_010/ARCHIVED.txt` (Webhook activation, enhanced sanitization)

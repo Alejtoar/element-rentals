@@ -14,9 +14,13 @@ export default async function Home({
 
   return (
     <>
-      <Hero dict={dict.hero} />
-      <PropertyListing dict={dict.catalog} lang={lang} propertyDict={dict.property_card} />
-      <LeadForms dict={dict.leads} lang={lang} />
+      <Hero dict={dict.hero} lang={lang} />
+      <div id="property-catalog">
+        <PropertyListing dict={dict.catalog} lang={lang} propertyDict={dict.property_card} />
+      </div>
+      <div id="owner-lead-form">
+        <LeadForms dict={dict.leads} lang={lang} />
+      </div>
     </>
   );
 }

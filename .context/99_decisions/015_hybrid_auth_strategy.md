@@ -34,5 +34,7 @@ The Middleware now checks this cookie to determine if a user is authorized to ac
 ## References
 - `frontend/src/api/client.ts`
 - `frontend/src/middleware.ts`
+- `frontend/public/robots.txt`
 - `session_008/frontend_handoff.md`
 - `session_008/security_handoff.md`
+- `session_010/ARCHIVED.txt` (Admin footer link, robots.txt mitigation)

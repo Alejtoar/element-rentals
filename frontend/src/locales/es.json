@@ -28,6 +28,7 @@
         "owner_subtitle": "¿Quieres maximizar el potencial de tu propiedad? Asóciate con Elemnt Rentals hoy mismo.",
         "guest_title": "Consulta General",
         "guest_subtitle": "¿Tienes preguntas sobre nuestros servicios o una propiedad específica? Estamos aquí para ayudarte.",
+        "more_info": "Más Información",
         "form": {
             "name": "Nombre Completo",
             "phone": "Número de Teléfono",
@@ -57,8 +58,40 @@
         "admin_login": "Inicio Admin",
         "social": {
             "instagram": "Instagram",
-            "linkedin": "LinkedIn",
+            "facebook": "Facebook",
             "privacy": "Política de Privacidad"
         }
+    },
+    "partners": {
+        "hero_title": "Asóciate con Elemnt Rentals",
+        "hero_subtitle": "No somos dueños de propiedades — nos asociamos con propietarios. Nuestro modelo está diseñado para maximizar ingresos, proteger tu activo y mantener todo transparente.",
+        "how_it_works_title": "Cómo Funciona la Asociación",
+        "how_it_works_desc": "Operamos bajo un Acuerdo de Gestión de Propiedades, donde tú sigues siendo el propietario legal de la propiedad, nosotros actuamos como operador y gestor comercial, y los ingresos, gastos y resultados se reportan claramente cada mes.",
+        "management_fee_title": "Tarifa de Gestión",
+        "management_fee_desc": "Nuestra tarifa de gestión estándar es de hasta el 20% de los ingresos brutos por reservas. La tarifa se calcula solo sobre estancias completadas. Sin ingresos → sin tarifa. El porcentaje exacto puede variar según el tipo de propiedad, ubicación, ocupación esperada y nivel de servicios requeridos.",
+        "management_fee_note": "Cada propiedad es diferente. Los términos finales se acuerdan directamente con el propietario.",
+        "whats_included_title": "Qué Está Incluido",
+        "whats_included_items": [
+            "Creación y optimización de listados (Airbnb, Booking, directo)",
+            "Estrategia de precios y gestión de calendario",
+            "Comunicación con huéspedes (pre-estancia, durante, post-estancia)",
+            "Coordinación de check-in / check-out",
+            "Coordinación de limpieza",
+            "Manejo de problemas operativos menores",
+            "Reportes financieros mensuales"
+        ],
+        "expenses_title": "Gastos y Transparencia",
+        "expenses_desc": "Algunos costos no forman parte de la tarifa de gestión y se manejan por separado. Los gastos deducibles típicos incluyen servicios de limpieza, consumibles (artículos de tocador, reemplazo de ropa de cama), tarifas de plataforma (Airbnb, Booking, etc.) y mantenimiento directamente relacionado con las estancias de huéspedes.",
+        "expenses_note": "Todos los gastos están detallados. Solo los gastos deducibles afectan los pagos al propietario. Los gastos compartidos (si los hay) se asignan claramente.",
+        "owner_usage_title": "Uso del Propietario",
+        "owner_usage_desc": "Los propietarios pueden reservar su propiedad para uso personal, sujeto a aviso mínimo (típicamente 7 días) y sin conflictos con reservas activas de huéspedes. Las estancias personales no generan ingresos y no se cobran tarifas de gestión.",
+        "payments_title": "Pagos y Reportes",
+        "payments_desc": "Los huéspedes típicamente pagan un depósito de confirmación y un saldo antes del check-in. Los pagos al propietario se calculan después de la finalización de la estancia y las deducciones de gastos. Recibes un estado financiero mensual, inmutable y auditable.",
+        "flexibility_title": "Flexibilidad y Acuerdos Personalizados",
+        "flexibility_desc": "Entendemos que las asociaciones a largo plazo requieren flexibilidad. Lo siguiente se puede personalizar: porcentaje de tarifa de gestión, reglas de manejo de gastos, términos de uso del propietario y calendarios de pago.",
+        "flexibility_note": "Nuestro objetivo es la alineación, no la rigidez.",
+        "cta_title": "¿Listo para Explorar una Asociación?",
+        "cta_desc": "Si estás interesado en asociarte con Elemnt Rentals, cuéntanos sobre tu propiedad, evaluaremos su potencial y recibirás una propuesta personalizada.",
+        "cta_button": "Conviértete en Socio Propietario"
     }
 }

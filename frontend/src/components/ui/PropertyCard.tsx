@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Property } from "@/types";
 import { Button } from "./Button";
 import { getMediaUrl } from "@/lib/media";
+import { formatCOP } from "@/lib/currency";
 import Image from "next/image";
 
 interface PropertyCardProps {
@@ -44,7 +45,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
                 <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-bold">{property.name}</h3>
                     <span className="text-primary font-bold text-lg">
-                        ${property.nightly_price} <span className="text-xs text-foreground/60 font-medium">/ {dict.night}</span>
+                        {formatCOP(property.nightly_price)} <span className="text-xs text-foreground/60 font-medium">/ {dict.night}</span>
                     </span>
                 </div>
                 <p className="text-foreground/60 text-sm mb-4 flex items-center gap-1">

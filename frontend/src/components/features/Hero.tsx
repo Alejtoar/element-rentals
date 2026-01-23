@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/Button";
 
 interface HeroProps {
@@ -10,9 +13,23 @@ interface HeroProps {
         cta_browse: string;
         cta_list: string;
     };
+    lang: string;
 }
 
-export const Hero: React.FC<HeroProps> = ({ dict }) => {
+export const Hero: React.FC<HeroProps> = ({ dict, lang }) => {
+    const router = useRouter();
+
+    const handleBrowseCatalog = () => {
+        const catalogSection = document.getElementById('property-catalog');
+        if (catalogSection) {
+            catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const handleListProperty = () => {
+        router.push(`/${lang}/partners`);
+    };
+
     return (
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
             {/* Background is now handled by GlobalBackground in RootLayout */}
@@ -40,10 +57,19 @@ export const Hero: React.FC<HeroProps> = ({ dict }) => {
                         {dict.subtitle}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="min-w-[200px] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-xl">
+                        <Button
+                            size="lg"
+                            className="min-w-[200px] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-xl"
+                            onClick={handleBrowseCatalog}
+                        >
                             {dict.cta_browse}
                         </Button>
-                        <Button variant="outline" size="lg" className="min-w-[200px] bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 shadow-xl">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="min-w-[200px] bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 shadow-xl"
+                            onClick={handleListProperty}
+                        >
                             {dict.cta_list}
                         </Button>
                     </div>

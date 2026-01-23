@@ -32,4 +32,7 @@ We decided to centralize WhatsApp link generation in the backend utility layer a
 ## References
 - `backend/app/utils/whatsapp.py`
 - `backend/app/properties/router.py` (whatsapp-link endpoint)
+- `frontend/src/components/features/PropertyCard.tsx`
+- `frontend/src/app/[lang]/property/[slug]/page.tsx`
 - `session_004/backend_handoff.md`
+- `session_010/ARCHIVED.txt` (Deep-link integration, source tracking)

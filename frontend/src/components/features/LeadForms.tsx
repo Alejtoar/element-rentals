@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { api } from "@/api/client";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -121,6 +122,17 @@ export const LeadForms: React.FC<LeadFormsProps> = ({ dict, lang }) => {
                                     {dict.form.submit_whatsapp}
                                 </Button>
                             </div>
+
+                            {/* More Info Button */}
+                            <Link href={`/${lang}/partners`} className="block">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full border-primary/30 text-primary hover:bg-primary/5"
+                                >
+                                    {dict.more_info}
+                                </Button>
+                            </Link>
                         </form>
                     </div>
 

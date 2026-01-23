@@ -28,6 +28,7 @@
         "owner_subtitle": "Want to maximize your property's potential? Partner with Elemnt Rentals today.",
         "guest_title": "General Inquiry",
         "guest_subtitle": "Have questions about our services or a specific property? We're here to help.",
+        "more_info": "More Info",
         "form": {
             "name": "Full Name",
             "phone": "Phone Number",
@@ -57,8 +58,40 @@
         "admin_login": "Admin Login",
         "social": {
             "instagram": "Instagram",
-            "linkedin": "LinkedIn",
+            "facebook": "Facebook",
             "privacy": "Privacy Policy"
         }
+    },
+    "partners": {
+        "hero_title": "Partner with Elemnt Rentals",
+        "hero_subtitle": "We don't own properties — we partner with owners. Our model is designed to maximize revenue, protect your asset, and keep everything transparent.",
+        "how_it_works_title": "How the Partnership Works",
+        "how_it_works_desc": "We operate under a Property Management Agreement, where you remain the legal owner of the property, we act as the operator and commercial manager, and revenue, expenses, and results are clearly reported every month.",
+        "management_fee_title": "Management Fee",
+        "management_fee_desc": "Our standard management fee is up to 20% of gross booking revenue. The fee is calculated only on completed stays. No revenue → no fee. The exact percentage can vary based on property type, location, expected occupancy, and level of services required.",
+        "management_fee_note": "Every property is different. Final terms are agreed directly with the owner.",
+        "whats_included_title": "What's Included",
+        "whats_included_items": [
+            "Listing creation and optimization (Airbnb, Booking, direct)",
+            "Pricing strategy and calendar management",
+            "Guest communication (pre-stay, during stay, post-stay)",
+            "Check-in / check-out coordination",
+            "Cleaning coordination",
+            "Minor operational issue handling",
+            "Monthly financial reporting"
+        ],
+        "expenses_title": "Expenses & Transparency",
+        "expenses_desc": "Some costs are not part of the management fee and are handled separately. Typical deductible expenses include cleaning services, consumables (toiletries, linens replacement), platform fees (Airbnb, Booking, etc.), and maintenance directly related to guest stays.",
+        "expenses_note": "All expenses are itemized. Only deductible expenses affect owner payouts. Shared expenses (if any) are clearly allocated.",
+        "owner_usage_title": "Owner Usage",
+        "owner_usage_desc": "Owners may reserve their property for personal use, subject to minimum notice (typically 7 days) and no active guest reservation conflicts. Personal stays generate no revenue and are not charged management fees.",
+        "payments_title": "Payments & Reporting",
+        "payments_desc": "Guests typically pay a confirmation deposit and a balance before check-in. Owner payouts are calculated after stay completion and expense deductions. You receive a monthly financial statement, immutable and auditable.",
+        "flexibility_title": "Flexibility & Custom Agreements",
+        "flexibility_desc": "We understand that long-term partnerships require flexibility. The following can be customized: management fee percentage, expense handling rules, owner usage terms, and payment schedules.",
+        "flexibility_note": "Our goal is alignment, not rigidity.",
+        "cta_title": "Ready to Explore a Partnership?",
+        "cta_desc": "If you're interested in partnering with Elemnt Rentals, tell us about your property, we'll evaluate its potential, and you'll receive a tailored proposal.",
+        "cta_button": "Become an Owner Partner"
     }
 }

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Property } from "@/types";
 import { api } from "@/api/client";
 import { getMediaUrl } from "@/lib/media";
+import { formatCOP } from "@/lib/currency";
 
 interface PropertyDetailProps {
     property: Property;
@@ -123,7 +124,7 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                             </div>
                             <div className="p-4 rounded-2xl glass border-border/50 text-gradient font-bold">
                                 <span className="text-sm text-slate-500 block mb-1">{dict.property_detail.price_label}</span>
-                                <span className="text-xl">${property.nightly_price} / {dict.property_card.night}</span>
+                                <span className="text-xl">{formatCOP(property.nightly_price)} / {dict.property_card.night}</span>
                             </div>
                         </div>
                     </div>
