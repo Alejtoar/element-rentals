@@ -95,6 +95,25 @@ def upload_property_image(
     service = PropertyService(session)
     return service.upload_image(property_id, file, is_main)
 
+@router.delete("/{property_id}/images/{image_id}", response_model=PropertyRead)
+def delete_property_image(
+    *,
+    session: Session = Depends(get_session),
+    property_id: uuid.UUID,
+    image_id: uuid.UUID,
+    current_user: User = Depends(get_current_staff_user)
+):
+    """
+    Delete a property image.
+    
+    - Removes image from database
+    - Deletes physical file from storage
+    - If deleted image was main, promotes another image
+    - Returns updated property
+    """
+    service = PropertyService(session)
+    return service.delete_image(property_id, image_id, current_user)
+
 @router.delete("/{property_id}", status_code=204)
 def delete_property(
     *, 

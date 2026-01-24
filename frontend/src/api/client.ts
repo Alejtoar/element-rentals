@@ -148,6 +148,17 @@ export const api = {
             });
             return handleResponse<Property>(response);
         },
+        deleteImage: async (propertyId: string, imageId: string): Promise<Property> => {
+            const token = getAuthToken();
+            const response = await fetch(
+                `${API_BASE_URL}/properties/${propertyId}/images/${imageId}`,
+                {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` },
+                }
+            );
+            return handleResponse<Property>(response);
+        },
     },
     leads: {
         submitGuest: async (lead: GuestLead): Promise<void> => {

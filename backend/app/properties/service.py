@@ -125,6 +125,124 @@ class PropertyService:
         # Return refreshed property
         return self.get_property_by_id(property_id)
 
+    def delete_image(
+        self, 
+        property_id: uuid.UUID, 
+        image_id: uuid.UUID,
+        current_user: "User"
+    ) -> Property:
+        """
+        Delete a property image.
+        
+        Args:
+            property_id: UUID of the property
+            image_id: UUID of the image to delete
+            current_user: User performing the deletion (for audit logging)
+            
+        Returns:
+            Updated Property with remaining images
+            
+        Raises:
+            HTTPException: If property or image not found or path validation fails
+        """
+        import os
+        from pathlib import Path
+        from sqlmodel import select
+        
+        # Verify property exists
+        property = self.get_property_by_id(property_id)
+        
+        # Find and verify image belongs to this property
+        image = self.repository.session.get(PropertyImage, image_id)
+        if not image or image.property_id != property_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Image not found"
+            )
+        
+        # Check if this was the main image
+        was_main = image.is_main
+        
+        # Delete physical file from storage
+        try:
+            # Extract filename from URL (e.g., "/uploads/properties/filename.jpg" -> "filename.jpg")
+            filename = image.url.split("/")[-1]
+            file_path = Path("uploads") / "properties" / filename
+            
+            # Security: Validate path is within uploads/properties directory
+            uploads_dir = Path("uploads") / "properties"
+            try:
+                resolved_path = file_path.resolve()
+                resolved_uploads = uploads_dir.resolve()
+                
+                # Check if resolved path starts with uploads directory
+                if not str(resolved_path).startswith(str(resolved_uploads)):
+                    logger.error(
+                        f"Path traversal attempt detected - "
+                        f"image_id={image_id}, "
+                        f"property_id={property_id}, "
+                        f"url={image.url}, "
+                        f"resolved_path={resolved_path}"
+                    )
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Invalid file path"
+                    )
+            except ValueError as e:
+                logger.error(f"Invalid file path: {file_path}, error: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Invalid file path"
+                )
+            
+            if file_path.exists():
+                os.remove(file_path)
+                logger.info(f"Deleted file: {file_path}")
+            else:
+                logger.warning(f"File not found for deletion: {file_path}")
+        except HTTPException:
+            # Re-raise HTTP exceptions (path validation failures)
+            raise
+        except Exception as e:
+            # Log error but don't fail the request for other file system errors
+            logger.error(f"Failed to delete file {image.url}: {e}", exc_info=True)
+        
+        # Delete from database
+        self.repository.session.delete(image)
+        self.repository.session.commit()
+        
+        # Audit logging
+        logger.info(
+            f"Image deleted - "
+            f"image_id={image_id}, "
+            f"property_id={property_id}, "
+            f"was_main={was_main}, "
+            f"url={image.url}, "
+            f"deleted_by={current_user.id}, "
+            f"deleted_by_email={current_user.email}, "
+            f"deleted_by_role={current_user.role}"
+        )
+        
+        # If deleted image was main, promote another image
+        if was_main:
+            # Get remaining images for this property
+            remaining_images = self.repository.session.exec(
+                select(PropertyImage)
+                .where(PropertyImage.property_id == property_id)
+                .order_by(PropertyImage.created_at)
+            ).all()
+            
+            if remaining_images:
+                # Promote first image to main
+                remaining_images[0].is_main = True
+                self.repository.session.add(remaining_images[0])
+                self.repository.session.commit()
+                logger.info(f"Promoted image {remaining_images[0].id} to main for property {property_id}")
+        
+        # Refresh and return property with updated images
+        self.repository.session.refresh(property)
+        return property
+
     def get_whatsapp_link(self, property_id: uuid.UUID, lang: str = "es", source: Optional[str] = None) -> str:
         property = self.get_property_by_id(property_id)
         from app.utils.whatsapp import generate_whatsapp_link

@@ -1,1 +1,6 @@
 __pycache__/
+app/*/__pycache__/
+app/properties/__pycache__/
+app/properties/migrations/__pycache__/
+app/properties/migrations/*/__pycache__/
+app/properties/migrations/*/__pycache__/ 

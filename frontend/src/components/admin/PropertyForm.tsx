@@ -80,6 +80,23 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
         }
     };
 
+    const handleDeleteImage = async (imageId: string) => {
+        if (!confirm('Are you sure you want to delete this image?')) return;
+
+        setUploadingImage(true);
+        setError("");
+
+        try {
+            const updatedProperty = await api.properties.deleteImage(property!.id, imageId);
+            setImages(updatedProperty.images || []);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to delete image");
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
+
     const nextStep = () => setStep(prev => prev + 1);
     const prevStep = () => setStep(prev => prev - 1);
 
@@ -90,11 +107,24 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                     {property ? "Edit Property" : "Add New Property"}
                 </h2>
                 <div className="flex gap-2">
-                    {[1, 2, 3, 4].map(s => (
-                        <div
-                            key={s}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${step === s ? "bg-purple-500 w-6" : "bg-slate-600"}`}
-                        />
+                    {[
+                        { num: 1, label: "Details", icon: "📝" },
+                        { num: 2, label: "Location", icon: "📍" },
+                        { num: 3, label: "Pricing", icon: "💰" },
+                        { num: 4, label: "Media", icon: "📸" }
+                    ].map(({ num, label, icon }) => (
+                        <button
+                            key={num}
+                            type="button"
+                            onClick={() => setStep(num)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${step === num
+                                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
+                                : "bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
+                                }`}
+                        >
+                            <span className="mr-1">{icon}</span>
+                            <span className="hidden sm:inline">{label}</span>
+                        </button>
                     ))}
                 </div>
             </div>
@@ -135,8 +165,20 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             onChange={handleChange}
                             required
                         />
-                        <div className="pt-4">
-                            <Button type="button" onClick={nextStep} className="w-full">Next: Location</Button>
+                        <div className="pt-4 flex gap-3">
+                            {property?.id ? (
+                                <Button
+                                    type="submit"
+                                    isLoading={isLoading}
+                                    className="w-full"
+                                >
+                                    Save Changes
+                                </Button>
+                            ) : (
+                                <Button type="button" onClick={nextStep} className="w-full">
+                                    Next: Location
+                                </Button>
+                            )}
                         </div>
                     </div>
                 )}
@@ -171,7 +213,20 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                         </div>
                         <div className="pt-4 flex gap-3">
                             <Button type="button" variant="outline" onClick={prevStep} className="flex-1">Back</Button>
-                            <Button type="button" onClick={nextStep} className="flex-1">Next: Pricing</Button>
+
+                            {property?.id ? (
+                                <Button
+                                    type="submit"
+                                    isLoading={isLoading}
+                                    className="flex-1"
+                                >
+                                    Save Changes
+                                </Button>
+                            ) : (
+                                <Button type="button" onClick={nextStep} className="flex-1">
+                                    Next: Pricing
+                                </Button>
+                            )}
                         </div>
                     </div>
                 )}
@@ -179,7 +234,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                 {step === 3 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                         <Input
-                            label="Nightly Price (USD)"
+                            label="Nightly Price (COP)"
                             name="nightly_price"
                             type="number"
                             value={formData.nightly_price}
@@ -221,7 +276,20 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
 
                         <div className="pt-4 flex gap-3">
                             <Button type="button" variant="outline" onClick={prevStep} className="flex-1">Back</Button>
-                            <Button type="button" onClick={nextStep} className="flex-1">Next: Media</Button>
+
+                            {property?.id ? (
+                                <Button
+                                    type="submit"
+                                    isLoading={isLoading}
+                                    className="flex-1"
+                                >
+                                    Save Changes
+                                </Button>
+                            ) : (
+                                <Button type="button" onClick={nextStep} className="flex-1">
+                                    Next: Media
+                                </Button>
+                            )}
                         </div>
                     </div>
                 )}
@@ -247,12 +315,23 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                             <img
                                                 src={getMediaUrl(img.url)}
                                                 className="w-full h-full object-cover"
+                                                alt={img.is_main ? "Main property image" : "Property image"}
                                             />
                                             {img.is_main && (
                                                 <div className="absolute top-1 left-1 bg-purple-600 text-[10px] px-1.5 py-0.5 rounded text-white font-bold">
                                                     MAIN
                                                 </div>
                                             )}
+                                            {/* Delete button - appears on hover */}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteImage(img.id)}
+                                                disabled={uploadingImage}
+                                                className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center text-xs font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                                title="Delete image"
+                                            >
+                                                ✕
+                                            </button>
                                         </div>
                                     ))}
                                     <label className={`aspect-square rounded-xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:border-purple-500/50 transition-colors ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`}>
