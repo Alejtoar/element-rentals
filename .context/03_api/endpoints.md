@@ -490,6 +490,20 @@ Uploads a new image to a property.
 - **Multipart Form**: `file`, `is_main` (bool), `sort_order` (int)
 - **Constraint**: If `is_main` is true, all other images for this property must be set to `is_main: false`.
 
+### DELETE /properties/{property_id}/images/{image_id}
+Deletes a property image.
+- **Authentication**: Required (Staff/Admin)
+- **Path Parameters**: `property_id` (UUID), `image_id` (UUID)
+- **Response**: Updated `PropertyRead` with remaining images
+- **Logic**:
+  - Removes image from database
+  - Deletes physical file from storage
+  - If deleted image was `is_main=true`, automatically promotes another image to main
+  - Returns 404 if property or image not found
+  - Returns 403 if user lacks permission
+- **Status Codes**: 200 (success), 403 (unauthorized), 404 (not found), 500 (server error)
+- **Added**: Session 012 (2026-01-23)
+
 ### GET /properties/public
 Public listing for the Landing Page.
 - **Query Params**: `city`, `max_guests`, `min_price`, `max_price`

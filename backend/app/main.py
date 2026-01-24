@@ -34,8 +34,8 @@ app.add_middleware(
 )
 
 # Mount Static Files for uploads
-# We assume "uploads" directory is in the current working directory
-app.mount("/static", StaticFiles(directory="uploads"), name="static")
+# Serve uploads directory at /uploads URL prefix
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.on_event("startup")
 def on_startup():

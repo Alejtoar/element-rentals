@@ -9,7 +9,7 @@ class StorageProvider(Protocol):
         ...
 
 class LocalStorageProvider:
-    def __init__(self, upload_dir: str = "uploads"):
+    def __init__(self, upload_dir: str = "uploads/properties"):
         self.upload_dir = upload_dir
         os.makedirs(self.upload_dir, exist_ok=True)
 
@@ -19,8 +19,8 @@ class LocalStorageProvider:
             shutil.copyfileobj(file.file, buffer)
         
         # Return a relative URL or path that the frontend can access
-        # For local dev, we might serve this via StaticFiles (to be added to main.py later if needed)
-        return f"/static/{filename}"
+        # URL format: /uploads/properties/{filename}
+        return f"/uploads/properties/{filename}"
 
 def get_storage_provider() -> StorageProvider:
     # Phase 1: simple local storage
