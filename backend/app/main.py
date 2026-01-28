@@ -26,6 +26,13 @@ app = FastAPI(
     strict_slashes=False
 )
 
+@app.middleware("http")
+async def force_https_middleware(request, call_next):
+    # Force HTTPS scheme for all requests behind the tunnel
+    request.scope["scheme"] = "https"
+    response = await call_next(request)
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Allow all origins for tunnel testing
