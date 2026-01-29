@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "@/api/client";
-import { Property, User } from "@/types";
+import { Property, User, Owner } from "@/types";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { getMediaUrl } from "@/lib/media";
@@ -18,6 +18,8 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [owners, setOwners] = useState<Owner[]>([]);
+    const [isLoadingOwners, setIsLoadingOwners] = useState(false);
     const [formData, setFormData] = useState({
         name: property?.name || "",
         description: property?.description || "",
@@ -28,8 +30,28 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
         nightly_price: property?.nightly_price || 100,
         active: property?.active ?? true,
         featured: property?.featured ?? false,
-        owner_id: property?.id ? undefined : user.id, // Only for creation
+        owner_id: (property as any)?.owner_id || "",
     });
+
+    useEffect(() => {
+        const fetchOwners = async () => {
+            setIsLoadingOwners(true);
+            try {
+                const fetchedOwners = await api.owners.getAll();
+                setOwners(fetchedOwners);
+                // If creating and there are owners, pick the first one as default if none selected
+                if (!property?.id && fetchedOwners.length > 0 && !formData.owner_id) {
+                    setFormData(prev => ({ ...prev, owner_id: fetchedOwners[0].id }));
+                }
+            } catch (err) {
+                console.error("Failed to fetch owners", err);
+            } finally {
+                setIsLoadingOwners(false);
+            }
+        };
+
+        fetchOwners();
+    }, [property]);
 
     const [images, setImages] = useState(property?.images || []);
     const [uploadingImage, setUploadingImage] = useState(false);
@@ -54,9 +76,6 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                 onSuccess();
             } else {
                 const newProperty = await api.properties.create(formData as any);
-                // After create, we might want to stay in step 4 to upload images
-                // But the parent needs to know we have a new property
-                // For simplicity in this vertical slice, we'll just close and reload
                 onSuccess();
             }
         } catch (err) {
@@ -146,6 +165,27 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             placeholder="e.g. Luxury Villa Akumal"
                             required
                         />
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-sm font-medium text-slate-300 ml-1">Property Owner</label>
+                            <select
+                                name="owner_id"
+                                value={formData.owner_id}
+                                onChange={(e) => setFormData(prev => ({ ...prev, owner_id: e.target.value }))}
+                                className="px-4 py-3 rounded-2xl bg-slate-900/50 border border-slate-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all duration-300 text-white"
+                                required
+                            >
+                                <option value="" disabled>Select an owner</option>
+                                {owners.map(owner => (
+                                    <option key={owner.id} value={owner.id}>{owner.full_name} ({owner.email})</option>
+                                ))}
+                                {owners.length === 0 && !isLoadingOwners && (
+                                    <option value="" disabled>No owners found. Create one first.</option>
+                                )}
+                            </select>
+                            {owners.length === 0 && !isLoadingOwners && (
+                                <p className="text-xs text-amber-400 ml-1">⚠️ You must create an owner in the database before adding properties.</p>
+                            )}
+                        </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-slate-300 ml-1">Description</label>
                             <textarea

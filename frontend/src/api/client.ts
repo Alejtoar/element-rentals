@@ -212,4 +212,31 @@ export const api = {
             return handleResponse<WhatsAppLinkResponse>(response);
         },
     },
+    owners: {
+        getAll: async (offset: number = 0, limit: number = 100): Promise<any[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/owners?offset=${offset}&limit=${limit}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<any[]>(response);
+        },
+        create: async (owner: { full_name: string; email: string; phone: string }): Promise<any> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/owners`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(owner),
+            });
+            return handleResponse<any>(response);
+        },
+    },
 };
