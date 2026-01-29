@@ -57,10 +57,12 @@ class PropertyService:
 
     def create_property(self, property_in: PropertyCreate) -> Property:
         try:
-            # Use model_validate for SQLModel/Pydantic V2 compatibility or direct dict unpacking
-            property = Property(**property_in.dict())
-            property.slug = self._generate_unique_slug(property.name)
+            # Generate unique slug before creating the model to avoid validation errors
+            # since slug is a required field without a default in the model.
+            data = property_in.dict()
+            data["slug"] = self._generate_unique_slug(data["name"])
             
+            property = Property(**data)
             logger.info(f"Creating property with slug: {property.slug}")
             created = self.repository.create(property)
             logger.info(f"Property created successfully: {created.id}")
