@@ -140,6 +140,55 @@ Represents the booking source.
 
 ---
 
+### OwnerLead
+
+Captures interest from potential property owners.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| name | VARCHAR | |
+| phone | VARCHAR | |
+| location | VARCHAR | Property location |
+| message | TEXT | |
+| source | VARCHAR | website, whatsapp, referral |
+| ip_address | VARCHAR | |
+| user_agent | VARCHAR | |
+| referer | VARCHAR | |
+| utm_source | VARCHAR | |
+| utm_medium | VARCHAR | |
+| utm_campaign | VARCHAR | |
+| utm_term | VARCHAR | |
+| utm_content | VARCHAR | |
+| created_at | TIMESTAMP | |
+
+---
+
+### GuestLead
+
+Captures inquiries for property rentals.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| property_id | UUID (FK → Property.id) | Optional (general vs specific) |
+| name | VARCHAR | |
+| phone | VARCHAR | |
+| desired_dates | VARCHAR | |
+| message | TEXT | |
+| source | VARCHAR | website, whatsapp, referral |
+| ip_address | VARCHAR | |
+| user_agent | VARCHAR | |
+| referer | VARCHAR | |
+| utm_source | VARCHAR | |
+| utm_medium | VARCHAR | |
+| utm_campaign | VARCHAR | |
+| utm_term | VARCHAR | |
+| utm_content | VARCHAR | |
+| created_at | TIMESTAMP | |
+
+---
+
 ### Reservation
 
 Represents an occupancy record.
@@ -230,6 +279,23 @@ Allocates expenses to properties (supports proration).
 | expense_id | UUID (FK → Expense.id) | |
 | property_id | UUID (FK → Property.id) | |
 | allocated_amount | DECIMAL | |
+| created_at | TIMESTAMP | |
+
+---
+
+### CalendarBlock
+
+Represents a continuous date range during which a property is unavailable, synchronized from external sources.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| property_id | UUID (FK → Property.id) | |
+| start_date | DATE | |
+| end_date | DATE | |
+| source | VARCHAR | airbnb, booking, owner, manual |
+| external_uid | VARCHAR | Optional UID from iCal |
+| reason | TEXT | Optional reason for block |
 | created_at | TIMESTAMP | |
 
 ---

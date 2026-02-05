@@ -11,6 +11,12 @@ class Lead(SQLModel):
     ip_address: Optional[str] = None
     user_agent: Optional[str] = Field(default=None, max_length=512)
     referer: Optional[str] = Field(default=None, max_length=1024)
+    # Marketing Tracking (UTMs)
+    utm_source: Optional[str] = Field(default=None, max_length=128)
+    utm_medium: Optional[str] = Field(default=None, max_length=128)
+    utm_campaign: Optional[str] = Field(default=None, max_length=128)
+    utm_term: Optional[str] = Field(default=None, max_length=128)
+    utm_content: Optional[str] = Field(default=None, max_length=128)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class OwnerLead(Lead, table=True):
