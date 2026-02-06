@@ -10,7 +10,16 @@ Provide owners and administrators with tools for financial control, property man
 
 ### 1. Admin Dashboard Expansion
 - **Owners Management**: List, create, edit, and delete property owners.
-- **Financial Input**: Forms to record income and expenses per property.
+- **User Management UI**:
+  - Tables for listing users and their roles.
+  - Forms for creating users and resetting passwords.
+  - Profile section for the logged-in user (password change).
+- **Reservation & Payment UI**:
+  - Multi-step or modal forms to create reservations.
+  - Guest selection/creation during the booking flow.
+  - Payment recording interface linked to specific reservations.
+  - Tables for listing and filtering reservations and payments.
+- **Financial Input**: Forms to record expenses per property.
 - **Report Generation**: Interface to trigger and download monthly PDF/Excel statements.
 
 ### 2. Guest Experience (Conversion Optimization)

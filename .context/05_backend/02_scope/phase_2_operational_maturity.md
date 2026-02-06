@@ -8,13 +8,25 @@ Transition from a lead-generation landing page to a functional operating platfor
 
 ## Core Capabilities
 
-### 1. Advanced Property & Owner Management
+### 1. Advanced Property, Owner & User Management
 - **Owner CRUD**: Full interface for managing owner profiles (Name, Phone, Email, Bank Details).
+- **User Management**: 
+  - Admin interface to Create/Edit/List system users.
+  - Role-based access control (Admin, Staff, Finance).
+  - Password Reset Logic: Admin can reset user passwords; users can change their own.
 - **Property-Owner Linking**: Ability to reassign properties to different owners via UI.
 - **Image Optimization**: Support for dynamic image resizing (serving different resolutions via API/CDN filters).
 
-### 2. Financial Module (Phase 2 Focus)
-- **Income Tracking**: Automate calculation of Gross Income from confirmed reservations.
+### 2. Reservation & Payment CRUD (Manual Operation)
+- **Guest Management**: CRUD for Guests (Names, Phone, Identity Documents).
+- **Channel Management**: Management of booking sources (Direct, Airbnb, Booking, etc.).
+- **Reservation CRUD**: Create and manage manual reservations (Link to Property, Guest, and Channel).
+- **Payment Tracking**: 
+  - Record payments (Stripe, Transfer, Cash) linked to reservations.
+  - Support for partial payments and deposits.
+
+### 3. Financial Module (Phase 2 Focus)
+- **Income Tracking**: Automate calculation of Gross Income from confirmed payments.
 - **Expense Management**:
   - Record operational expenses (cleaning, maintenance, supplies).
   - Categorize expenses as deductible/non-deductible.
