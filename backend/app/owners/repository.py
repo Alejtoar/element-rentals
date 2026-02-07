@@ -25,3 +25,8 @@ class OwnerRepository:
         self.session.commit()
         self.session.refresh(owner)
         return owner
+
+    def delete(self, owner: Owner) -> bool:
+        self.session.delete(owner)
+        self.session.commit()
+        return True

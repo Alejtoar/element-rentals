@@ -8,7 +8,7 @@ from app.reservations.models import Reservation, Payment
 from app.reservations.service import ReservationService
 from app.reservations.schemas import (
     ReservationCreate, ReservationRead, ReservationUpdate, ReservationDetail,
-    PaymentCreate, PaymentRead, PaymentUpdate
+    PaymentCreate, PaymentRead, PaymentUpdate, FinancialSummary
 )
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
@@ -69,6 +69,30 @@ def delete_reservation(
     if not success:
         raise HTTPException(status_code=404, detail="Reservation not found")
     return None
+
+@router.get("/{reservation_id}/financial-summary", response_model=FinancialSummary)
+def get_reservation_financial_summary(
+    reservation_id: UUID,
+    session: Session = Depends(get_session),
+    current_user = Depends(get_current_staff_user)
+):
+    """
+    Get the financial summary for a reservation.
+    
+    Returns:
+        - total_amount: Original cost of the stay
+        - total_paid: Sum of payments with status='paid'
+        - balance: Remaining amount to be paid
+        - is_fully_paid: Boolean indicating if reservation is fully paid
+    """
+    service = ReservationService(session)
+    try:
+        summary = service.get_financial_summary(reservation_id)
+        return summary
+    except Exception as e:
+        if "not found" in str(e).lower():
+            raise HTTPException(status_code=404, detail="Reservation not found")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Payment Endpoints
 payment_router = APIRouter(prefix="/payments", tags=["payments"])

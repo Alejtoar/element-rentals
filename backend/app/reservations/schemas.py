@@ -90,7 +90,19 @@ class ReservationUpdate(SQLModel):
 class ReservationRead(ReservationBase):
     id: UUID
     created_at: datetime
+    total_paid: Optional[Decimal] = None  # Optimized field for list queries
 
 class ReservationDetail(ReservationRead):
     payments: List[PaymentRead] = []
     charges: List[ChargeRead] = []
+
+# Financial Summary Schema
+class FinancialSummary(SQLModel):
+    """
+    Financial summary for a reservation.
+    Shows payment status and balance information.
+    """
+    total_amount: Decimal
+    total_paid: Decimal
+    balance: Decimal
+    is_fully_paid: bool

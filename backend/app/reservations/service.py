@@ -33,8 +33,39 @@ class ReservationService:
     def get_reservation_by_id(self, reservation_id: UUID) -> Optional[Reservation]:
         return self.repository.get_reservation_by_id(reservation_id)
 
-    def get_reservations(self, skip: int = 0, limit: int = 100) -> List[Reservation]:
-        return self.repository.get_reservations(skip=skip, limit=limit)
+    def get_reservations(self, skip: int = 0, limit: int = 100) -> List[dict]:
+        """
+        Get all reservations with total_paid calculated.
+        Returns list of dictionaries instead of models to include computed field.
+        """
+        reservations = self.repository.get_reservations(skip=skip, limit=limit)
+        result = []
+        
+        for reservation in reservations:
+            # Calculate total_paid for this reservation
+            total_paid = Decimal("0.00")
+            for payment in reservation.payments:
+                if payment.status == "paid":
+                    total_paid += payment.amount
+            
+            # Convert to dict and add total_paid
+            reservation_dict = {
+                "id": reservation.id,
+                "property_id": reservation.property_id,
+                "guest_id": reservation.guest_id,
+                "channel_id": reservation.channel_id,
+                "reservation_type": reservation.reservation_type,
+                "start_date": reservation.start_date,
+                "end_date": reservation.end_date,
+                "guest_count": reservation.guest_count,
+                "total_amount": reservation.total_amount,
+                "status": reservation.status,
+                "created_at": reservation.created_at,
+                "total_paid": total_paid
+            }
+            result.append(reservation_dict)
+        
+        return result
 
     def update_reservation(self, reservation_id: UUID, reservation_data: dict) -> Optional[Reservation]:
         return self.repository.update_reservation(reservation_id, reservation_data)
@@ -107,4 +138,29 @@ class ReservationService:
                 total_paid += payment.amount
         
         return total_paid
+
+    def get_financial_summary(self, reservation_id: UUID) -> dict:
+        """
+        Get the financial summary for a reservation.
+        
+        Args:
+            reservation_id: UUID of the reservation
+            
+        Returns:
+            dict: Financial summary with total_amount, total_paid, balance, is_fully_paid
+        """
+        reservation = self.repository.get_reservation_by_id(reservation_id)
+        if not reservation:
+            raise Exception("Reservation not found")
+        
+        total_paid = self.calculate_total_paid(reservation_id)
+        balance = reservation.total_amount - total_paid
+        is_fully_paid = balance <= Decimal("0.00")
+        
+        return {
+            "total_amount": reservation.total_amount,
+            "total_paid": total_paid,
+            "balance": balance,
+            "is_fully_paid": is_fully_paid
+        }
 

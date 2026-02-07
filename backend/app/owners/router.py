@@ -58,3 +58,20 @@ def update_owner(
 ):
     service = OwnerService(session)
     return service.update_owner(owner_id, owner_in)
+
+@router.delete("/{owner_id}", status_code=204)
+def delete_owner(
+    *, 
+    session: Session = Depends(get_session), 
+    owner_id: uuid.UUID,
+    current_user: User = Depends(get_current_staff_user)
+):
+    """
+    Delete an owner.
+    
+    Business Rule: Cannot delete an owner with active properties.
+    Returns 400 if owner has properties linked.
+    """
+    service = OwnerService(session)
+    service.delete_owner(owner_id)
+    return None

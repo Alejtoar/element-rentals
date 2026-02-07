@@ -99,6 +99,32 @@ Returns owner details.
 
 ---
 
+### PATCH `/owners/{owner_id}`
+
+Updates owner details including bank_details.
+
+```json
+{
+  "full_name": "Carlos Perez Updated",
+  "email": "carlos.new@email.com",
+  "phone": "+57...",
+  "bank_details": "Bancolombia Ahorros 987654321"
+}
+```
+
+---
+
+### DELETE `/owners/{owner_id}`
+
+Deletes an owner.
+
+**Business Rule**: Cannot delete an owner with active properties.
+Returns 400 if owner has properties linked.
+
+**Added**: Session 016 (Phase 2)
+
+---
+
 ### GET `/owners/{owner_id}/properties`
 
 Lists all properties owned by a given owner.
@@ -249,6 +275,38 @@ Creates a reservation.
 ### GET `/reservations/{id}`
 
 Returns reservation details.
+
+---
+
+### GET `/reservations`
+
+Lists all reservations.
+
+**Optimization (Session 016)**: Each reservation in the list includes a `total_paid` field calculated from payments with `status='paid'`. This avoids N+1 query problems in the frontend.
+
+---
+
+### GET `/reservations/{id}/financial-summary`
+
+Returns the financial summary for a reservation.
+
+**Response**:
+```json
+{
+  "total_amount": 1000.00,
+  "total_paid": 500.00,
+  "balance": 500.00,
+  "is_fully_paid": false
+}
+```
+
+**Fields**:
+- `total_amount`: Original cost of the stay
+- `total_paid`: Sum of payments with status='paid'
+- `balance`: Remaining amount to be paid (total_amount - total_paid)
+- `is_fully_paid`: Boolean indicating if reservation is fully paid
+
+**Added**: Session 016 (Phase 2)
 
 ---
 

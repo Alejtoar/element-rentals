@@ -32,3 +32,29 @@ class OwnerService:
         for key, value in update_data.items():
             setattr(owner, key, value)
         return self.repository.update(owner)
+
+    def delete_owner(self, owner_id: UUID) -> bool:
+        """
+        Delete an owner.
+        
+        Business Rule: Cannot delete an owner with active properties.
+        
+        Args:
+            owner_id: UUID of the owner to delete
+            
+        Returns:
+            bool: True if deletion was successful
+            
+        Raises:
+            HTTPException: 404 if owner not found, 400 if owner has active properties
+        """
+        owner = self.get_owner_by_id(owner_id)
+        
+        # Check if owner has any properties
+        if owner.properties and len(owner.properties) > 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Cannot delete owner with {len(owner.properties)} active properties. Please reassign or delete properties first."
+            )
+        
+        return self.repository.delete(owner)
