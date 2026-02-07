@@ -54,6 +54,26 @@ Request:
 
 Returns the authenticated user profile.
 
+### GET `/users`
+
+List all users (Admin only).
+
+### POST `/users`
+
+Create user (Admin only).
+
+### PATCH `/users/{user_id}`
+
+Update user (Admin only).
+
+### POST `/users/{user_id}/password`
+
+Admin reset of user password.
+
+### POST `/users/me/password`
+
+Self password update (requires old password).
+
 ---
 
 ## 2️⃣ Owners (Property Partners)
@@ -66,7 +86,8 @@ Creates a new property owner.
 {
   "full_name": "Carlos Perez",
   "email": "carlos@email.com",
-  "phone": "+57..."
+  "phone": "+57...",
+  "bank_details": "Bancolombia Ahorros 123456789"
 }
 ```
 
@@ -151,9 +172,21 @@ Creates a guest (manual or external).
 
 ---
 
+### GET `/guests`
+
+List all guests.
+
 ### GET `/guests/{guest_id}`
 
 Returns guest details.
+
+### PATCH `/guests/{guest_id}`
+
+Update guest details.
+
+### DELETE `/guests/{guest_id}`
+
+Delete guest.
 
 ---
 
@@ -175,6 +208,15 @@ Creates a new channel (admin only).
   "external": true
 }
 ```
+
+### PATCH `/channels/{channel_id}`
+
+Update channel details.
+
+### DELETE `/channels/{channel_id}`
+
+Delete channel.
+
 
 ---
 

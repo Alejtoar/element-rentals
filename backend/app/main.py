@@ -15,7 +15,9 @@ from app.owners.router import router as owners_router
 from app.auth.router import router as auth_router
 from app.leads.router import router as leads_router
 from app.reservations.router import router as reservations_router, payment_router
+from app.reservations.channel_router import router as channels_router
 from app.users.router import router as users_router
+from app.guests.router import router as guests_router
 from app.users.service import UserService
 from app.db import engine
 from sqlmodel import Session
@@ -68,6 +70,8 @@ app.include_router(owners_router, prefix=f"{settings.API_V1_STR}/owners", tags=[
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(leads_router, prefix=f"{settings.API_V1_STR}/leads", tags=["leads"])
 app.include_router(users_router, prefix=f"{settings.API_V1_STR}/users", tags=["users"])
+app.include_router(guests_router, prefix=f"{settings.API_V1_STR}/guests", tags=["guests"])
+app.include_router(channels_router, prefix=f"{settings.API_V1_STR}/channels", tags=["channels"])
 app.include_router(reservations_router, prefix=settings.API_V1_STR)
 app.include_router(payment_router, prefix=settings.API_V1_STR)
 

@@ -7,6 +7,7 @@ class OwnerBase(SQLModel):
     full_name: str
     email: str
     phone: str
+    bank_details: Optional[str] = None
 
 # Create
 class OwnerCreate(OwnerBase):
@@ -17,8 +18,10 @@ class OwnerUpdate(SQLModel):
     full_name: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
+    bank_details: Optional[str] = None
 
 # Read
 class OwnerRead(OwnerBase):
     id: uuid.UUID
     # potentially list properties
+

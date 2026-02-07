@@ -85,3 +85,26 @@ class ReservationService:
             status="pending"
         )
         return self.repository.create_payment(balance_payment)
+
+    def calculate_total_paid(self, reservation_id: UUID) -> Decimal:
+        """
+        Calculate the total amount paid for a reservation.
+        Only counts payments with status='paid'.
+        
+        Args:
+            reservation_id: UUID of the reservation
+            
+        Returns:
+            Decimal: Total amount paid
+        """
+        reservation = self.repository.get_reservation_by_id(reservation_id)
+        if not reservation:
+            raise Exception("Reservation not found")
+        
+        total_paid = Decimal("0.00")
+        for payment in reservation.payments:
+            if payment.status == "paid":
+                total_paid += payment.amount
+        
+        return total_paid
+

@@ -9,6 +9,12 @@ class OwnerLeadCreate(BaseModel):
     location: str
     message: Optional[str] = None
     source: str = "website"
+    # UTM tracking fields
+    utm_source: Optional[str] = None
+    utm_medium: Optional[str] = None
+    utm_campaign: Optional[str] = None
+    utm_term: Optional[str] = None
+    utm_content: Optional[str] = None
 
 class OwnerLeadRead(OwnerLeadCreate):
     id: UUID
@@ -24,6 +30,12 @@ class GuestLeadCreate(BaseModel):
     desired_dates: Optional[str] = None
     message: Optional[str] = None
     source: str = "website"
+    # UTM tracking fields
+    utm_source: Optional[str] = None
+    utm_medium: Optional[str] = None
+    utm_campaign: Optional[str] = None
+    utm_term: Optional[str] = None
+    utm_content: Optional[str] = None
 
 class GuestLeadRead(GuestLeadCreate):
     id: UUID

@@ -1,4 +1,32 @@
-import { Property, GuestLead, OwnerLead, WhatsAppLinkResponse, LoginCredentials, AuthResponse, User, GuestLeadRead, OwnerLeadRead } from "../types";
+import {
+    Property,
+    GuestLead,
+    OwnerLead,
+    WhatsAppLinkResponse,
+    LoginCredentials,
+    AuthResponse,
+    User,
+    UserCreate,
+    UserUpdate,
+    PasswordUpdate,
+    AdminPasswordReset,
+    GuestLeadRead,
+    OwnerLeadRead,
+    Owner,
+    OwnerCreate,
+    OwnerUpdate,
+    Guest,
+    GuestCreate,
+    GuestUpdate,
+    Channel,
+    ChannelCreate,
+    ChannelUpdate,
+    Reservation,
+    ReservationCreate,
+    ReservationUpdate,
+    Payment,
+    PaymentCreate
+} from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -213,7 +241,7 @@ export const api = {
         },
     },
     owners: {
-        getAll: async (offset: number = 0, limit: number = 100): Promise<any[]> => {
+        getAll: async (offset: number = 0, limit: number = 100): Promise<Owner[]> => {
             const token = getAuthToken();
             if (!token) throw new Error("No authentication token found");
 
@@ -222,9 +250,20 @@ export const api = {
                     "Authorization": `Bearer ${token}`,
                 },
             });
-            return handleResponse<any[]>(response);
+            return handleResponse<Owner[]>(response);
         },
-        create: async (owner: { full_name: string; email: string; phone: string }): Promise<any> => {
+        getById: async (id: string): Promise<Owner> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/owners/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Owner>(response);
+        },
+        create: async (owner: OwnerCreate): Promise<Owner> => {
             const token = getAuthToken();
             if (!token) throw new Error("No authentication token found");
 
@@ -236,7 +275,319 @@ export const api = {
                 },
                 body: JSON.stringify(owner),
             });
-            return handleResponse<any>(response);
+            return handleResponse<Owner>(response);
+        },
+        update: async (id: string, owner: OwnerUpdate): Promise<Owner> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/owners/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(owner),
+            });
+            return handleResponse<Owner>(response);
+        },
+    },
+    users: {
+        getAll: async (): Promise<User[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<User[]>(response);
+        },
+        getById: async (id: string): Promise<User> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<User>(response);
+        },
+        create: async (user: UserCreate): Promise<User> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(user),
+            });
+            return handleResponse<User>(response);
+        },
+        update: async (id: string, user: UserUpdate): Promise<User> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(user),
+            });
+            return handleResponse<User>(response);
+        },
+        resetPassword: async (id: string, data: AdminPasswordReset): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users/${id}/password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+            return handleResponse<void>(response);
+        },
+        updateOwnPassword: async (data: PasswordUpdate): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/users/me/password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+            return handleResponse<void>(response);
+        },
+    },
+    guests: {
+        getAll: async (offset: number = 0, limit: number = 100): Promise<Guest[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/guests?offset=${offset}&limit=${limit}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Guest[]>(response);
+        },
+        getById: async (id: string): Promise<Guest> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/guests/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Guest>(response);
+        },
+        create: async (guest: GuestCreate): Promise<Guest> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/guests`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(guest),
+            });
+            return handleResponse<Guest>(response);
+        },
+        update: async (id: string, guest: GuestUpdate): Promise<Guest> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/guests/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(guest),
+            });
+            return handleResponse<Guest>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/guests/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+    },
+    channels: {
+        getAll: async (offset: number = 0, limit: number = 100): Promise<Channel[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/channels?offset=${offset}&limit=${limit}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Channel[]>(response);
+        },
+        getById: async (id: string): Promise<Channel> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/channels/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Channel>(response);
+        },
+        create: async (channel: ChannelCreate): Promise<Channel> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/channels`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(channel),
+            });
+            return handleResponse<Channel>(response);
+        },
+        update: async (id: string, channel: ChannelUpdate): Promise<Channel> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/channels/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(channel),
+            });
+            return handleResponse<Channel>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/channels/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+    },
+    reservations: {
+        getAll: async (params: { property_id?: string; guest_id?: string; status?: string } = {}): Promise<Reservation[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const searchParams = new URLSearchParams();
+            if (params.property_id) searchParams.append("property_id", params.property_id);
+            if (params.guest_id) searchParams.append("guest_id", params.guest_id);
+            if (params.status) searchParams.append("status", params.status);
+
+            const response = await fetch(`${API_BASE_URL}/reservations?${searchParams.toString()}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Reservation[]>(response);
+        },
+        getById: async (id: string): Promise<Reservation> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/reservations/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Reservation>(response);
+        },
+        create: async (reservation: ReservationCreate): Promise<Reservation> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/reservations`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(reservation),
+            });
+            return handleResponse<Reservation>(response);
+        },
+        update: async (id: string, reservation: ReservationUpdate): Promise<Reservation> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/reservations/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(reservation),
+            });
+            return handleResponse<Reservation>(response);
+        },
+    },
+    payments: {
+        getByReservation: async (reservationId: string): Promise<Payment[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payments?reservation_id=${reservationId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Payment[]>(response);
+        },
+        create: async (payment: PaymentCreate): Promise<Payment> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(payment),
+            });
+            return handleResponse<Payment>(response);
         },
     },
 };

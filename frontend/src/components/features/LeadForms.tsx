@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "@/api/client";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
+import { getUTMForSubmission } from "@/lib/utm";
 
 interface LeadFormsProps {
     dict: any;
@@ -21,7 +22,14 @@ export const LeadForms: React.FC<LeadFormsProps> = ({ dict, lang }) => {
         e.preventDefault();
         setLoading({ ...loading, owner: true });
         try {
-            await api.leads.submitOwner({ ...ownerData, source: "website" });
+            // Get UTM parameters for marketing attribution
+            const utmParams = getUTMForSubmission();
+
+            await api.leads.submitOwner({
+                ...ownerData,
+                source: "website",
+                ...utmParams // Include UTM tracking
+            });
             setStatus({ ...status, owner: "success" });
             setOwnerData({ name: "", phone: "", location: "", message: "" });
         } catch (error) {
@@ -36,10 +44,14 @@ export const LeadForms: React.FC<LeadFormsProps> = ({ dict, lang }) => {
         e.preventDefault();
         setLoading({ ...loading, guest: true });
         try {
+            // Get UTM parameters for marketing attribution
+            const utmParams = getUTMForSubmission();
+
             await api.leads.submitGuest({
                 ...guestData,
                 property_id: "general", // Generic lead
-                source: "website"
+                source: "website",
+                ...utmParams // Include UTM tracking
             });
             setStatus({ ...status, guest: "success" });
             setGuestData({ name: "", phone: "", message: "" });

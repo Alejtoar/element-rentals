@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { Locale, i18n } from "@/lib/i18n-config";
 import { GlobalBackground } from "@/components/common/GlobalBackground";
+import { UTMTracker } from "@/components/common/UTMTracker";
 import { Footer } from "@/components/layout/Footer";
 import { getDictionary } from "@/lib/get-dictionary";
 
@@ -41,6 +42,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GlobalBackground />
+        <UTMTracker />
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
             {children}

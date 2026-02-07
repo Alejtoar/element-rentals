@@ -18,8 +18,15 @@ class LeadService:
         user_agent: Optional[str] = None, 
         referer: Optional[str] = None
     ) -> OwnerLead:
+        lead_data = lead_in.dict()
+        
+        # Sanitize UTM fields
+        for utm_field in ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']:
+            if utm_field in lead_data and lead_data[utm_field]:
+                lead_data[utm_field] = self._sanitize_metadata(lead_data[utm_field], 128)
+        
         lead = OwnerLead(
-            **lead_in.dict(),
+            **lead_data,
             ip_address=self._sanitize_ip(ip_address),
             user_agent=self._sanitize_metadata(user_agent, 512),
             referer=self._sanitize_metadata(referer, 1024)
@@ -35,8 +42,15 @@ class LeadService:
         user_agent: Optional[str] = None, 
         referer: Optional[str] = None
     ) -> GuestLead:
+        lead_data = lead_in.dict()
+        
+        # Sanitize UTM fields
+        for utm_field in ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']:
+            if utm_field in lead_data and lead_data[utm_field]:
+                lead_data[utm_field] = self._sanitize_metadata(lead_data[utm_field], 128)
+        
         lead = GuestLead(
-            **lead_in.dict(),
+            **lead_data,
             ip_address=self._sanitize_ip(ip_address),
             user_agent=self._sanitize_metadata(user_agent, 512),
             referer=self._sanitize_metadata(referer, 1024)

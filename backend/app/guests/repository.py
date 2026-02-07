@@ -19,3 +19,14 @@ class GuestRepository:
         self.session.commit()
         self.session.refresh(guest)
         return guest
+
+    def update(self, guest: Guest) -> Guest:
+        self.session.add(guest)
+        self.session.commit()
+        self.session.refresh(guest)
+        return guest
+
+    def delete(self, guest: Guest) -> None:
+        self.session.delete(guest)
+        self.session.commit()
+

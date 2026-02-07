@@ -71,6 +71,7 @@ Represents a property owner (principal of the mandate contract).
 | full_name | VARCHAR | |
 | email | VARCHAR | |
 | phone | VARCHAR | |
+| bank_details | TEXT | Phase 2 financial info |
 | created_at | TIMESTAMP | |
 
 ---

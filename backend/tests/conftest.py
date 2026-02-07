@@ -1,8 +1,16 @@
-
+import os
 import pytest
 from typing import Generator
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
+
+# Set required environment variables for testing
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
+os.environ.setdefault("SECRET_KEY", "test-secret-key")
+os.environ.setdefault("WHATSAPP_PHONE", "1234567890")
+os.environ.setdefault("FIRST_ADMIN_EMAIL", "admin@test.com")
+os.environ.setdefault("FIRST_ADMIN_PASSWORD", "admin")
+
 from app.main import app
 from app.db import get_session
 from app.config import settings

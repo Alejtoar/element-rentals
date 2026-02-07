@@ -12,9 +12,19 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    is_active: Optional[bool] = None
+    role: Optional[str] = None
+
+class UserPasswordUpdate(BaseModel):
+    """Schema for user password updates"""
+    old_password: Optional[str] = None  # Required for self-update, not for admin
+    new_password: str
+
 class UserRead(UserBase):
     id: uuid.UUID
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
