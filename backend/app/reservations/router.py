@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
@@ -74,10 +74,16 @@ def delete_reservation(
 def get_reservation_financial_summary(
     reservation_id: UUID,
     session: Session = Depends(get_session),
-    current_user = Depends(get_current_staff_user)
+    current_user = Depends(get_current_internal_user)  # SEC-002: Changed from staff to internal to allow Finance access
 ):
     """
     Get the financial summary for a reservation.
+    
+    Security: Accessible by Admin, Staff, and Finance roles.
+    Finance team needs this data for payment reconciliation and payout processing.
+    
+    SEC-002: Updated to use get_current_internal_user to ensure Finance role
+    can access financial summaries (was previously blocked).
     
     Returns:
         - total_amount: Original cost of the stay
@@ -113,11 +119,12 @@ def read_reservation_payments(
 def read_payments(
     skip: int = 0,
     limit: int = 100,
+    reservation_id: Optional[UUID] = None,
     session: Session = Depends(get_session),
     current_user = Depends(get_current_internal_user)
 ):
     service = ReservationService(session)
-    return service.get_payments(skip=skip, limit=limit)
+    return service.get_payments(skip=skip, limit=limit, reservation_id=reservation_id)
 
 @payment_router.post("/", response_model=PaymentRead, status_code=status.HTTP_201_CREATED)
 def create_payment(

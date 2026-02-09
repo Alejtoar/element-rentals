@@ -95,7 +95,41 @@ Creates a new property owner.
 
 ### GET `/owners/{owner_id}`
 
-Returns owner details.
+Returns owner details (excluding sensitive financial information).
+
+**Security (SEC-001)**: The `bank_details` field is intentionally excluded from this response to follow the principle of least privilege. Staff users can see contact information but not banking details.
+
+**Response**:
+```json
+{
+  "id": "uuid",
+  "full_name": "Carlos Perez",
+  "email": "carlos@email.com",
+  "phone": "+57..."
+}
+```
+
+---
+
+### GET `/owners/{owner_id}/financial`
+
+Returns owner details including sensitive financial information.
+
+**Security**: Only accessible by Finance and Admin roles.  
+**Use Case**: Payout processing and financial reconciliation.
+
+**Response**:
+```json
+{
+  "id": "uuid",
+  "full_name": "Carlos Perez",
+  "email": "carlos@email.com",
+  "phone": "+57...",
+  "bank_details": "Bancolombia Ahorros 987654321"
+}
+```
+
+**Added**: Session 017 (Security Fix SEC-001)
 
 ---
 
@@ -290,6 +324,8 @@ Lists all reservations.
 
 Returns the financial summary for a reservation.
 
+**Security (SEC-002)**: Accessible by Admin, Staff, and Finance roles. Finance team requires this data for payment reconciliation and payout processing.
+
 **Response**:
 ```json
 {
@@ -306,7 +342,8 @@ Returns the financial summary for a reservation.
 - `balance`: Remaining amount to be paid (total_amount - total_paid)
 - `is_fully_paid`: Boolean indicating if reservation is fully paid
 
-**Added**: Session 016 (Phase 2)
+**Added**: Session 016 (Phase 2)  
+**Updated**: Session 017 (Security Fix SEC-002 - Finance access enabled)
 
 ---
 

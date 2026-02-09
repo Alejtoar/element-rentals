@@ -25,7 +25,8 @@ import {
     ReservationCreate,
     ReservationUpdate,
     Payment,
-    PaymentCreate
+    PaymentCreate,
+    FinancialSummary
 } from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -290,6 +291,21 @@ export const api = {
                 body: JSON.stringify(owner),
             });
             return handleResponse<Owner>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/owners/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
         },
     },
     users: {
@@ -561,6 +577,17 @@ export const api = {
                 body: JSON.stringify(reservation),
             });
             return handleResponse<Reservation>(response);
+        },
+        getFinancialSummary: async (id: string): Promise<FinancialSummary> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/reservations/${id}/financial-summary`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<FinancialSummary>(response);
         },
     },
     payments: {

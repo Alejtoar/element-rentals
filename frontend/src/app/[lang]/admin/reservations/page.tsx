@@ -1,19 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/api/client";
-import { Reservation, Property, Guest, Channel, Payment } from "@/types";
+import { Reservation, Property, Guest, Channel } from "@/types";
 import { Button } from "@/components/ui/Button";
+import { CreateReservationModal } from "@/components/admin/CreateReservationModal";
 
 export default function ReservationsPage() {
+    const router = useRouter();
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [properties, setProperties] = useState<Property[]>([]);
     const [guests, setGuests] = useState<Guest[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
-    // Filters
     const [filterProperty, setFilterProperty] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
 
@@ -65,6 +68,11 @@ export default function ReservationsPage() {
         }).format(amount);
     };
 
+    const calculateBalance = (reservation: Reservation) => {
+        const totalPaid = reservation.total_paid || 0;
+        return reservation.total_amount - totalPaid;
+    };
+
     const filteredReservations = reservations.filter(res => {
         if (filterProperty && res.property_id !== filterProperty) return false;
         if (filterStatus && res.status !== filterStatus) return false;
@@ -81,13 +89,12 @@ export default function ReservationsPage() {
 
     return (
         <div className="p-8">
-            {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-white">Reservations</h1>
                     <p className="text-slate-400 mt-1">Manage property bookings and stays</p>
                 </div>
-                <Button onClick={() => alert("Create reservation flow - Coming soon!")}>
+                <Button onClick={() => setShowCreateModal(true)}>
                     Create Reservation
                 </Button>
             </div>
@@ -98,7 +105,6 @@ export default function ReservationsPage() {
                 </div>
             )}
 
-            {/* Filters */}
             <div className="mb-6 flex gap-4">
                 <select
                     value={filterProperty}
@@ -122,7 +128,6 @@ export default function ReservationsPage() {
                 </select>
             </div>
 
-            {/* Reservations Table */}
             <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-slate-700/30">
@@ -131,59 +136,68 @@ export default function ReservationsPage() {
                             <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Guest</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Dates</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Channel</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Amount</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Total</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Paid</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Balance</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Status</th>
                             <th className="px-6 py-4 text-right text-sm font-semibold text-slate-300">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700/30">
-                        {filteredReservations.map((reservation) => (
-                            <tr key={reservation.id} className="hover:bg-slate-700/20 transition-colors">
-                                <td className="px-6 py-4 text-white font-medium">
-                                    {getPropertyName(reservation.property_id)}
-                                </td>
-                                <td className="px-6 py-4 text-slate-300">
-                                    {getGuestName(reservation.guest_id)}
-                                    {reservation.reservation_type === 'owner_use' && (
-                                        <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded">
-                                            Owner
+                        {filteredReservations.map((reservation) => {
+                            const balance = calculateBalance(reservation);
+                            const isFullyPaid = balance <= 0;
+
+                            return (
+                                <tr key={reservation.id} className="hover:bg-slate-700/20 transition-colors">
+                                    <td className="px-6 py-4 text-white font-medium">
+                                        {getPropertyName(reservation.property_id)}
+                                    </td>
+                                    <td className="px-6 py-4 text-slate-300">
+                                        {getGuestName(reservation.guest_id)}
+                                        {reservation.reservation_type === 'owner_use' && (
+                                            <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded">
+                                                Owner
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-slate-300 text-sm">
+                                        <div>{new Date(reservation.start_date).toLocaleDateString()}</div>
+                                        <div className="text-slate-400">to {new Date(reservation.end_date).toLocaleDateString()}</div>
+                                    </td>
+                                    <td className="px-6 py-4 text-slate-300">
+                                        {getChannelName(reservation.channel_id)}
+                                    </td>
+                                    <td className="px-6 py-4 text-white font-medium">
+                                        {formatCurrency(reservation.total_amount)}
+                                    </td>
+                                    <td className="px-6 py-4 text-green-400 font-medium">
+                                        {formatCurrency(reservation.total_paid || 0)}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`font-medium ${isFullyPaid ? 'text-green-400' : 'text-yellow-400'}`}>
+                                            {formatCurrency(balance)}
                                         </span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 text-slate-300 text-sm">
-                                    <div>{new Date(reservation.start_date).toLocaleDateString()}</div>
-                                    <div className="text-slate-400">to {new Date(reservation.end_date).toLocaleDateString()}</div>
-                                </td>
-                                <td className="px-6 py-4 text-slate-300">
-                                    {getChannelName(reservation.channel_id)}
-                                </td>
-                                <td className="px-6 py-4 text-white font-medium">
-                                    {formatCurrency(reservation.total_amount)}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${reservation.status === 'confirmed' ? 'bg-green-500/20 text-green-300' :
-                                            reservation.status === 'cancelled' ? 'bg-red-500/20 text-red-300' :
-                                                'bg-blue-500/20 text-blue-300'
-                                        }`}>
-                                        {reservation.status}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-right space-x-2">
-                                    <button
-                                        onClick={() => alert(`View details for ${reservation.id}`)}
-                                        className="text-blue-400 hover:text-blue-300 transition-colors"
-                                    >
-                                        View
-                                    </button>
-                                    <button
-                                        onClick={() => alert(`Edit reservation ${reservation.id}`)}
-                                        className="text-purple-400 hover:text-purple-300 transition-colors"
-                                    >
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${reservation.status === 'confirmed' ? 'bg-green-500/20 text-green-300' :
+                                                reservation.status === 'cancelled' ? 'bg-red-500/20 text-red-300' :
+                                                    'bg-blue-500/20 text-blue-300'
+                                            }`}>
+                                            {reservation.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right space-x-2">
+                                        <button
+                                            onClick={() => router.push(`/admin/reservations/${reservation.id}`)}
+                                            className="text-blue-400 hover:text-blue-300 transition-colors"
+                                        >
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -193,6 +207,12 @@ export default function ReservationsPage() {
                     No reservations found
                 </div>
             )}
+
+            <CreateReservationModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onSuccess={loadData}
+            />
         </div>
     );
 }

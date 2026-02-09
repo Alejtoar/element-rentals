@@ -182,6 +182,7 @@ export interface Reservation {
     end_date: string;
     guest_count: number;
     total_amount: number;
+    total_paid?: number; // Calculated field from backend
     status: 'confirmed' | 'cancelled' | 'completed';
     created_at: string;
 }
@@ -233,4 +234,11 @@ export interface PaymentCreate {
     percentage_applied?: number;
     status?: 'paid' | 'pending';
     paid_at?: string;
+}
+
+export interface FinancialSummary {
+    total_amount: number;
+    total_paid: number;
+    balance: number;
+    is_fully_paid: boolean;
 }

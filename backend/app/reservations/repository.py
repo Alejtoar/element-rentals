@@ -48,8 +48,11 @@ class ReservationRepository:
     def get_payment_by_id(self, payment_id: UUID) -> Optional[Payment]:
         return self.session.get(Payment, payment_id)
 
-    def get_payments(self, skip: int = 0, limit: int = 100) -> List[Payment]:
-        return self.session.exec(select(Payment).offset(skip).limit(limit)).all()
+    def get_payments(self, skip: int = 0, limit: int = 100, reservation_id: Optional[UUID] = None) -> List[Payment]:
+        query = select(Payment)
+        if reservation_id:
+            query = query.where(Payment.reservation_id == reservation_id)
+        return self.session.exec(query.offset(skip).limit(limit)).all()
 
     def update_payment(self, payment_id: UUID, payment_data: dict) -> Optional[Payment]:
         db_payment = self.get_payment_by_id(payment_id)

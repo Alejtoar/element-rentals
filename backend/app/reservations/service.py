@@ -73,8 +73,8 @@ class ReservationService:
     def delete_reservation(self, reservation_id: UUID) -> bool:
         return self.repository.delete_reservation(reservation_id)
 
-    def get_payments(self, skip: int = 0, limit: int = 100) -> List[Payment]:
-        return self.repository.get_payments(skip=skip, limit=limit)
+    def get_payments(self, skip: int = 0, limit: int = 100, reservation_id: Optional[UUID] = None) -> List[Payment]:
+        return self.repository.get_payments(skip=skip, limit=limit, reservation_id=reservation_id)
 
     def get_payment_by_id(self, payment_id: UUID) -> Optional[Payment]:
         return self.repository.get_payment_by_id(payment_id)
