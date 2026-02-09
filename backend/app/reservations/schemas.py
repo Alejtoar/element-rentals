@@ -35,10 +35,11 @@ class ChargeRead(ChargeBase):
 # Payment Schemas
 class PaymentBase(SQLModel):
     reservation_id: UUID
+    payment_method_id: Optional[UUID] = None
     amount: Decimal
+    net_amount: Decimal = Decimal("0.00")  # Amount after payment processing fees
     payment_type: str
     non_refundable: bool = True
-    provider: str
     beneficiary: str
     percentage_applied: Decimal
     status: str = "pending"
@@ -48,10 +49,10 @@ class PaymentCreate(PaymentBase):
     pass
 
 class PaymentUpdate(SQLModel):
+    payment_method_id: Optional[UUID] = None
     amount: Optional[Decimal] = None
     payment_type: Optional[str] = None
     non_refundable: Optional[bool] = None
-    provider: Optional[str] = None
     beneficiary: Optional[str] = None
     percentage_applied: Optional[Decimal] = None
     status: Optional[str] = None

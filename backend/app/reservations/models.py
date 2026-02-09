@@ -32,17 +32,20 @@ class Reservation(SQLModel, table=True):
 class Payment(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     reservation_id: uuid.UUID = Field(foreign_key="reservation.id")
+    payment_method_id: Optional[uuid.UUID] = Field(default=None, foreign_key="paymentmethod.id")
     amount: Decimal = Field(max_digits=10, decimal_places=2)
+    net_amount: Decimal = Field(default=0, max_digits=10, decimal_places=2)  # Amount after fees
     payment_type: str # deposit, balance, penalty
     non_refundable: bool = Field(default=True)
-    provider: str # Stripe, Cash, Transfer
     beneficiary: str # company, third_party
     percentage_applied: Decimal = Field(max_digits=5, decimal_places=2)
     status: str = Field(default="pending") # paid, pending
     paid_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+    # Relationships
     reservation: Optional[Reservation] = Relationship(back_populates="payments")
+    payment_method: Optional["PaymentMethod"] = Relationship(back_populates="payments")
 
 class Charge(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)

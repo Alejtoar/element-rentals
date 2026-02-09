@@ -365,21 +365,177 @@ Registers check-out.
 
 ---
 
-## 8️⃣ Payments
+## 8️⃣ Payment Methods
+
+**Session 017**: Configurable payment methods with fee structure.
+
+### GET `/payment-methods`
+
+Lists all payment methods.
+
+**Auth**: Staff, Finance, Admin
+
+**Query Parameters**:
+- `active_only` (boolean): Filter to show only active methods
+
+**Response**:
+```json
+[
+  {
+    "id": "uuid",
+    "name": "Stripe",
+    "transaction_fee_percent": 2.9,
+    "transaction_fee_fixed": 0.30,
+    "is_active": true,
+    "created_at": "2026-02-09T00:00:00Z",
+    "updated_at": "2026-02-09T00:00:00Z"
+  }
+]
+```
+
+---
+
+### GET `/payment-methods/{id}`
+
+Get a specific payment method.
+
+**Auth**: Staff, Finance, Admin
+
+---
+
+### POST `/payment-methods`
+
+Create a new payment method.
+
+**Auth**: Finance, Admin only
+
+**Request**:
+```json
+{
+  "name": "Stripe",
+  "transaction_fee_percent": 2.9,
+  "transaction_fee_fixed": 0.30,
+  "is_active": true
+}
+```
+
+---
+
+### PATCH `/payment-methods/{id}`
+
+Update a payment method.
+
+**Auth**: Finance, Admin only
+
+**Request**:
+```json
+{
+  "transaction_fee_percent": 3.0,
+  "is_active": false
+}
+```
+
+---
+
+### DELETE `/payment-methods/{id}`
+
+Delete a payment method.
+
+**Auth**: Finance, Admin only
+
+---
+
+## 9️⃣ Payments
 
 ### POST `/payments`
 
 Registers a payment (manual or automatic).
 
+**Session 017 Changes**: Now uses `payment_method_id` instead of `provider` string. Automatically calculates `net_amount` based on payment method fees.
+
+**Request**:
 ```json
 {
   "reservation_id": "uuid",
-  "amount": 250,
+  "payment_method_id": "uuid",
+  "amount": 100.00,
   "payment_type": "deposit",
-  "provider": "Stripe",
-  "beneficiary": "operator"
+  "non_refundable": true,
+  "beneficiary": "company",
+  "percentage_applied": 50.00,
+  "status": "pending"
 }
 ```
+
+**Response**:
+```json
+{
+  "id": "uuid",
+  "reservation_id": "uuid",
+  "payment_method_id": "uuid",
+  "amount": 100.00,
+  "net_amount": 96.70,
+  "payment_type": "deposit",
+  "non_refundable": true,
+  "beneficiary": "company",
+  "percentage_applied": 50.00,
+  "status": "pending",
+  "paid_at": null,
+  "created_at": "2026-02-09T00:00:00Z"
+}
+```
+
+**Fee Calculation**:
+- If `payment_method_id` is provided, `net_amount` is automatically calculated
+- Formula: `net_amount = amount - (amount * fee_percent / 100) - fee_fixed`
+- Example: $100 with Stripe (3% + $0.30) = $96.70 net
+
+---
+
+### GET `/payments`
+
+Lists all payments.
+
+**Auth**: Staff, Finance, Admin
+
+**Query Parameters**:
+- `reservation_id` (UUID): Filter payments by reservation
+
+---
+
+### GET `/payments/{id}`
+
+Get a specific payment.
+
+**Auth**: Staff, Finance, Admin
+
+---
+
+### PATCH `/payments/{id}`
+
+Update a payment.
+
+**Auth**: Finance, Admin only
+
+**Session 017**: If `amount` or `payment_method_id` is changed, `net_amount` is automatically recalculated.
+
+**Request**:
+```json
+{
+  "amount": 150.00,
+  "payment_method_id": "uuid",
+  "status": "paid",
+  "paid_at": "2026-02-09T12:00:00Z"
+}
+```
+
+---
+
+### DELETE `/payments/{id}`
+
+Delete a payment.
+
+**Auth**: Finance, Admin only
 
 ---
 
@@ -387,44 +543,100 @@ Registers a payment (manual or automatic).
 
 Lists all payments for a reservation.
 
+**Auth**: Staff, Finance, Admin
+
 ---
 
-## 9️⃣ Expenses
+## 🔟 Expenses
+
+**Session 017**: Property-specific expense tracking for financial reporting and owner payouts.
+
+### GET `/expenses`
+
+Lists all expenses.
+
+**Auth**: Staff, Finance, Admin
+
+**Query Parameters**:
+- `property_id` (UUID): Filter expenses by property
+
+**Response**:
+```json
+[
+  {
+    "id": "uuid",
+    "property_id": "uuid",
+    "amount": 150.00,
+    "date": "2026-02-09",
+    "category": "Maintenance",
+    "description": "Fixed broken window",
+    "is_deductible": true,
+    "receipt_url": "https://...",
+    "created_at": "2026-02-09T00:00:00Z",
+    "updated_at": "2026-02-09T00:00:00Z"
+  }
+]
+```
+
+---
+
+### GET `/expenses/{id}`
+
+Get a specific expense.
+
+**Auth**: Staff, Finance, Admin
+
+---
 
 ### POST `/expenses`
 
-Creates an operational expense.
+Creates an expense.
 
+**Auth**: Staff, Finance, Admin (Staff can create)
+
+**Request**:
 ```json
 {
-  "category": "supply",
-  "total_amount": 120,
-  "deductible": true,
-  "charged_to_guest": false,
-  "reservation_id": null,
-  "description": "General supplies",
-  "incurred_at": "2025-06-03"
+  "property_id": "uuid",
+  "amount": 150.00,
+  "date": "2026-02-09",
+  "category": "Maintenance",
+  "description": "Fixed broken window",
+  "is_deductible": true,
+  "receipt_url": "https://..."
+}
+```
+
+**Categories**: Maintenance, Utilities, Cleaning, Supplies, etc.
+
+---
+
+### PATCH `/expenses/{id}`
+
+Update an expense.
+
+**Auth**: Finance, Admin only
+
+**Request**:
+```json
+{
+  "amount": 175.00,
+  "description": "Fixed broken window and door",
+  "is_deductible": false
 }
 ```
 
 ---
 
-### POST `/expenses/{id}/allocate`
+### DELETE `/expenses/{id}`
 
-Allocates an expense across one or more properties.
+Delete an expense.
 
-```json
-{
-  "allocations": [
-    { "property_id": "uuid1", "amount": 60 },
-    { "property_id": "uuid2", "amount": 60 }
-  ]
-}
-```
+**Auth**: Finance, Admin only
 
 ---
 
-## 🔟 Inventory
+## 1️⃣1️⃣ Inventory
 
 ### POST `/properties/{property_id}/inventory`
 
@@ -438,7 +650,7 @@ Lists inventory items for a property.
 
 ---
 
-## 1️⃣1️⃣ Stay Events
+## 1️⃣2️⃣ Stay Events
 
 ### POST `/reservations/{id}/events`
 
@@ -453,7 +665,7 @@ Logs a reservation lifecycle event.
 
 ---
 
-## 1️⃣2️⃣ Guest Contract Acceptance
+## 1️⃣3️⃣ Guest Contract Acceptance
 
 ### POST `/reservations/{id}/accept-contract`
 
@@ -470,7 +682,7 @@ Registers acceptance of the guest rental contract.
 
 ---
 
-## 1️⃣3️⃣ Financial Statements
+## 1️⃣4️⃣ Financial Statements
 
 ### POST `/financial-statements/generate`
 

@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlmodel import Session
 from app.reservations.models import Reservation, Payment, Charge, Channel
 from app.reservations.repository import ReservationRepository
+from app.finance.service import PaymentMethodService
 
 class ReservationService:
     def __init__(self, session: Session):
@@ -19,9 +20,9 @@ class ReservationService:
             deposit_payment = Payment(
                 reservation_id=created_reservation.id,
                 amount=deposit_amount,
+                net_amount=deposit_amount,  # Will be recalculated if payment_method is set
                 payment_type="deposit",
                 non_refundable=True,
-                provider="Pending", # to be updated by payment flow
                 beneficiary="company",
                 percentage_applied=Decimal("50.00"),
                 status="pending"
@@ -80,12 +81,42 @@ class ReservationService:
         return self.repository.get_payment_by_id(payment_id)
 
     def update_payment(self, payment_id: UUID, payment_data: dict) -> Optional[Payment]:
+        """Update a payment and recalculate net_amount if amount or payment_method_id changed."""
+        # Check if we need to recalculate net_amount
+        if 'amount' in payment_data or 'payment_method_id' in payment_data:
+            # Get current payment
+            current_payment = self.repository.get_payment_by_id(payment_id)
+            if not current_payment:
+                return None
+            
+            # Determine the new amount and payment_method_id
+            new_amount = payment_data.get('amount', current_payment.amount)
+            new_payment_method_id = payment_data.get('payment_method_id', current_payment.payment_method_id)
+            
+            # Calculate new net_amount
+            if new_payment_method_id:
+                payment_method_service = PaymentMethodService(self.repository.session)
+                payment_method = payment_method_service.get_payment_method_by_id(new_payment_method_id)
+                payment_data['net_amount'] = PaymentMethodService.calculate_net_amount(new_amount, payment_method)
+            else:
+                payment_data['net_amount'] = new_amount
+        
         return self.repository.update_payment(payment_id, payment_data)
 
     def delete_payment(self, payment_id: UUID) -> bool:
         return self.repository.delete_payment(payment_id)
 
     def create_payment(self, payment: Payment) -> Payment:
+        """Create a payment and calculate net_amount based on payment method fees."""
+        # Calculate net_amount if payment_method is provided
+        if payment.payment_method_id:
+            payment_method_service = PaymentMethodService(self.repository.session)
+            payment_method = payment_method_service.get_payment_method_by_id(payment.payment_method_id)
+            payment.net_amount = PaymentMethodService.calculate_net_amount(payment.amount, payment_method)
+        else:
+            # No payment method, net_amount equals amount
+            payment.net_amount = payment.amount
+        
         return self.repository.create_payment(payment)
 
     def create_charge(self, charge: Charge) -> Charge:
@@ -108,9 +139,9 @@ class ReservationService:
         balance_payment = Payment(
             reservation_id=reservation.id,
             amount=balance_amount,
+            net_amount=balance_amount,  # Will be recalculated if payment_method is set
             payment_type="balance",
             non_refundable=False,
-            provider="Pending",
             beneficiary="company",
             percentage_applied=Decimal("50.00"),
             status="pending"

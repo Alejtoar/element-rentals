@@ -44,6 +44,7 @@ All schema changes MUST be reflected here before code or migrations are updated.
 - Guest
 - Reservation
 - Channel
+- PaymentMethod (Session 017)
 - Payment
 - Charge
 - Expense
@@ -210,18 +211,37 @@ Represents an occupancy record.
 
 ---
 
+### PaymentMethod
+
+**Session 017**: Configurable payment methods with fee structure.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| name | VARCHAR | e.g., Stripe, Cash, Bank Transfer |
+| transaction_fee_percent | DECIMAL(5,2) | Percentage fee (e.g., 2.9 for 2.9%) |
+| transaction_fee_fixed | DECIMAL(10,2) | Fixed fee (e.g., 0.30) |
+| is_active | BOOLEAN | Whether this method is currently available |
+| created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
+
+---
+
 ### Payment
 
 Represents a payment related to a reservation.
+
+**Session 017 Changes**: Replaced `provider` string with `payment_method_id` FK, added `net_amount` for fee tracking.
 
 | Field | Type | Notes |
 |-----|-----|-----|
 | id | UUID (PK) | |
 | reservation_id | UUID (FK → Reservation.id) | |
-| amount | DECIMAL | |
+| payment_method_id | UUID (FK → PaymentMethod.id) | Nullable - links to payment method |
+| amount | DECIMAL | Gross payment amount |
+| net_amount | DECIMAL | Amount after processing fees |
 | payment_type | VARCHAR | deposit, balance, penalty |
 | non_refundable | BOOLEAN | |
-| provider | VARCHAR | Stripe, Cash, Transfer |
 | beneficiary | VARCHAR | company, third_party |
 | percentage_applied | DECIMAL(5,2) | Percentage of total reservation amount this payment represents |
 | status | VARCHAR | paid, pending |
@@ -251,22 +271,23 @@ as allowed by the guest contract.
 
 ### Expense
 
+**Session 017**: Property-specific expense tracking for financial reporting.
+
 Expenses are operational costs.
 Guest-caused damages are NOT expenses unless unpaid by the guest.
-
 
 | Field | Type | Notes |
 |-----|-----|-----|
 | id | UUID (PK) | |
-| category | VARCHAR | cleaning, maintenance, supply |
-| total_amount | DECIMAL | |
-| deductible | BOOLEAN | |
-| charged_to_guest | BOOLEAN | |
-| reservation_id | UUID (FK → Reservation.id) | Nullable |
-| description | TEXT | |
-| support_document | TEXT | Invoice or receipt |
-| incurred_at | DATE | |
+| property_id | UUID (FK → Property.id) | Property this expense belongs to |
+| amount | DECIMAL | Expense amount |
+| date | DATE | Date expense was incurred |
+| category | VARCHAR | Maintenance, Utilities, Cleaning, Supplies, etc. |
+| description | TEXT | Detailed description |
+| is_deductible | BOOLEAN | Tax deductible from owner payout |
+| receipt_url | VARCHAR | Optional URL to receipt/invoice |
 | created_at | TIMESTAMP | |
+| updated_at | TIMESTAMP | |
 
 ---
 

@@ -9,6 +9,7 @@ from app.properties.models import Property, PropertyImage
 from app.leads.models import OwnerLead, GuestLead
 from app.guests.models import Guest
 from app.reservations.models import Reservation, Payment, Charge, Channel
+from app.finance.models import PaymentMethod, Expense
 
 from app.properties.router import router as properties_router
 from app.owners.router import router as owners_router
@@ -18,6 +19,7 @@ from app.reservations.router import router as reservations_router, payment_route
 from app.reservations.channel_router import router as channels_router
 from app.users.router import router as users_router
 from app.guests.router import router as guests_router
+from app.finance.router import payment_method_router, expense_router
 from app.users.service import UserService
 from app.db import engine
 from sqlmodel import Session
@@ -74,6 +76,8 @@ app.include_router(guests_router, prefix=f"{settings.API_V1_STR}/guests", tags=[
 app.include_router(channels_router, prefix=f"{settings.API_V1_STR}/channels", tags=["channels"])
 app.include_router(reservations_router, prefix=settings.API_V1_STR)
 app.include_router(payment_router, prefix=settings.API_V1_STR)
+app.include_router(payment_method_router, prefix=settings.API_V1_STR)
+app.include_router(expense_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def root():
