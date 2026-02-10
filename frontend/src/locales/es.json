@@ -93,5 +93,177 @@
         "cta_title": "¿Listo para Explorar una Asociación?",
         "cta_desc": "Si estás interesado en asociarte con Elemnt Rentals, cuéntanos sobre tu propiedad, evaluaremos su potencial y recibirás una propuesta personalizada.",
         "cta_button": "Conviértete en Socio Propietario"
+    },
+    "admin": {
+        "portal_title": "Portal Admin",
+        "logout": "Cerrar Sesión",
+        "sidebar": {
+            "properties": "Propiedades",
+            "reservations": "Reservas",
+            "guests": "Huéspedes",
+            "channels": "Canales",
+            "owners": "Propietarios",
+            "leads": "Prospectos",
+            "users": "Usuarios",
+            "settings": "Configuración"
+        },
+        "common": {
+            "add": "Agregar",
+            "edit": "Editar",
+            "delete": "Eliminar",
+            "save": "Guardar",
+            "cancel": "Cancelar",
+            "close": "Cerrar",
+            "search": "Buscar",
+            "filter": "Filtrar",
+            "actions": "Acciones",
+            "loading": "Cargando...",
+            "no_data": "No hay datos disponibles",
+            "confirm_delete": "¿Estás seguro de que deseas eliminar este elemento?",
+            "success": "Operación completada exitosamente",
+            "error": "Ocurrió un error"
+        },
+        "table": {
+            "name": "Nombre",
+            "email": "Correo",
+            "phone": "Teléfono",
+            "status": "Estado",
+            "created_at": "Creado",
+            "actions": "Acciones",
+            "active": "Activo",
+            "inactive": "Inactivo"
+        },
+        "properties": {
+            "title": "Propiedades",
+            "add_property": "Agregar Propiedad",
+            "edit_property": "Editar Propiedad",
+            "city": "Ciudad",
+            "guests": "Huéspedes",
+            "price": "Precio",
+            "featured": "Destacado"
+        },
+        "reservations": {
+            "title": "Reservas",
+            "add_reservation": "Agregar Reserva",
+            "view_details": "Ver Detalles",
+            "property": "Propiedad",
+            "guest": "Huésped",
+            "channel": "Canal",
+            "check_in": "Entrada",
+            "check_out": "Salida",
+            "total": "Total",
+            "paid": "Pagado",
+            "balance": "Saldo",
+            "status": "Estado",
+            "confirmed": "Confirmada",
+            "cancelled": "Cancelada",
+            "completed": "Completada",
+            "commercial": "Comercial",
+            "owner_use": "Uso Propietario",
+            "financial_summary": "Resumen Financiero",
+            "record_payment": "Registrar Pago",
+            "payments": "Pagos"
+        },
+        "payments": {
+            "title": "Pagos",
+            "add_payment": "Agregar Pago",
+            "edit_payment": "Editar Pago",
+            "amount": "Monto",
+            "net_amount": "Monto Neto",
+            "method": "Método de Pago",
+            "type": "Tipo",
+            "deposit": "Depósito",
+            "balance": "Saldo",
+            "penalty": "Penalidad",
+            "beneficiary": "Beneficiario",
+            "company": "Empresa",
+            "third_party": "Tercero",
+            "status": "Estado",
+            "paid": "Pagado",
+            "pending": "Pendiente",
+            "paid_at": "Pagado El",
+            "non_refundable": "No Reembolsable",
+            "percentage_applied": "Porcentaje Aplicado",
+            "net_preview": "Vista Previa Monto Neto",
+            "receiving": "Recibiendo",
+            "after_fees": "después de comisiones"
+        },
+        "payment_methods": {
+            "title": "Métodos de Pago",
+            "add_method": "Agregar Método de Pago",
+            "edit_method": "Editar Método de Pago",
+            "name": "Nombre",
+            "fee_percent": "Comisión (%)",
+            "fee_fixed": "Comisión Fija ($)",
+            "is_active": "Activo",
+            "total_fees": "Comisiones Totales"
+        },
+        "expenses": {
+            "title": "Gastos",
+            "add_expense": "Agregar Gasto",
+            "edit_expense": "Editar Gasto",
+            "property": "Propiedad",
+            "amount": "Monto",
+            "date": "Fecha",
+            "category": "Categoría",
+            "description": "Descripción",
+            "is_deductible": "Deducible",
+            "receipt_url": "URL Recibo",
+            "categories": {
+                "maintenance": "Mantenimiento",
+                "utilities": "Servicios",
+                "cleaning": "Limpieza",
+                "supplies": "Suministros",
+                "other": "Otro"
+            }
+        },
+        "guests": {
+            "title": "Huéspedes",
+            "add_guest": "Agregar Huésped",
+            "edit_guest": "Editar Huésped",
+            "full_name": "Nombre Completo"
+        },
+        "channels": {
+            "title": "Canales",
+            "add_channel": "Agregar Canal",
+            "edit_channel": "Editar Canal",
+            "external": "Externo"
+        },
+        "owners": {
+            "title": "Propietarios",
+            "add_owner": "Agregar Propietario",
+            "edit_owner": "Editar Propietario",
+            "bank_details": "Datos Bancarios"
+        },
+        "leads": {
+            "title": "Prospectos",
+            "guest_leads": "Prospectos Huéspedes",
+            "owner_leads": "Prospectos Propietarios",
+            "property": "Propiedad",
+            "location": "Ubicación",
+            "message": "Mensaje",
+            "source": "Fuente",
+            "ip_address": "Dirección IP",
+            "user_agent": "Agente Usuario",
+            "referer": "Referencia"
+        },
+        "users": {
+            "title": "Usuarios",
+            "add_user": "Agregar Usuario",
+            "edit_user": "Editar Usuario",
+            "role": "Rol",
+            "admin": "Administrador",
+            "staff": "Personal",
+            "finance": "Finanzas",
+            "reset_password": "Restablecer Contraseña",
+            "new_password": "Nueva Contraseña"
+        },
+        "settings": {
+            "title": "Configuración",
+            "financial": "Configuración Financiera",
+            "profile": "Perfil",
+            "change_password": "Cambiar Contraseña",
+            "old_password": "Contraseña Anterior"
+        }
     }
 }

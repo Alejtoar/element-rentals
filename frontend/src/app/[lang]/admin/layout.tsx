@@ -5,6 +5,8 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { api, getAuthToken } from "@/api/client";
 import { User } from "@/types";
+import { getDictionary } from "@/lib/get-dictionary";
+import type { Locale } from "@/lib/i18n-config";
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -17,6 +19,15 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [dict, setDict] = useState<any>(null);
+
+    useEffect(() => {
+        const loadDictionary = async () => {
+            const dictionary = await getDictionary(lang as Locale);
+            setDict(dictionary);
+        };
+        loadDictionary();
+    }, [lang]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -58,13 +69,19 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
         router.push(`/${lang}/admin/login`);
     };
 
+    const toggleLanguage = () => {
+        const newLang = lang === 'en' ? 'es' : 'en';
+        const newPath = pathname.replace(`/${lang}/`, `/${newLang}/`);
+        router.push(newPath);
+    };
+
     // Don't show sidebar on login page
     if (pathname.includes('/admin/login')) {
         return <>{children}</>;
     }
 
-    // Show loading state while checking auth
-    if (isLoading) {
+    // Show loading state while checking auth or dict
+    if (isLoading || !dict) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-900">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
@@ -74,7 +91,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
 
     const navItems = [
         {
-            name: "Properties",
+            name: dict.admin.sidebar.properties,
             href: `/${lang}/admin/properties`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +100,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Reservations",
+            name: dict.admin.sidebar.reservations,
             href: `/${lang}/admin/reservations`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +109,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Guests",
+            name: dict.admin.sidebar.guests,
             href: `/${lang}/admin/guests`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +118,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Channels",
+            name: dict.admin.sidebar.channels,
             href: `/${lang}/admin/channels`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +127,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Owners",
+            name: dict.admin.sidebar.owners,
             href: `/${lang}/admin/owners`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +136,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Leads",
+            name: dict.admin.sidebar.leads,
             href: `/${lang}/admin/leads`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +145,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Users",
+            name: dict.admin.sidebar.users,
             href: `/${lang}/admin/users`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +154,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             ),
         },
         {
-            name: "Settings",
+            name: dict.admin.sidebar.settings,
             href: `/${lang}/admin/settings`,
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,10 +171,22 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
             <aside className="w-64 bg-slate-800/50 backdrop-blur-xl border-r border-slate-700/50 flex flex-col">
                 {/* Logo */}
                 <div className="p-6 border-b border-slate-700/50">
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                        Elemnt
-                    </h1>
-                    <p className="text-xs text-slate-400 mt-1">Admin Portal</p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                Elemnt
+                            </h1>
+                            <p className="text-xs text-slate-400 mt-1">{dict.admin.portal_title}</p>
+                        </div>
+                        {/* Language Switcher */}
+                        <button
+                            onClick={toggleLanguage}
+                            className="px-2 py-1 text-xs font-medium text-slate-300 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded transition-colors"
+                            title="Switch Language"
+                        >
+                            {lang.toUpperCase()}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Navigation */}
@@ -196,7 +225,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className="font-medium">Logout</span>
+                        <span className="font-medium">{dict.admin.logout}</span>
                     </button>
                 </div>
             </aside>

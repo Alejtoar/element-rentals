@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/api/client";
-import { Payment, PaymentCreate, FinancialSummary } from "@/types";
+import { Payment, PaymentCreate, PaymentUpdate, PaymentMethod, FinancialSummary } from "@/types";
 import { Button } from "@/components/ui/Button";
 
 interface PaymentManagementProps {
@@ -13,18 +13,23 @@ interface PaymentManagementProps {
 
 export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }: PaymentManagementProps) {
     const [payments, setPayments] = useState<Payment[]>([]);
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
     const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
+
+    // Form state
     const [amount, setAmount] = useState(0);
     const [paymentType, setPaymentType] = useState<'deposit' | 'balance' | 'penalty'>('deposit');
-    const [provider, setProvider] = useState('Cash');
+    const [paymentMethodId, setPaymentMethodId] = useState<string>("");
     const [beneficiary, setBeneficiary] = useState<'company' | 'third_party'>('company');
     const [status, setStatus] = useState<'paid' | 'pending'>('paid');
 
     useEffect(() => {
         loadData();
+        loadPaymentMethods();
     }, [reservationId]);
 
     const loadData = async () => {
@@ -43,6 +48,26 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
         }
     };
 
+    const loadPaymentMethods = async () => {
+        try {
+            const methods = await api.paymentMethods.getAll(true); // active only
+            setPaymentMethods(methods);
+        } catch (err: any) {
+            console.error("Failed to load payment methods:", err);
+        }
+    };
+
+    const calculateNetAmount = (amt: number, methodId: string): number => {
+        const method = paymentMethods.find(m => m.id === methodId);
+        if (!method) return amt;
+
+        const percentFee = (amt * method.transaction_fee_percent) / 100;
+        const totalFees = percentFee + method.transaction_fee_fixed;
+        const netAmount = amt - totalFees;
+
+        return Math.max(netAmount, 0);
+    };
+
     const handleAddPayment = async () => {
         if (amount <= 0) {
             setError("Amount must be greater than 0");
@@ -58,7 +83,7 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                 amount,
                 payment_type: paymentType,
                 non_refundable: paymentType === 'deposit',
-                provider,
+                payment_method_id: paymentMethodId || undefined,
                 beneficiary,
                 percentage_applied,
                 status,
@@ -77,13 +102,68 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
         }
     };
 
+    const handleEditPayment = async () => {
+        if (!editingPayment) return;
+        if (amount <= 0) {
+            setError("Amount must be greater than 0");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const updateData: PaymentUpdate = {
+                amount,
+                payment_method_id: paymentMethodId || undefined,
+                status,
+                paid_at: status === 'paid' ? new Date().toISOString() : undefined,
+            };
+
+            await api.payments.update(editingPayment.id, updateData);
+            await loadData();
+            setShowForm(false);
+            setEditingPayment(null);
+            resetForm();
+            if (onPaymentAdded) onPaymentAdded();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEdit = (payment: Payment) => {
+        setEditingPayment(payment);
+        setAmount(payment.amount);
+        setPaymentMethodId(payment.payment_method_id || "");
+        setStatus(payment.status);
+        setShowForm(true);
+    };
+
+    const handleDelete = async (paymentId: string) => {
+        if (!confirm("Are you sure you want to delete this payment? This action cannot be undone.")) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await api.payments.delete(paymentId);
+            await loadData();
+            if (onPaymentAdded) onPaymentAdded();
+        } catch (err: any) {
+            setError(err.message || "Failed to delete payment");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const resetForm = () => {
         setAmount(0);
         setPaymentType('deposit');
-        setProvider('Cash');
+        setPaymentMethodId(""); // Default to no payment method
         setBeneficiary('company');
         setStatus('paid');
         setError("");
+        setEditingPayment(null);
     };
 
     const formatCurrency = (value: number) => {
@@ -101,6 +181,15 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
             day: 'numeric',
         });
     };
+
+    const getPaymentMethodName = (methodId: string | undefined): string => {
+        if (!methodId) return "N/A";
+        const method = paymentMethods.find(m => m.id === methodId);
+        return method ? method.name : "Unknown";
+    };
+
+    const netAmount = calculateNetAmount(amount, paymentMethodId);
+    const totalFees = amount - netAmount;
 
     return (
         <div className="space-y-6">
@@ -147,7 +236,7 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
             <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">
                 <div className="p-6 border-b border-slate-700/50 flex justify-between items-center">
                     <h3 className="text-lg font-semibold text-white">Payment History</h3>
-                    <Button onClick={() => setShowForm(!showForm)} size="sm">
+                    <Button onClick={() => { setShowForm(!showForm); if (!showForm) resetForm(); }} size="sm">
                         {showForm ? 'Cancel' : '+ Record Payment'}
                     </Button>
                 </div>
@@ -175,44 +264,53 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Payment Type *</label>
-                                <select
-                                    value={paymentType}
-                                    onChange={(e) => setPaymentType(e.target.value as 'deposit' | 'balance' | 'penalty')}
-                                    className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
-                                >
-                                    <option value="deposit">Deposit</option>
-                                    <option value="balance">Balance</option>
-                                    <option value="penalty">Penalty</option>
-                                </select>
-                            </div>
+                            {!editingPayment && (
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">Payment Type *</label>
+                                    <select
+                                        value={paymentType}
+                                        onChange={(e) => setPaymentType(e.target.value as 'deposit' | 'balance' | 'penalty')}
+                                        className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    >
+                                        <option value="deposit">Deposit</option>
+                                        <option value="balance">Balance</option>
+                                        <option value="penalty">Penalty</option>
+                                    </select>
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-300 mb-2">Payment Method *</label>
                                 <select
-                                    value={provider}
-                                    onChange={(e) => setProvider(e.target.value)}
+                                    value={paymentMethodId}
+                                    onChange={(e) => setPaymentMethodId(e.target.value)}
                                     className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
                                 >
-                                    <option value="Cash">Cash</option>
-                                    <option value="Transfer">Bank Transfer</option>
-                                    <option value="Stripe">Stripe</option>
-                                    <option value="PayPal">PayPal</option>
+                                    <option value="">None (No fees)</option>
+                                    {paymentMethods.length === 0 && (
+                                        <option value="" disabled>No payment methods available</option>
+                                    )}
+                                    {paymentMethods.map((method) => (
+                                        <option key={method.id} value={method.id}>
+                                            {method.name} ({Number(method.transaction_fee_percent).toFixed(2)}% + ${Number(method.transaction_fee_fixed).toFixed(2)})
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Beneficiary *</label>
-                                <select
-                                    value={beneficiary}
-                                    onChange={(e) => setBeneficiary(e.target.value as 'company' | 'third_party')}
-                                    className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
-                                >
-                                    <option value="company">Company</option>
-                                    <option value="third_party">Third Party</option>
-                                </select>
-                            </div>
+                            {!editingPayment && (
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-300 mb-2">Beneficiary *</label>
+                                    <select
+                                        value={beneficiary}
+                                        onChange={(e) => setBeneficiary(e.target.value as 'company' | 'third_party')}
+                                        className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    >
+                                        <option value="company">Company</option>
+                                        <option value="third_party">Third Party</option>
+                                    </select>
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-300 mb-2">Status *</label>
@@ -227,12 +325,30 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                             </div>
                         </div>
 
+                        {/* Net Amount Preview */}
+                        {amount > 0 && paymentMethodId && (
+                            <div className="mt-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                                <div className="text-sm text-slate-300 mb-2">Net Amount Preview:</div>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-2xl font-bold text-green-400">
+                                        {formatCurrency(netAmount)}
+                                    </span>
+                                    <span className="text-sm text-slate-400">
+                                        after {formatCurrency(totalFees)} in fees
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="mt-4 flex justify-end gap-2">
                             <Button variant="secondary" onClick={() => { setShowForm(false); resetForm(); }}>
                                 Cancel
                             </Button>
-                            <Button onClick={handleAddPayment} disabled={loading}>
-                                {loading ? 'Recording...' : 'Record Payment'}
+                            <Button
+                                onClick={editingPayment ? handleEditPayment : handleAddPayment}
+                                disabled={loading}
+                            >
+                                {loading ? 'Processing...' : (editingPayment ? 'Update Payment' : 'Record Payment')}
                             </Button>
                         </div>
                     </div>
@@ -246,7 +362,9 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Type</th>
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Method</th>
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Amount</th>
+                                <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Net Amount</th>
                                 <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Status</th>
+                                <th className="px-6 py-3 text-right text-sm font-semibold text-slate-300">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700/30">
@@ -260,8 +378,9 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                                             {payment.payment_type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-300 text-sm">{payment.provider}</td>
+                                    <td className="px-6 py-4 text-slate-300 text-sm">{getPaymentMethodName(payment.payment_method_id)}</td>
                                     <td className="px-6 py-4 text-white font-medium">{formatCurrency(payment.amount)}</td>
+                                    <td className="px-6 py-4 text-green-400 font-medium">{formatCurrency(payment.net_amount)}</td>
                                     <td className="px-6 py-4">
                                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${payment.status === 'paid'
                                             ? 'bg-green-500/20 text-green-300'
@@ -269,6 +388,22 @@ export function PaymentManagement({ reservationId, totalAmount, onPaymentAdded }
                                             }`}>
                                             {payment.status}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => handleEdit(payment)}
+                                                className="px-3 py-1 text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded transition-colors"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(payment.id)}
+                                                className="px-3 py-1 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

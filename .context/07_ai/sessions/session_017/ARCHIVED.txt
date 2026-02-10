@@ -1,0 +1,16 @@
+Session 017 - Phase 2: Financial Core (Payment Methods & Expenses)
+Status: COMPLETE
+
+Verified Goals:
+- Configurable Payment Methods (CRUD + Fee Structures)
+- Payment Refactoring (payment_method_id, net_amount auto-calc)
+- Expense Management (Backend CRUD with RBAC)
+- RBAC Implementation (Finance/Admin controls)
+- Admin Internationalization (Foundation + Settings/Finance Modules)
+- Smart Payment Interface (Frontend Net Amount Preview)
+
+Notes:
+- Database migration (alembic upgrade head) is pending execution.
+- Expense Management UI deferred to Session 018.
+- Remaining admin modules to be internationalized in Session 018.
+- Security audit passed; financial integrity confirmed.

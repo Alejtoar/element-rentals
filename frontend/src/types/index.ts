@@ -210,13 +210,38 @@ export interface ReservationUpdate {
     status?: 'confirmed' | 'cancelled' | 'completed';
 }
 
+export interface PaymentMethod {
+    id: string;
+    name: string;
+    transaction_fee_percent: number;
+    transaction_fee_fixed: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface PaymentMethodCreate {
+    name: string;
+    transaction_fee_percent: number;
+    transaction_fee_fixed: number;
+    is_active?: boolean;
+}
+
+export interface PaymentMethodUpdate {
+    name?: string;
+    transaction_fee_percent?: number;
+    transaction_fee_fixed?: number;
+    is_active?: boolean;
+}
+
 export interface Payment {
     id: string;
     reservation_id: string;
     amount: number;
+    net_amount: number;
     payment_type: 'deposit' | 'balance' | 'penalty';
     non_refundable: boolean;
-    provider: string;
+    payment_method_id?: string;
     beneficiary: 'company' | 'third_party';
     percentage_applied?: number;
     status: 'paid' | 'pending';
@@ -229,11 +254,50 @@ export interface PaymentCreate {
     amount: number;
     payment_type: 'deposit' | 'balance' | 'penalty';
     non_refundable: boolean;
-    provider: string;
+    payment_method_id?: string;
     beneficiary: 'company' | 'third_party';
     percentage_applied?: number;
     status?: 'paid' | 'pending';
     paid_at?: string;
+}
+
+export interface PaymentUpdate {
+    amount?: number;
+    payment_method_id?: string;
+    status?: 'paid' | 'pending';
+    paid_at?: string;
+}
+
+export interface Expense {
+    id: string;
+    property_id: string;
+    amount: number;
+    date: string;
+    category: string;
+    description: string;
+    is_deductible: boolean;
+    receipt_url?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ExpenseCreate {
+    property_id: string;
+    amount: number;
+    date: string;
+    category: string;
+    description: string;
+    is_deductible?: boolean;
+    receipt_url?: string;
+}
+
+export interface ExpenseUpdate {
+    amount?: number;
+    date?: string;
+    category?: string;
+    description?: string;
+    is_deductible?: boolean;
+    receipt_url?: string;
 }
 
 export interface FinancialSummary {

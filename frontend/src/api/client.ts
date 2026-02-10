@@ -26,6 +26,13 @@ import {
     ReservationUpdate,
     Payment,
     PaymentCreate,
+    PaymentUpdate,
+    PaymentMethod,
+    PaymentMethodCreate,
+    PaymentMethodUpdate,
+    Expense,
+    ExpenseCreate,
+    ExpenseUpdate,
     FinancialSummary
 } from "../types";
 
@@ -616,5 +623,172 @@ export const api = {
             });
             return handleResponse<Payment>(response);
         },
+        update: async (id: string, payment: PaymentUpdate): Promise<Payment> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payments/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(payment),
+            });
+            return handleResponse<Payment>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payments/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<void>(response);
+        },
+    },
+    paymentMethods: {
+        getAll: async (activeOnly: boolean = false): Promise<PaymentMethod[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const searchParams = new URLSearchParams();
+            if (activeOnly) searchParams.append("active_only", "true");
+
+            const response = await fetch(`${API_BASE_URL}/payment-methods?${searchParams.toString()}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<PaymentMethod[]>(response);
+        },
+        getById: async (id: string): Promise<PaymentMethod> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payment-methods/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<PaymentMethod>(response);
+        },
+        create: async (method: PaymentMethodCreate): Promise<PaymentMethod> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payment-methods`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(method),
+            });
+            return handleResponse<PaymentMethod>(response);
+        },
+        update: async (id: string, method: PaymentMethodUpdate): Promise<PaymentMethod> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payment-methods/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(method),
+            });
+            return handleResponse<PaymentMethod>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/payment-methods/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+    },
+    expenses: {
+        getAll: async (propertyId?: string): Promise<Expense[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const searchParams = new URLSearchParams();
+            if (propertyId) searchParams.append("property_id", propertyId);
+
+            const response = await fetch(`${API_BASE_URL}/expenses?${searchParams.toString()}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Expense[]>(response);
+        },
+        getById: async (id: string): Promise<Expense> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/expenses/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            return handleResponse<Expense>(response);
+        },
+        create: async (expense: ExpenseCreate): Promise<Expense> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/expenses`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(expense),
+            });
+            return handleResponse<Expense>(response);
+        },
+        update: async (id: string, expense: ExpenseUpdate): Promise<Expense> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/expenses/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(expense),
+            });
+            return handleResponse<Expense>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/expenses/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
     },
 };
+
