@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { api } from "@/api/client";
 import { Owner, OwnerCreate, OwnerUpdate } from "@/types";
 import { Button } from "@/components/ui/Button";
+import { getDictionary } from "@/lib/get-dictionary";
+import type { Locale } from "@/lib/i18n-config";
+import Link from "next/link";
 
-export default function OwnersPage() {
+export default function OwnersPage({ params }: { params: Promise<{ lang: string }> }) {
+    const { lang } = use(params || {});
+    const [dict, setDict] = useState<any>(null);
     const [owners, setOwners] = useState<Owner[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -17,8 +22,15 @@ export default function OwnersPage() {
     const [bankDetails, setBankDetails] = useState("");
 
     useEffect(() => {
+        const loadInit = async () => {
+            if (lang) {
+                const d = await getDictionary(lang as Locale);
+                setDict(d);
+            }
+        };
+        loadInit();
         loadOwners();
-    }, []);
+    }, [lang]);
 
     const loadOwners = async () => {
         try {
@@ -83,7 +95,7 @@ export default function OwnersPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure? This will fail if the owner has properties.")) return;
+        if (!confirm(dict?.admin?.common?.delete_confirm_owner || "Are you sure? This will fail if the owner has properties.")) return;
 
         try {
             setLoading(true);
@@ -96,7 +108,7 @@ export default function OwnersPage() {
         }
     };
 
-    if (loading && owners.length === 0) {
+    if (loading && owners.length === 0 && !dict) {
         return (
             <div className="p-8 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
@@ -108,15 +120,15 @@ export default function OwnersPage() {
         <div className="p-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Property Owners</h1>
-                    <p className="text-slate-400 mt-1">Manage owner information and bank details</p>
+                    <h1 className="text-3xl font-bold text-white">{dict?.admin?.owners?.title || "Property Owners"}</h1>
+                    <p className="text-slate-400 mt-1">{dict?.admin?.owners?.subtitle || "Manage owner information and bank details"}</p>
                 </div>
-                <Button onClick={handleAdd}>Add Owner</Button>
+                <Button onClick={handleAdd}>{dict?.admin?.owners?.add_owner || "Add Owner"}</Button>
             </div>
 
             {error && (
                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
-                    {error}
+                    {dict?.admin?.common?.error || error}
                 </div>
             )}
 
@@ -125,13 +137,13 @@ export default function OwnersPage() {
                     <div className="bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl max-w-2xl w-full">
                         <div className="p-6 border-b border-slate-700/50">
                             <h2 className="text-2xl font-bold text-white">
-                                {editingOwner ? 'Edit Owner' : 'Add New Owner'}
+                                {editingOwner ? (dict?.admin?.owners?.edit_owner || "Edit Owner") : (dict?.admin?.owners?.add_owner || "Add New Owner")}
                             </h2>
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Full Name *</label>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.name || "Full Name"} *</label>
                                 <input
                                     type="text"
                                     value={fullName}
@@ -142,7 +154,7 @@ export default function OwnersPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Email *</label>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.email || "Email"} *</label>
                                 <input
                                     type="email"
                                     value={email}
@@ -153,7 +165,7 @@ export default function OwnersPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Phone *</label>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.phone || "Phone"} *</label>
                                 <input
                                     type="tel"
                                     value={phone}
@@ -164,7 +176,7 @@ export default function OwnersPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Bank Details (Optional)</label>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.owners?.bank_details || "Bank Details (Optional)"}</label>
                                 <textarea
                                     value={bankDetails}
                                     onChange={(e) => setBankDetails(e.target.value)}
@@ -176,10 +188,10 @@ export default function OwnersPage() {
 
                             <div className="flex justify-end gap-2 pt-4">
                                 <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
-                                    Cancel
+                                    {dict?.admin?.common?.cancel || "Cancel"}
                                 </Button>
                                 <Button type="submit" disabled={loading}>
-                                    {loading ? 'Saving...' : editingOwner ? 'Update Owner' : 'Create Owner'}
+                                    {loading ? (dict?.admin?.common?.save_loading || "Saving...") : editingOwner ? (dict?.admin?.common?.save || "Update Owner") : (dict?.admin?.common?.add || "Create Owner")}
                                 </Button>
                             </div>
                         </form>
@@ -191,48 +203,56 @@ export default function OwnersPage() {
                 <table className="w-full">
                     <thead className="bg-slate-700/30">
                         <tr>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Name</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Contact</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">Bank Details</th>
-                            <th className="px-6 py-4 text-right text-sm font-semibold text-slate-300">Actions</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.table?.name || "Name"}</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.table?.contact || "Contact"}</th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.owners?.bank_details || "Bank Details"}</th>
+                            <th className="px-6 py-4 text-right text-sm font-semibold text-slate-300">{dict?.admin?.table?.actions || "Actions"}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700/30">
-                        {owners.map((owner) => (
-                            <tr key={owner.id} className="hover:bg-slate-700/20 transition-colors">
-                                <td className="px-6 py-4 text-white font-medium">{owner.full_name}</td>
-                                <td className="px-6 py-4 text-slate-300">
-                                    <div className="text-sm">{owner.email}</div>
-                                    <div className="text-sm text-slate-400">{owner.phone}</div>
-                                </td>
-                                <td className="px-6 py-4 text-slate-300 text-sm">
-                                    {owner.bank_details || <span className="text-slate-500 italic">Not provided</span>}
-                                </td>
-                                <td className="px-6 py-4 text-right space-x-2">
-                                    <button
-                                        onClick={() => handleEdit(owner)}
-                                        className="text-blue-400 hover:text-blue-300 transition-colors"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(owner.id)}
-                                        className="text-red-400 hover:text-red-300 transition-colors"
-                                    >
-                                        Delete
-                                    </button>
+                        {owners.length === 0 ? (
+                            <tr>
+                                <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
+                                    {dict?.admin?.common?.no_data || "No owners found. Create one to get started."}
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            owners.map((owner) => (
+                                <tr key={owner.id} className="hover:bg-slate-700/20 transition-colors">
+                                    <td className="px-6 py-4 text-white font-medium">{owner.full_name}</td>
+                                    <td className="px-6 py-4 text-slate-300">
+                                        <div className="text-sm">{owner.email}</div>
+                                        <div className="text-sm text-slate-400">{owner.phone}</div>
+                                    </td>
+                                    <td className="px-6 py-4 text-slate-300 text-sm">
+                                        {owner.bank_details || <span className="text-slate-500 italic">{dict?.admin?.common?.not_provided || "Not provided"}</span>}
+                                    </td>
+                                    <td className="px-6 py-4 text-right space-x-2">
+                                        <Link
+                                            href={`/${lang}/admin/owners/${owner.id}`}
+                                            className="text-green-400 hover:text-green-300 transition-colors mr-2"
+                                        >
+                                            {dict?.admin?.common?.view || "View"}
+                                        </Link>
+                                        <button
+                                            onClick={() => handleEdit(owner)}
+                                            className="text-blue-400 hover:text-blue-300 transition-colors"
+                                        >
+                                            {dict?.admin?.common?.edit || "Edit"}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(owner.id)}
+                                            className="text-red-400 hover:text-red-300 transition-colors"
+                                        >
+                                            {dict?.admin?.common?.delete || "Delete"}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>
-
-            {owners.length === 0 && (
-                <div className="text-center py-12 text-slate-400">
-                    No owners found. Create one to get started.
-                </div>
-            )}
         </div>
     );
 }

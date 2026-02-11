@@ -1,16 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { api } from "@/api/client";
 import { GuestLeadRead, OwnerLeadRead } from "@/types";
+import { getDictionary } from "@/lib/get-dictionary";
+import type { Locale } from "@/lib/i18n-config";
 
-export default function LeadsPage() {
+export default function LeadsPage({ params }: { params: Promise<{ lang: string }> }) {
+    const { lang } = use(params || {});
+    const [dict, setDict] = useState<any>(null);
     const [guestLeads, setGuestLeads] = useState<GuestLeadRead[]>([]);
     const [ownerLeads, setOwnerLeads] = useState<OwnerLeadRead[]>([]);
     const [activeTab, setActiveTab] = useState<"guest" | "owner">("guest");
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        const loadInit = async () => {
+            if (lang) {
+                const d = await getDictionary(lang as Locale);
+                setDict(d);
+            }
+        };
+        loadInit();
+
         const fetchLeads = async () => {
             setIsLoading(true);
             try {
@@ -28,7 +40,7 @@ export default function LeadsPage() {
         };
 
         fetchLeads();
-    }, []);
+    }, [lang]);
 
     const formatDate = (dateStr: string) => {
         return new Date(dateStr).toLocaleDateString(undefined, {
@@ -40,12 +52,20 @@ export default function LeadsPage() {
         });
     };
 
+    if (isLoading && !dict) {
+        return (
+            <div className="p-8 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-8">
             <div className="mb-8 flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Leads</h1>
-                    <p className="text-slate-400">Manage guest and owner inquiries</p>
+                    <h1 className="text-3xl font-bold text-white mb-2">{dict?.admin?.leads?.title || "Leads"}</h1>
+                    <p className="text-slate-400">{dict?.admin?.leads?.subtitle || "Manage guest and owner inquiries"}</p>
                 </div>
                 <div className="flex bg-slate-800/50 p-1 rounded-lg border border-slate-700/50">
                     <button
@@ -55,7 +75,7 @@ export default function LeadsPage() {
                             : "text-slate-400 hover:text-slate-200"
                             }`}
                     >
-                        Guest Leads
+                        {dict?.admin?.leads?.guest_leads || "Guest Leads"}
                     </button>
                     <button
                         onClick={() => setActiveTab("owner")}
@@ -64,7 +84,7 @@ export default function LeadsPage() {
                             : "text-slate-400 hover:text-slate-200"
                             }`}
                     >
-                        Owner Leads
+                        {dict?.admin?.leads?.owner_leads || "Owner Leads"}
                     </button>
                 </div>
             </div>
@@ -78,16 +98,16 @@ export default function LeadsPage() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-slate-700/50 bg-slate-800/50">
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Name</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Phone</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.date || "Date"}</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.name || "Name"}</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.phone || "Phone"}</th>
                                 {activeTab === "guest" ? (
-                                    <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Property ID</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.property_id || "Property ID"}</th>
                                 ) : (
-                                    <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Location</th>
+                                    <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.location || "Location"}</th>
                                 )}
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Source</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Action</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.leads?.source || "Source"}</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">{dict?.admin?.table?.action || "Action"}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700/30">
@@ -105,13 +125,13 @@ export default function LeadsPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-sm">
-                                                <button className="text-purple-400 hover:text-purple-300 font-medium">View</button>
+                                                <button className="text-purple-400 hover:text-purple-300 font-medium">{dict?.admin?.common?.view || "View"}</button>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">No guest leads found</td>
+                                        <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">{dict?.admin?.leads?.none_found_guest || "No guest leads found"}</td>
                                     </tr>
                                 )
                             ) : (
@@ -128,13 +148,13 @@ export default function LeadsPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-sm">
-                                                <button className="text-purple-400 hover:text-purple-300 font-medium">View</button>
+                                                <button className="text-purple-400 hover:text-purple-300 font-medium">{dict?.admin?.common?.view || "View"}</button>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">No owner leads found</td>
+                                        <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">{dict?.admin?.leads?.none_found_owner || "No owner leads found"}</td>
                                     </tr>
                                 )
                             )}

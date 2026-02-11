@@ -105,6 +105,8 @@
             "owners": "Owners",
             "leads": "Leads",
             "users": "Users",
+            "accounting": "Accounting",
+            "expenses": "Expenses",
             "settings": "Settings"
         },
         "common": {
@@ -121,7 +123,15 @@
             "no_data": "No data available",
             "confirm_delete": "Are you sure you want to delete this item?",
             "success": "Operation completed successfully",
-            "error": "An error occurred"
+            "error": "An error occurred",
+            "all_statuses": "All Statuses",
+            "not_provided": "Not provided",
+            "save_loading": "Saving...",
+            "delete_confirm_owner": "Are you sure? This will fail if the owner has properties.",
+            "view": "View",
+            "yes": "Yes",
+            "no": "No",
+            "unknown_property": "Unknown Property"
         },
         "table": {
             "name": "Name",
@@ -131,23 +141,45 @@
             "created_at": "Created",
             "actions": "Actions",
             "active": "Active",
-            "inactive": "Inactive"
+            "inactive": "Inactive",
+            "property": "Property",
+            "location": "Location",
+            "guests": "Guests",
+            "price": "Price",
+            "role": "Role",
+            "date": "Date",
+            "category": "Category",
+            "amount": "Amount",
+            "description": "Description",
+            "deductible": "Deductible",
+            "contact": "Contact",
+            "property_id": "Property ID"
         },
         "properties": {
             "title": "Properties",
+            "subtitle": "Manage all properties in the system",
             "add_property": "Add Property",
             "edit_property": "Edit Property",
+            "filter_all": "All Properties",
+            "filter_active": "Active Only",
+            "filter_inactive": "Inactive Only",
             "city": "City",
             "guests": "Guests",
             "price": "Price",
-            "featured": "Featured"
+            "featured": "Featured",
+            "no_properties": "No properties found",
+            "error_load": "Failed to load properties",
+            "error_delete": "Failed to delete property",
+            "delete_confirm": "Are you sure you want to delete this property?"
         },
         "reservations": {
             "title": "Reservations",
+            "subtitle": "Manage bookings and availabilities",
             "add_reservation": "Add Reservation",
             "view_details": "View Details",
             "property": "Property",
             "guest": "Guest",
+            "dates": "Dates",
             "channel": "Channel",
             "check_in": "Check-in",
             "check_out": "Check-out",
@@ -162,7 +194,67 @@
             "owner_use": "Owner Use",
             "financial_summary": "Financial Summary",
             "record_payment": "Record Payment",
-            "payments": "Payments"
+            "payments": "Payments",
+            "filter_all": "All Reservations"
+        },
+        "guests": {
+            "title": "Guests",
+            "subtitle": "Manage guest profiles",
+            "add_guest": "Add Guest",
+            "edit_guest": "Edit Guest",
+            "country": "Country",
+            "document_id": "Document ID",
+            "full_name": "Full Name"
+        },
+        "channels": {
+            "title": "Channels",
+            "subtitle": "Manage booking channels",
+            "add_channel": "Add Channel",
+            "edit_channel": "Edit Channel",
+            "commission": "Commission",
+            "external": "External",
+            "direct": "Direct",
+            "channel_name": "Channel Name"
+        },
+        "owners": {
+            "title": "Owners",
+            "subtitle": "Manage property owners",
+            "add_owner": "Add Owner",
+            "edit_owner": "Edit Owner",
+            "properties_owned": "Properties Owned",
+            "bank_details": "Bank Details"
+        },
+        "leads": {
+            "title": "Leads",
+            "subtitle": "Track inquiries and potential clients",
+            "source": "Source",
+            "message": "Message",
+            "guest_leads": "Guest Leads",
+            "owner_leads": "Owner Leads",
+            "property": "Property",
+            "location": "Location",
+            "ip_address": "IP Address",
+            "user_agent": "User Agent",
+            "none_found_guest": "No guest leads found",
+            "none_found_owner": "No owner leads found",
+            "referer": "Referer"
+        },
+        "users": {
+            "title": "Users",
+            "subtitle": "Manage system users and permissions",
+            "add_user": "Create User",
+            "edit_user": "Edit User",
+            "reset_password": "Reset Password",
+            "role": "Role",
+            "role_admin": "Admin",
+            "role_finance": "Finance",
+            "role_staff": "Staff",
+            "admin": "Admin",
+            "staff": "Staff",
+            "finance": "Finance",
+            "new_password": "New Password",
+            "confirm_password": "Confirm Password",
+            "passwords_mismatch": "Passwords do not match"
         },
         "payments": {
             "title": "Payments",
@@ -215,48 +307,18 @@
                 "cleaning": "Cleaning",
                 "supplies": "Supplies",
                 "other": "Other"
-            }
-        },
-        "guests": {
-            "title": "Guests",
-            "add_guest": "Add Guest",
-            "edit_guest": "Edit Guest",
-            "full_name": "Full Name"
-        },
-        "channels": {
-            "title": "Channels",
-            "add_channel": "Add Channel",
-            "edit_channel": "Edit Channel",
-            "external": "External"
-        },
-        "owners": {
-            "title": "Owners",
-            "add_owner": "Add Owner",
-            "edit_owner": "Edit Owner",
-            "bank_details": "Bank Details"
-        },
-        "leads": {
-            "title": "Leads",
-            "guest_leads": "Guest Leads",
-            "owner_leads": "Owner Leads",
-            "property": "Property",
-            "location": "Location",
-            "message": "Message",
-            "source": "Source",
-            "ip_address": "IP Address",
-            "user_agent": "User Agent",
-            "referer": "Referer"
-        },
-        "users": {
-            "title": "Users",
-            "add_user": "Add User",
-            "edit_user": "Edit User",
-            "role": "Role",
-            "admin": "Admin",
-            "staff": "Staff",
-            "finance": "Finance",
-            "reset_password": "Reset Password",
-            "new_password": "New Password"
+            },
+            "subtitle": "Manage property expenses and tracking",
+            "all_properties": "All Properties",
+            "no_expenses": "No expenses found",
+            "view_receipt": "View Receipt",
+            "is_deductible_label": "This expense is tax deductible",
+            "update_expense": "Update Expense",
+            "create_expense": "Create Expense",
+            "error_load": "Failed to load expenses",
+            "error_create": "Failed to create expense",
+            "error_update": "Failed to update expense",
+            "error_delete": "Failed to delete expense"
         },
         "settings": {
             "title": "Settings",

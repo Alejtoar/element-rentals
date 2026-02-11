@@ -1,3 +1,4 @@
+from datetime import datetime
 import uuid
 from typing import Optional
 from sqlmodel import SQLModel
@@ -19,3 +20,4 @@ class ChannelUpdate(SQLModel):
 # Read
 class ChannelRead(ChannelBase):
     id: uuid.UUID
+    created_at: datetime

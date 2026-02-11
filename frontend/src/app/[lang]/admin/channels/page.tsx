@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { api } from "@/api/client";
 import { Channel, ChannelCreate, ChannelUpdate } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { getDictionary } from "@/lib/get-dictionary";
+import type { Locale } from "@/lib/i18n-config";
 
-export default function ChannelsPage() {
+export default function ChannelsPage({ params }: { params: Promise<{ lang: string }> }) {
+    const { lang } = use(params || {});
+    const [dict, setDict] = useState<any>(null);
     const [channels, setChannels] = useState<Channel[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -22,8 +26,15 @@ export default function ChannelsPage() {
     const [editForm, setEditForm] = useState<ChannelUpdate>({});
 
     useEffect(() => {
+        const loadInit = async () => {
+            if (lang) {
+                const d = await getDictionary(lang as Locale);
+                setDict(d);
+            }
+        };
+        loadInit();
         loadChannels();
-    }, []);
+    }, [lang]);
 
     const loadChannels = async () => {
         try {
@@ -64,7 +75,7 @@ export default function ChannelsPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this channel?")) return;
+        if (!confirm(dict?.admin?.common?.delete_confirm || "Are you sure you want to delete this channel?")) return;
 
         try {
             await api.channels.delete(id);
@@ -83,7 +94,7 @@ export default function ChannelsPage() {
         setShowEditModal(true);
     };
 
-    if (loading) {
+    if (loading && !dict) {
         return (
             <div className="p-8 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
@@ -96,17 +107,17 @@ export default function ChannelsPage() {
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Booking Channels</h1>
-                    <p className="text-slate-400 mt-1">Manage reservation sources (Airbnb, Booking.com, Direct, etc.)</p>
+                    <h1 className="text-3xl font-bold text-white">{dict?.admin?.channels?.title || "Channels"}</h1>
+                    <p className="text-slate-400 mt-1">{dict?.admin?.channels?.subtitle || "Manage reservation sources"}</p>
                 </div>
                 <Button onClick={() => setShowCreateModal(true)}>
-                    Create Channel
+                    {dict?.admin?.channels?.add_channel || "Create Channel"}
                 </Button>
             </div>
 
             {error && (
                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
-                    {error}
+                    {dict?.admin?.common?.error || error}
                 </div>
             )}
 
@@ -121,28 +132,28 @@ export default function ChannelsPage() {
                             <div>
                                 <h3 className="text-xl font-bold text-white mb-2">{channel.name}</h3>
                                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${channel.external
-                                        ? 'bg-blue-500/20 text-blue-300'
-                                        : 'bg-green-500/20 text-green-300'
+                                    ? 'bg-blue-500/20 text-blue-300'
+                                    : 'bg-green-500/20 text-green-300'
                                     }`}>
-                                    {channel.external ? 'External' : 'Direct'}
+                                    {channel.external ? (dict?.admin?.channels?.external || "External") : (dict?.admin?.channels?.direct || "Direct")}
                                 </span>
                             </div>
                         </div>
                         <p className="text-slate-400 text-sm mb-4">
-                            Created: {new Date(channel.created_at).toLocaleDateString()}
+                            {dict?.admin?.table?.created_at || "Created"}: {new Date(channel.created_at).toLocaleDateString()}
                         </p>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => openEditModal(channel)}
                                 className="flex-1 px-4 py-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors"
                             >
-                                Edit
+                                {dict?.admin?.common?.edit || "Edit"}
                             </button>
                             <button
                                 onClick={() => handleDelete(channel.id)}
                                 className="flex-1 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
                             >
-                                Delete
+                                {dict?.admin?.common?.delete || "Delete"}
                             </button>
                         </div>
                     </div>
@@ -153,10 +164,10 @@ export default function ChannelsPage() {
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full">
-                        <h2 className="text-2xl font-bold text-white mb-6">Create Channel</h2>
+                        <h2 className="text-2xl font-bold text-white mb-6">{dict?.admin?.channels?.add_channel || "Create Channel"}</h2>
                         <form onSubmit={handleCreate} className="space-y-4">
                             <Input
-                                label="Channel Name"
+                                label={dict?.admin?.channels?.channel_name || "Channel Name"}
                                 placeholder="e.g., Airbnb, Booking.com, Direct"
                                 value={createForm.name}
                                 onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
@@ -171,18 +182,18 @@ export default function ChannelsPage() {
                                     className="w-5 h-5 rounded border-slate-600 text-purple-500 focus:ring-purple-500/20"
                                 />
                                 <label htmlFor="external" className="text-slate-300 cursor-pointer">
-                                    External Channel (Airbnb, Booking.com, etc.)
+                                    {dict?.admin?.channels?.external || "External Channel"}
                                 </label>
                             </div>
                             <div className="flex gap-3 pt-4">
-                                <Button type="submit" className="flex-1">Create</Button>
+                                <Button type="submit" className="flex-1">{dict?.admin?.common?.add || "Create"}</Button>
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setShowCreateModal(false)}
                                     className="flex-1"
                                 >
-                                    Cancel
+                                    {dict?.admin?.common?.cancel || "Cancel"}
                                 </Button>
                             </div>
                         </form>
@@ -194,10 +205,10 @@ export default function ChannelsPage() {
             {showEditModal && selectedChannel && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full">
-                        <h2 className="text-2xl font-bold text-white mb-6">Edit Channel</h2>
+                        <h2 className="text-2xl font-bold text-white mb-6">{dict?.admin?.channels?.edit_channel || "Edit Channel"}</h2>
                         <form onSubmit={handleEdit} className="space-y-4">
                             <Input
-                                label="Channel Name"
+                                label={dict?.admin?.channels?.channel_name || "Channel Name"}
                                 value={editForm.name || ""}
                                 onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                             />
@@ -210,18 +221,18 @@ export default function ChannelsPage() {
                                     className="w-5 h-5 rounded border-slate-600 text-purple-500 focus:ring-purple-500/20"
                                 />
                                 <label htmlFor="external-edit" className="text-slate-300 cursor-pointer">
-                                    External Channel
+                                    {dict?.admin?.channels?.external || "External Channel"}
                                 </label>
                             </div>
                             <div className="flex gap-3 pt-4">
-                                <Button type="submit" className="flex-1">Update</Button>
+                                <Button type="submit" className="flex-1">{dict?.admin?.common?.save || "Update"}</Button>
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setShowEditModal(false)}
                                     className="flex-1"
                                 >
-                                    Cancel
+                                    {dict?.admin?.common?.cancel || "Cancel"}
                                 </Button>
                             </div>
                         </form>

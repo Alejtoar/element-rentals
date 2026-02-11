@@ -1,3 +1,4 @@
+from datetime import datetime
 import uuid
 from typing import Optional
 from sqlmodel import SQLModel
@@ -21,3 +22,4 @@ class GuestUpdate(SQLModel):
 # Read
 class GuestRead(GuestBase):
     id: uuid.UUID
+    created_at: datetime

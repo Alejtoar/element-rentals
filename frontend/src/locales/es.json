@@ -105,6 +105,8 @@
             "owners": "Propietarios",
             "leads": "Prospectos",
             "users": "Usuarios",
+            "accounting": "Contabilidad",
+            "expenses": "Gastos",
             "settings": "Configuración"
         },
         "common": {
@@ -121,7 +123,15 @@
             "no_data": "No hay datos disponibles",
             "confirm_delete": "¿Estás seguro de que deseas eliminar este elemento?",
             "success": "Operación completada exitosamente",
-            "error": "Ocurrió un error"
+            "error": "Ocurrió un error",
+            "all_statuses": "Todos los Estados",
+            "not_provided": "No proporcionado",
+            "save_loading": "Guardando...",
+            "delete_confirm_owner": "¿Estás seguro? Esto fallará si el propietario tiene propiedades.",
+            "view": "Ver",
+            "yes": "Sí",
+            "no": "No",
+            "unknown_property": "Propiedad Desconocida"
         },
         "table": {
             "name": "Nombre",
@@ -131,23 +141,44 @@
             "created_at": "Creado",
             "actions": "Acciones",
             "active": "Activo",
-            "inactive": "Inactivo"
+            "inactive": "Inactivo",
+            "property": "Propiedad",
+            "location": "Ubicación",
+            "guests": "Huéspedes",
+            "price": "Precio",
+            "role": "Rol",
+            "date": "Fecha",
+            "category": "Categoría",
+            "amount": "Monto",
+            "description": "Descripción",
+            "deductible": "Deducible",
+            "contact": "Contacto"
         },
         "properties": {
             "title": "Propiedades",
+            "subtitle": "Administrar todas las propiedades",
             "add_property": "Agregar Propiedad",
             "edit_property": "Editar Propiedad",
+            "filter_all": "Todas",
+            "filter_active": "Activas",
+            "filter_inactive": "Inactivas",
             "city": "Ciudad",
             "guests": "Huéspedes",
             "price": "Precio",
-            "featured": "Destacado"
+            "featured": "Destacado",
+            "no_properties": "No se encontraron propiedades",
+            "error_load": "Error al cargar propiedades",
+            "error_delete": "Error al eliminar propiedad",
+            "delete_confirm": "¿Está seguro de eliminar esta propiedad?"
         },
         "reservations": {
             "title": "Reservas",
+            "subtitle": "Administrar reservas y disponibilidad",
             "add_reservation": "Agregar Reserva",
             "view_details": "Ver Detalles",
             "property": "Propiedad",
             "guest": "Huésped",
+            "dates": "Fechas",
             "channel": "Canal",
             "check_in": "Entrada",
             "check_out": "Salida",
@@ -162,7 +193,8 @@
             "owner_use": "Uso Propietario",
             "financial_summary": "Resumen Financiero",
             "record_payment": "Registrar Pago",
-            "payments": "Pagos"
+            "payments": "Pagos",
+            "filter_all": "Todas las Reservas"
         },
         "payments": {
             "title": "Pagos",
@@ -215,28 +247,47 @@
                 "cleaning": "Limpieza",
                 "supplies": "Suministros",
                 "other": "Otro"
-            }
+            },
+            "subtitle": "Administrar gastos y seguimiento de propiedades",
+            "all_properties": "Todas las Propiedades",
+            "no_expenses": "No se encontraron gastos",
+            "view_receipt": "Ver Recibo",
+            "is_deductible_label": "Este gasto es deducible de impuestos",
+            "update_expense": "Actualizar Gasto",
+            "create_expense": "Crear Gasto",
+            "error_load": "Error al cargar gastos",
+            "error_create": "Error al crear gasto",
+            "error_update": "Error al actualizar gasto",
+            "error_delete": "Error al eliminar gasto"
         },
         "guests": {
             "title": "Huéspedes",
+            "subtitle": "Administrar información de huéspedes",
             "add_guest": "Agregar Huésped",
             "edit_guest": "Editar Huésped",
             "full_name": "Nombre Completo"
         },
         "channels": {
             "title": "Canales",
+            "subtitle": "Administrar canales de reserva",
             "add_channel": "Agregar Canal",
             "edit_channel": "Editar Canal",
-            "external": "Externo"
+            "commission": "Comisión",
+            "external": "Externo",
+            "direct": "Directo",
+            "channel_name": "Nombre del Canal"
         },
         "owners": {
             "title": "Propietarios",
+            "subtitle": "Administrar propietarios",
             "add_owner": "Agregar Propietario",
             "edit_owner": "Editar Propietario",
+            "properties_owned": "Propiedades",
             "bank_details": "Datos Bancarios"
         },
         "leads": {
             "title": "Prospectos",
+            "subtitle": "Seguimiento de prospectos",
             "guest_leads": "Prospectos Huéspedes",
             "owner_leads": "Prospectos Propietarios",
             "property": "Propiedad",
@@ -244,19 +295,25 @@
             "message": "Mensaje",
             "source": "Fuente",
             "ip_address": "Dirección IP",
-            "user_agent": "Agente Usuario",
+            "user_agent": "Agente de Usuario",
             "referer": "Referencia"
         },
         "users": {
             "title": "Usuarios",
-            "add_user": "Agregar Usuario",
+            "subtitle": "Administrar usuarios y permisos",
+            "add_user": "Crear Usuario",
             "edit_user": "Editar Usuario",
             "role": "Rol",
             "admin": "Administrador",
             "staff": "Personal",
             "finance": "Finanzas",
+            "role_admin": "Admin",
+            "role_finance": "Finanzas",
+            "role_staff": "Personal",
             "reset_password": "Restablecer Contraseña",
-            "new_password": "Nueva Contraseña"
+            "new_password": "Nueva Contraseña",
+            "confirm_password": "Confirmar Contraseña",
+            "passwords_mismatch": "Las contraseñas no coinciden"
         },
         "settings": {
             "title": "Configuración",
