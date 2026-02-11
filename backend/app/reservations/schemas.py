@@ -51,6 +51,7 @@ class PaymentCreate(PaymentBase):
 class PaymentUpdate(SQLModel):
     payment_method_id: Optional[UUID] = None
     amount: Optional[Decimal] = None
+    net_amount: Optional[Decimal] = None
     payment_type: Optional[str] = None
     non_refundable: Optional[bool] = None
     beneficiary: Optional[str] = None

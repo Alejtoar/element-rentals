@@ -33,7 +33,10 @@ import {
     Expense,
     ExpenseCreate,
     ExpenseUpdate,
-    FinancialSummary
+    FinancialSummary,
+    Contract,
+    ContractCreate,
+    ContractUpdate
 } from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -789,6 +792,78 @@ export const api = {
                 throw new Error(error.detail || response.statusText);
             }
         },
+    },
+    contracts: {
+        getAll: async (propertyId?: string): Promise<Contract[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const searchParams = new URLSearchParams();
+            if (propertyId) searchParams.append("property_id", propertyId);
+
+            const response = await fetch(`${API_BASE_URL}/contracts?${searchParams.toString()}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            return handleResponse<Contract[]>(response);
+        },
+        create: async (data: ContractCreate): Promise<Contract> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/contracts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            return handleResponse<Contract>(response);
+        },
+        update: async (id: string, data: ContractUpdate): Promise<Contract> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/contracts/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            return handleResponse<Contract>(response);
+        },
+        delete: async (id: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const response = await fetch(`${API_BASE_URL}/contracts/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+    },
+    finance: {
+        downloadStatement: async (params: { property_id: string; start_date: string; end_date: string; lang: string }): Promise<Blob> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+
+            const searchParams = new URLSearchParams(params);
+            const response = await fetch(`${API_BASE_URL}/finance/reports/statement?${searchParams.toString()}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+            return response.blob();
+        }
     },
 };
 

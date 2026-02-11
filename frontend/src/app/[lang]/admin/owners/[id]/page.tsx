@@ -18,7 +18,19 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // Quick Report State
+    const [reportModalOpen, setReportModalOpen] = useState(false);
+    const [selectedPropertyId, setSelectedPropertyId] = useState("");
+    const [reportMonth, setReportMonth] = useState("");
+    const [generating, setGenerating] = useState(false);
+
     useEffect(() => {
+        // Init report month to current month
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        setReportMonth(`${yyyy}-${mm}`);
+
         const loadInit = async () => {
             if (lang) {
                 const d = await getDictionary(lang as Locale);
@@ -42,6 +54,45 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const openReportModal = (propertyId: string) => {
+        setSelectedPropertyId(propertyId);
+        setReportModalOpen(true);
+    };
+
+    const handleQuickReport = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedPropertyId || !reportMonth) return;
+
+        setGenerating(true);
+        try {
+            const [year, month] = reportMonth.split('-').map(Number);
+            const startDate = new Date(year, month - 1, 1).toLocaleDateString('en-CA');
+            const endDate = new Date(year, month, 0).toLocaleDateString('en-CA');
+
+            const blob = await api.finance.downloadStatement({
+                property_id: selectedPropertyId,
+                start_date: startDate,
+                end_date: endDate,
+                lang: lang
+            });
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `statement_${selectedPropertyId}_${reportMonth}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            setReportModalOpen(false);
+        } catch (err: any) {
+            alert(err.message || dict?.admin?.common?.error || "Failed to generate report");
+        } finally {
+            setGenerating(false);
         }
     };
 
@@ -75,7 +126,6 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
                         <span>{owner?.phone}</span>
                     </div>
                 </div>
-                {/* Actions could go here */}
             </div>
 
             {error && (
@@ -87,7 +137,6 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column: Details */}
                 <div className="space-y-8">
-                    {/* Bank Details Card */}
                     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
                         <h2 className="text-xl font-semibold text-white mb-4">{dict?.admin?.owners?.bank_details || "Bank Details"}</h2>
                         <div className="text-slate-300 bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 min-h-[100px] whitespace-pre-wrap">
@@ -104,38 +153,57 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
                                 {dict?.admin?.properties?.title || "Properties"}
                                 <span className="ml-2 text-sm font-normal text-slate-500">({properties.length})</span>
                             </h2>
-                            <Link href={`/${lang}/admin/properties?owner_id=${id}`}>
-                                <Button variant="secondary" size="sm">
-                                    {dict?.admin?.common?.view_all || "View All"}
-                                </Button>
-                            </Link>
+                            <div className="flex gap-2">
+                                <Link href={`/${lang}/admin/accounting/reports`}>
+                                    <Button variant="secondary" size="sm">
+                                        {dict?.admin?.reports?.title || "Reports Center"}
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
 
                         {properties.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {properties.map((property) => (
-                                    <Link key={property.id} href={`/${lang}/admin/properties/${property.id}`} className="group relative block rounded-xl overflow-hidden border border-slate-700/50 bg-slate-900/50 hover:border-purple-500/50 transition-all duration-300">
-                                        <div className="aspect-video relative overflow-hidden bg-slate-800">
-                                            {property.images && property.images.length > 0 ? (
-                                                <img
-                                                    src={property.images.find(i => i.is_main)?.url || property.images[0].url}
-                                                    alt={property.name}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-slate-500">
-                                                    No Image
-                                                </div>
-                                            )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-                                            <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                                                <div className="font-semibold text-white truncate">{property.name}</div>
-                                                <div className="text-sm text-green-400 font-mono">
-                                                    ${property.nightly_price}
+                                    <div key={property.id} className="group relative block rounded-xl overflow-hidden border border-slate-700/50 bg-slate-900/50 hover:border-purple-500/50 transition-all duration-300">
+                                        <Link href={`/${lang}/admin/properties/${property.id}`} className="block h-full">
+                                            <div className="aspect-video relative overflow-hidden bg-slate-800">
+                                                {property.images && property.images.length > 0 ? (
+                                                    <img
+                                                        src={property.images.find(i => i.is_main)?.url || property.images[0].url}
+                                                        alt={property.name}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-slate-500">
+                                                        No Image
+                                                    </div>
+                                                )}
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                                                <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                                    <div className="font-semibold text-white truncate max-w-[70%]">{property.name}</div>
+                                                    <div className="text-sm text-green-400 font-mono">
+                                                        ${property.nightly_price}
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </Link>
+                                        <div className="absolute top-2 right-2 z-20">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    openReportModal(property.id);
+                                                }}
+                                                className="p-2 bg-slate-800/90 backdrop-blur rounded-full text-white hover:bg-purple-600 transition-colors shadow-lg border border-slate-600 hover:border-purple-500"
+                                                title={dict?.admin?.reports?.quick_report || "Quick Report"}
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                            </button>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))}
                             </div>
                         ) : (
@@ -146,6 +214,44 @@ export default function OwnerDetailsPage({ params }: { params: Promise<{ lang: s
                     </div>
                 </div>
             </div>
+
+            {/* Quick Report Modal */}
+            {reportModalOpen && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-sm w-full shadow-2xl">
+                        <h3 className="text-xl font-bold text-white mb-4">
+                            {dict?.admin?.reports?.quick_report || "Quick Report"}
+                        </h3>
+                        <form onSubmit={handleQuickReport}>
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
+                                    {dict?.admin?.table?.date || "Month"}
+                                </label>
+                                <input
+                                    type="month"
+                                    value={reportMonth}
+                                    onChange={(e) => setReportMonth(e.target.value)}
+                                    className="w-full px-4 py-2 rounded-lg bg-slate-700/50 border border-slate-600 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    required
+                                />
+                            </div>
+                            <div className="flex gap-3">
+                                <Button type="submit" className="flex-1" isLoading={generating}>
+                                    {dict?.admin?.common?.view || "Generate"}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => setReportModalOpen(false)}
+                                    className="flex-1"
+                                >
+                                    {dict?.admin?.common?.cancel || "Cancel"}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

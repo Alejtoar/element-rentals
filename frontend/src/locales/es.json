@@ -107,6 +107,7 @@
             "users": "Usuarios",
             "accounting": "Contabilidad",
             "expenses": "Gastos",
+            "reports": "Reportes",
             "settings": "Configuración"
         },
         "common": {
@@ -314,6 +315,40 @@
             "new_password": "Nueva Contraseña",
             "confirm_password": "Confirmar Contraseña",
             "passwords_mismatch": "Las contraseñas no coinciden"
+        },
+        "contracts": {
+            "title": "Contratos",
+            "subtitle": "Acuerdos de gestión",
+            "add_contract": "Agregar Contrato",
+            "edit_contract": "Editar Contrato",
+            "start_date": "Fecha Inicio",
+            "end_date": "Fecha Fin",
+            "commission_rate": "Tasa Comisión",
+            "exclusive": "Exclusivo",
+            "active": "Activo",
+            "inactive": "Inactivo",
+            "no_contracts": "No se encontraron contratos",
+            "overlap_error": "Las fechas del contrato se solapan con uno existente",
+            "created_at": "Creado El"
+        },
+        "reports": {
+            "title": "Reportes Financieros",
+            "subtitle": "Generar estados de cuenta y resúmenes",
+            "generator": "Generador de Reportes",
+            "select_property": "Seleccionar Propiedad",
+            "date_range": "Rango de Fechas",
+            "start_date": "Fecha Inicio",
+            "end_date": "Fecha Fin",
+            "quick_actions": "Acciones Rápidas",
+            "this_month": "Este Mes",
+            "last_month": "Mes Pasado",
+            "ytd": "Año a la Fecha",
+            "generate_pdf": "Generar Estado (PDF)",
+            "downloading": "Generando reporte...",
+            "language": "Idioma",
+            "english": "Inglés",
+            "spanish": "Español",
+            "quick_report": "Reporte Rápido"
         },
         "settings": {
             "title": "Configuración",

@@ -4,6 +4,7 @@ API endpoints for PaymentMethod and Expense management
 """
 
 import uuid
+from datetime import date
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
@@ -176,3 +177,45 @@ def delete_expense(
     service = ExpenseService(session)
     service.delete_expense(expense_id)
     return None
+
+# Reporting Router
+reporting_router = APIRouter(prefix="/reports", tags=["reports"])
+
+@reporting_router.get("/statement")
+def get_owner_statement(
+    property_id: uuid.UUID,
+    start_date: date,
+    end_date: date,
+    lang: str = "es",
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_finance_user) # Finance/Admin only
+):
+    """
+    Generate Owner Statement PDF for a specific date range.
+    
+    Params:
+    - property_id: ID of the property
+    - start_date: Start of the period (YYYY-MM-DD)
+    - end_date: End of the period (YYYY-MM-DD)
+    - lang: "es" or "en" (default "es")
+    """
+    if start_date > end_date:
+        raise HTTPException(status_code=400, detail="start_date must be before end_date")
+
+    from app.finance.reporting import ReportingService
+    from app.utils.pdf_generator import create_owner_statement_pdf
+    from fastapi.responses import Response
+
+    service = ReportingService(session)
+    try:
+        data = service.generate_owner_statement(str(property_id), start_date, end_date)
+        pdf_bytes = create_owner_statement_pdf(data, lang=lang)
+        
+        filename = f"statement_{start_date}_{end_date}_{property_id}.pdf"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -13,4 +13,5 @@ class Owner(SQLModel, table=True):
     
     # Relationships
     properties: List["Property"] = Relationship(back_populates="owner")
+    contracts: List["ManagementContract"] = Relationship(back_populates="owner")
 

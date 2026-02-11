@@ -308,3 +308,30 @@ export interface FinancialSummary {
     balance: number;
     is_fully_paid: boolean;
 }
+
+export interface Contract {
+    id: string;
+    property_id: string;
+    owner_id?: string;
+    start_date: string;
+    end_date: string;
+    commission_rate: number;
+    exclusive: boolean;
+    is_active?: boolean;
+    created_at?: string;
+}
+
+export interface ContractCreate {
+    property_id: string;
+    start_date: string;
+    end_date: string;
+    commission_rate: number;
+    exclusive: boolean;
+}
+
+export interface ContractUpdate {
+    start_date?: string;
+    end_date?: string;
+    commission_rate?: number;
+    exclusive?: boolean;
+}

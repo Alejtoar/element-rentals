@@ -107,6 +107,7 @@
             "users": "Users",
             "accounting": "Accounting",
             "expenses": "Expenses",
+            "reports": "Reports",
             "settings": "Settings"
         },
         "common": {
@@ -319,6 +320,40 @@
             "error_create": "Failed to create expense",
             "error_update": "Failed to update expense",
             "error_delete": "Failed to delete expense"
+        },
+        "contracts": {
+            "title": "Contracts",
+            "subtitle": "Management agreements",
+            "add_contract": "Add Contract",
+            "edit_contract": "Edit Contract",
+            "start_date": "Start Date",
+            "end_date": "End Date",
+            "commission_rate": "Commission Rate",
+            "exclusive": "Exclusive",
+            "active": "Active",
+            "inactive": "Inactive",
+            "no_contracts": "No contracts found",
+            "overlap_error": "Contract dates overlap with an existing contract",
+            "created_at": "Created At"
+        },
+        "reports": {
+            "title": "Financial Reports",
+            "subtitle": "Generate owner statements and financial summaries",
+            "generator": "Report Generator",
+            "select_property": "Select Property",
+            "date_range": "Date Range",
+            "start_date": "Start Date",
+            "end_date": "End Date",
+            "quick_actions": "Quick Actions",
+            "this_month": "This Month",
+            "last_month": "Last Month",
+            "ytd": "Year to Date",
+            "generate_pdf": "Generate Statement (PDF)",
+            "downloading": "Generating report...",
+            "language": "Language",
+            "english": "English",
+            "spanish": "Spanish",
+            "quick_report": "Quick Report"
         },
         "settings": {
             "title": "Settings",

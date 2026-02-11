@@ -26,6 +26,7 @@ class Property(SQLModel, table=True):
     images: List["PropertyImage"] = Relationship(back_populates="property")
     reservations: List["Reservation"] = Relationship(back_populates="property")
     expenses: List["Expense"] = Relationship(back_populates="property")
+    contracts: List["ManagementContract"] = Relationship(back_populates="property")
 
 class PropertyImage(SQLModel, table=True):
     __tablename__ = "property_image"

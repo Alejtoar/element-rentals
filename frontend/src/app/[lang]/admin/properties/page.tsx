@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Link from "next/link";
 import { api, getAuthToken } from "@/api/client";
 import { getMediaUrl } from "@/lib/media";
 import { Property, User } from "@/types";
@@ -206,7 +207,9 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                                         />
                                                     )}
                                                     <div>
-                                                        <p className="font-medium text-white">{property.name}</p>
+                                                        <Link href={`/${lang}/admin/properties/${property.id}`} className="font-medium text-white hover:text-purple-400 transition-colors">
+                                                            {property.name}
+                                                        </Link>
                                                         <p className="text-xs text-slate-400 truncate max-w-xs">
                                                             {property.description}
                                                         </p>
@@ -247,6 +250,16 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
+                                                    <Link
+                                                        href={`/${lang}/admin/properties/${property.id}`}
+                                                        className="p-2 text-slate-400 hover:text-blue-400 transition-colors"
+                                                        title={dict?.admin?.common?.view || "View"}
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                    </Link>
                                                     <button
                                                         onClick={() => handleEdit(property)}
                                                         className="p-2 text-slate-400 hover:text-purple-400 transition-colors"
