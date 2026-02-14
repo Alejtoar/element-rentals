@@ -25,11 +25,14 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    // For Docker Swarm: use the service name directly
-    // This will be overridden by API_PROXY_URL env var at runtime in client.ts
-    // For local dev, this defaults to localhost:8000
-    const apiUrl = process.env.API_PROXY_URL || 'http://localhost:8000';
+    // Environment variables are not available at build time in Dokploy
+    // So we hardcode the service name for production
+    const isProduction = process.env.NODE_ENV === 'production';
+    const apiUrl = isProduction
+      ? 'http://elementrentals-elementbackend-cuguqz:8000'
+      : (process.env.API_PROXY_URL || 'http://localhost:8000');
 
+    console.log('[next.config.mjs] NODE_ENV:', process.env.NODE_ENV);
     console.log('[next.config.mjs] API_PROXY_URL:', apiUrl);
 
     return [
