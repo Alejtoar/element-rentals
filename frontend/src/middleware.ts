@@ -5,6 +5,11 @@ import { i18n } from "./lib/i18n-config";
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
+    // Skip middleware for API and uploads routes (they should not have locale prefixes)
+    if (pathname.startsWith('/api') || pathname.startsWith('/uploads')) {
+        return NextResponse.next();
+    }
+
     // Check if there is any supported locale in the pathname
     const pathnameIsMissingLocale = i18n.locales.every(
         (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
@@ -48,6 +53,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    // Matcher ignoring `/_next/`, `/api/` and public files (with extensions)
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+    // Matcher: exclude Next.js internals and static files, but ALLOW /api for rewrites
+    // We need /api to pass through so rewrites can proxy to backend
+    matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };

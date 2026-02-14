@@ -47,6 +47,23 @@ const API_BASE_URL = isServer
     ? (process.env.API_PROXY_URL || 'http://localhost:8000') + '/api/v1'
     : '/api/v1';
 
+
+
+// Helper to ensure trailing slash (prevents FastAPI redirects that lose auth headers)
+function apiUrl(path: string): string {
+    // Remove leading slash if present
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    // Ensure trailing slash before query params
+    const hasQuery = cleanPath.includes('?');
+    if (hasQuery) {
+        const [pathPart, queryPart] = cleanPath.split('?');
+        const normalizedPath = pathPart.endsWith('/') ? pathPart : `${pathPart}/`;
+        return `${API_BASE_URL}/${normalizedPath}?${queryPart}`;
+    }
+    const normalizedPath = cleanPath.endsWith('/') ? cleanPath : `${cleanPath}/`;
+    return `${API_BASE_URL}/${normalizedPath}`;
+}
+
 // Token management utilities
 const TOKEN_KEY = 'elemnt_admin_token';
 
@@ -409,7 +426,9 @@ export const api = {
             const token = getAuthToken();
             if (!token) throw new Error("No authentication token found");
 
-            const response = await fetch(`${API_BASE_URL}/guests?offset=${offset}&limit=${limit}`, {
+            const url = apiUrl(`guests?offset=${offset}&limit=${limit}`);
+
+            const response = await fetch(url, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },

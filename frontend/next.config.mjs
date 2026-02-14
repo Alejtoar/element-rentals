@@ -25,12 +25,20 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    // API_PROXY_URL should point to the backend service
-    // Development: http://localhost:8000
-    // Production (Docker): http://elementrentals-elementbackend-[hash]:8000
+    // For Docker Swarm: use the service name directly
+    // This will be overridden by API_PROXY_URL env var at runtime in client.ts
+    // For local dev, this defaults to localhost:8000
     const apiUrl = process.env.API_PROXY_URL || 'http://localhost:8000';
 
+    console.log('[next.config.mjs] API_PROXY_URL:', apiUrl);
+
     return [
+      // Handle paths without trailing slash by adding it
+      {
+        source: '/api/v1/:path((?!.*/).*)',
+        destination: `${apiUrl}/api/v1/:path/`,
+      },
+      // Handle paths with trailing slash as-is
       {
         source: '/api/v1/:path*',
         destination: `${apiUrl}/api/v1/:path*`,
