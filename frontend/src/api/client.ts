@@ -39,7 +39,13 @@ import {
     ContractUpdate
 } from "../types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// API Base URL Strategy:
+// - Browser: Use relative path '/api/v1' to route through Next.js proxy (no CORS, no mixed content)
+// - Server (SSR): Use internal Docker URL or localhost for direct backend communication
+const isServer = typeof window === 'undefined';
+const API_BASE_URL = isServer
+    ? (process.env.API_PROXY_URL || 'http://localhost:8000') + '/api/v1'
+    : '/api/v1';
 
 // Token management utilities
 const TOKEN_KEY = 'elemnt_admin_token';

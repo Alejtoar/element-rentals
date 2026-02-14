@@ -24,6 +24,23 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    // API_PROXY_URL should point to the backend service
+    // Development: http://localhost:8000
+    // Production (Docker): http://elementrentals-elementbackend-[hash]:8000
+    const apiUrl = process.env.API_PROXY_URL || 'http://localhost:8000';
+
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: `${apiUrl}/api/v1/:path*`,
+      },
+      {
+        source: '/uploads/:path*',
+        destination: `${apiUrl}/uploads/:path*`,
+      }
+    ];
+  },
 };
 
 export default nextConfig;

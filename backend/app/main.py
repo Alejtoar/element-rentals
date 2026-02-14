@@ -32,13 +32,8 @@ app = FastAPI(
     strict_slashes=False
 )
 
-if settings.ENV != "dev":
-    @app.middleware("http")
-    async def force_https_middleware(request, call_next):
-        # Force HTTPS scheme for all requests behind the tunnel in production/staging
-        request.scope["scheme"] = "https"
-        response = await call_next(request)
-        return response
+# HTTPS handling is now managed by the reverse proxy (Next.js/Cloudflare)
+# No need to force scheme at the FastAPI level
 
 # Standard CORS configuration
 origins = []
