@@ -14,9 +14,36 @@ class LocalStorageProvider:
         os.makedirs(self.upload_dir, exist_ok=True)
 
     def upload_file(self, file: UploadFile, filename: str) -> str:
+        from fastapi import HTTPException, status
+        from app.media.image_optimizer import ImageOptimizer
+        
+        # Validate file size before processing
+        file.file.seek(0, 2)  # Seek to end
+        file_size = file.file.tell()
+        file.file.seek(0)  # Reset to beginning
+        
+        if not ImageOptimizer.validate_file_size(file_size):
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=f"File size exceeds maximum allowed size of {ImageOptimizer.MAX_FILE_SIZE_MB}MB"
+            )
+        
+        # Save original file
         file_path = os.path.join(self.upload_dir, filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+        
+        # Optimize image (resize, compress, generate thumbnail)
+        try:
+            ImageOptimizer.optimize_image(file_path)
+        except Exception as e:
+            # If optimization fails, delete the file and raise error
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to optimize image: {str(e)}"
+            )
         
         # Return a relative URL or path that the frontend can access
         # URL format: /uploads/properties/{filename}

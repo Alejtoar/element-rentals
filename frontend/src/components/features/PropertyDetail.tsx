@@ -64,7 +64,6 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                                 fill
                                 className="object-cover transition-all duration-500"
                                 priority
-                                unoptimized={true}
                             />
                         ) : (
                             <div className="w-full h-full bg-slate-100 flex items-center justify-center">
@@ -93,7 +92,6 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                                         alt={`${property.name} thumbnail`}
                                         fill
                                         className="object-cover"
-                                        unoptimized={true}
                                     />
                                 </button>
                             ))}
