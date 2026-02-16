@@ -15,9 +15,12 @@ COPY . .
 
 # Build arguments - IMPORTANT: These must be set in Dokploy Application -> Environment -> Build Arguments
 ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_API_BASE
+ARG NEXT_PUBLIC_INSTAGRAM_URL
+ARG NEXT_PUBLIC_FACEBOOK_URL
+
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE
+ENV NEXT_PUBLIC_INSTAGRAM_URL=$NEXT_PUBLIC_INSTAGRAM_URL
+ENV NEXT_PUBLIC_FACEBOOK_URL=$NEXT_PUBLIC_FACEBOOK_URL
 
 # Build application
 RUN npm run build
@@ -47,8 +50,8 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+# Health check - Allow 200s and 300s (redirects)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode >= 400) throw new Error(r.statusCode)})"
 
 CMD ["node", "server.js"]
