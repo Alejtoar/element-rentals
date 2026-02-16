@@ -40,13 +40,23 @@ export const Footer: React.FC<FooterProps> = ({ dict, lang }) => {
                             <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground/80">Social</h4>
                             <ul className="space-y-4 text-foreground/60">
                                 <li>
-                                    <a href="#" className="hover:text-primary transition-colors flex items-center gap-2 group">
+                                    <a
+                                        href={process.env.NEXT_PUBLIC_INSTAGRAM_URL || "#"}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-primary transition-colors flex items-center gap-2 group"
+                                    >
                                         <span className="w-1 h-1 bg-primary/0 group-hover:bg-primary rounded-full transition-all" />
                                         {dict.social.instagram}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:text-primary transition-colors flex items-center gap-2 group">
+                                    <a
+                                        href={process.env.NEXT_PUBLIC_FACEBOOK_URL || "#"}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-primary transition-colors flex items-center gap-2 group"
+                                    >
                                         <span className="w-1 h-1 bg-primary/0 group-hover:bg-primary rounded-full transition-all" />
                                         {dict.social.facebook}
                                     </a>

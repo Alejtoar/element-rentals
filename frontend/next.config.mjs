@@ -7,33 +7,19 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '192.168.56.101',
-        port: '8000',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
         hostname: 'localhost',
         port: '8000',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.fly.dev',
         pathname: '/uploads/**',
       },
     ],
   },
   async rewrites() {
-    // Environment variables are not available at build time in Dokploy
-    // So we hardcode the service name for production
-    const isProduction = process.env.NODE_ENV === 'production';
-    const apiUrl = isProduction
-      ? 'http://elementrentals-elementbackend-cuguqz:8000'
-      : (process.env.API_PROXY_URL || 'http://localhost:8000');
+    // We use API_PROXY_URL to point to the backend service.
+    // In Dokploy, set this as an environment variable (both for Build and Runtime if possible).
+    // Example: http://elementrentals-elementbackend-cuguqz:8000
+    const apiUrl = process.env.API_PROXY_URL || 'http://localhost:8000';
 
-    console.log('[next.config.mjs] NODE_ENV:', process.env.NODE_ENV);
-    console.log('[next.config.mjs] API_PROXY_URL:', apiUrl);
+    console.log('[next.config.mjs] Using API_PROXY_URL:', apiUrl);
 
     return [
       // Handle paths without trailing slash by adding it

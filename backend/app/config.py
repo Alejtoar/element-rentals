@@ -12,15 +12,15 @@ class Settings(BaseSettings):
     SECRET_KEY: str 
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    BACKEND_CORS_ORIGINS: list[str] = ["*"]
+    BACKEND_CORS_ORIGINS: list[str] = []
     
     # WhatsApp
     WHATSAPP_PHONE: str
     NOTIFICATIONS_WEBHOOK_URL: Optional[str] = None
     
     # Seeding
-    FIRST_ADMIN_EMAIL: str = "admin@elemnt.com"
-    FIRST_ADMIN_PASSWORD: str = "admin"
+    FIRST_ADMIN_EMAIL: str 
+    FIRST_ADMIN_PASSWORD: str 
     AUTO_SEED_ADMIN: bool = True
 
     model_config = {
