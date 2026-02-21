@@ -14,10 +14,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups:/backups
-    ports:
-      - "5432:5432"
+    # SEC-021-02: Port 5432 intentionally NOT mapped to host.
+    # The backend accesses Postgres via the internal elemnt_network.
+    # Use: docker exec -it elemnt_postgres psql -U elemnt_user -d elemnt_rentals
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U elemnt_user -d elemnt_rentals"]
+      test: [ "CMD-SHELL", "pg_isready -U elemnt_user -d elemnt_rentals" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,15 +40,15 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       NOTIFICATIONS_WEBHOOK_URL: ${NOTIFICATIONS_WEBHOOK_URL}
     volumes:
+      # SEC-021-04: Only persist uploads. Source bind-mount removed (was dev-only).
       - ./backend/uploads:/app/uploads
-      - ./backend/app:/app/app  # Hot reload en desarrollo
     ports:
       - "8000:8000"
     networks:
       - elemnt_network
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # SEC-021-04: No command override — Dockerfile CMD is used (production uvicorn, no --reload).
 
-  # Frontend (Next.js)
+    # Frontend (Next.js)
   frontend:
     build:
       context: ./frontend

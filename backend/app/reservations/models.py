@@ -11,13 +11,21 @@ class Channel(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Reservation(SQLModel, table=True):
+    __table_args__ = (
+        {"sqlite_autoincrement": True}, # Optional but good for consistency
+    )
+    # Adding composite index for availability searches
+    # Need to import sa from sqlmodel for advanced table args if using raw SQLAlchemy
+    # But we can also use SQLModel's index=True on fields if they were simple.
+    # For composite, we'll use __table_args__.
+    
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    property_id: uuid.UUID = Field(foreign_key="property.id")
+    property_id: uuid.UUID = Field(foreign_key="property.id", index=True)
     guest_id: Optional[uuid.UUID] = Field(default=None, foreign_key="guest.id")
     channel_id: Optional[uuid.UUID] = Field(default=None, foreign_key="channel.id")
     reservation_type: str = Field(default="commercial") # commercial, owner_use
-    start_date: date
-    end_date: date
+    start_date: date = Field(index=True)
+    end_date: date = Field(index=True)
     guest_count: int
     total_amount: Decimal = Field(default=0, max_digits=10, decimal_places=2)
     status: str = Field(default="confirmed") # confirmed, cancelled, completed

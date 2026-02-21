@@ -91,24 +91,13 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
         setSyncing(true);
         setSyncMsg(null);
         try {
-            const results: SyncResult[] = await api.properties.syncCalendars(id);
-            // results is an array of SyncResult
-            const syncError = results.find((r: SyncResult) => r.status === 'error');
-            const totalCreated = results.reduce((acc: number, curr: SyncResult) => acc + (curr.blocks_created || 0), 0);
-
-            if (syncError) {
-                setSyncMsg({
-                    type: 'error',
-                    text: `${dict?.admin?.ical?.sync_partial_error || 'One or more calendars failed:'} ${syncError.error}`
-                });
-            } else {
-                setSyncMsg({
-                    type: 'success',
-                    text: `${dict?.admin?.ical?.sync_success || 'Calendars synced successfully!'} (${totalCreated} ${dict?.admin?.ical?.blocks_created || 'blocks created'})`
-                });
-            }
+            await api.properties.syncCalendars(id);
+            setSyncMsg({
+                type: 'success',
+                text: dict?.admin?.ical?.sync_started || 'Synchronization started! The calendar will update in a few moments.'
+            });
         } catch (err: any) {
-            setSyncMsg({ type: 'error', text: dict?.admin?.ical?.sync_error || "Sync failed configuration." });
+            setSyncMsg({ type: 'error', text: dict?.admin?.ical?.sync_error || "Sync failed to start." });
         } finally {
             setSyncing(false);
         }

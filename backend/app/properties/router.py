@@ -1,6 +1,6 @@
-from datetime import date
-from typing import List, Optional
-from fastapi import APIRouter, Depends, UploadFile, File, Response
+from datetime import date, datetime
+from typing import List, Optional, Dict, Tuple
+from fastapi import APIRouter, Depends, UploadFile, File, Response, BackgroundTasks, HTTPException
 from sqlmodel import Session, select
 from app.db import get_session
 from app.properties.schemas import PropertyCreate, PropertyRead, PropertyPublicRead, PropertyUpdate, AvailabilityResponse
@@ -10,9 +10,20 @@ from app.calendar.schemas import ExternalCalendarCreate, ExternalCalendarRead, S
 from app.calendar.models import CalendarBlock
 from app.calendar.service import ExternalCalendarService
 import uuid
+import logging
 
 from app.auth.dependencies import get_current_admin_user, get_current_staff_user
 from app.users.models import User
+
+logger = logging.getLogger(__name__)
+
+# ─── Rate Limiter (SEC-021-01) ────────────────────────────────────────────────
+# In-memory cooldown store: key = (user_id, property_id), value = last_sync_time
+# Limits each user to 1 sync per property per SYNC_COOLDOWN_SECONDS.
+# Note: resets on server restart. For multi-process/Swarm deployments,
+# replace with a Redis-backed slowapi limiter.
+_sync_last_called: Dict[Tuple[str, str], datetime] = {}
+SYNC_COOLDOWN_SECONDS = 30
 
 router = APIRouter()
 
@@ -104,28 +115,52 @@ def delete_external_calendar(
 
 @router.post(
     "/{property_id}/sync",
-    response_model=List[SyncResult],
+    status_code=202,
     tags=["ical"],
 )
 def sync_property_calendars(
     *,
-    session: Session = Depends(get_session),
+    background_tasks: BackgroundTasks,
     property_id: uuid.UUID,
     current_user: User = Depends(get_current_staff_user),
 ):
     """
-    Manually trigger synchronization of all external iCal sources for a property.
+    Triggers a background synchronization for all external iCal sources.
+    Returns 202 Accepted immediately.
 
-    For each registered ExternalCalendar:
-    - Fetches the remote .ics file.
-    - Deletes all existing CalendarBlock entries for that source (replace strategy).
-    - Inserts fresh CalendarBlock entries from the parsed feed.
-    - Updates `last_sync` timestamp.
-
-    Returns one SyncResult per calendar with status, counts, and any errors.
+    Rate-limited: 1 request per property per user every 30 seconds.
+    Prevents background thread exhaustion from rapid repeated calls.
     """
-    import_service = ICalImportService(session)
-    return import_service.sync_property(property_id)
+    from app.db import engine
+    from sqlmodel import Session
+
+    # ── Rate limit check (SEC-021-01) ────────────────────────────────────────
+    rate_key = (str(current_user.id), str(property_id))
+    now = datetime.utcnow()
+    last_called = _sync_last_called.get(rate_key)
+    if last_called is not None:
+        elapsed = (now - last_called).total_seconds()
+        if elapsed < SYNC_COOLDOWN_SECONDS:
+            remaining = int(SYNC_COOLDOWN_SECONDS - elapsed)
+            logger.warning(
+                "Rate limit hit on /sync — user=%s property=%s remaining=%ds",
+                current_user.id, property_id, remaining
+            )
+            raise HTTPException(
+                status_code=429,
+                detail=f"Sync rate limit exceeded. Try again in {remaining} seconds.",
+                headers={"Retry-After": str(remaining)},
+            )
+    _sync_last_called[rate_key] = now
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def do_sync():
+        with Session(engine) as session:
+            import_service = ICalImportService(session)
+            import_service.sync_property(property_id)
+
+    background_tasks.add_task(do_sync)
+    return {"message": "Synchronization started in background"}
 
 
 # ─── CalendarBlocks Read (Staff) ─────────────────────────────────────────────

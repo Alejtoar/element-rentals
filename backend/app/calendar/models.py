@@ -17,10 +17,10 @@ class CalendarBlock(SQLModel, table=True):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     property_id: uuid.UUID = Field(foreign_key="property.id", index=True)
-    start_date: date
-    end_date: date
+    start_date: date = Field(index=True)
+    end_date: date = Field(index=True)
     # Source: airbnb, booking, owner, manual
-    source: str = Field(default="manual")
+    source: str = Field(default="manual", index=True)
     # UID from the original iCal event — used for deduplication on replace strategy
     external_uid: Optional[str] = Field(default=None, index=True)
     reason: Optional[str] = None

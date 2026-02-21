@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+# SEC-021-05: Cover dev.db at any location (root or backend/)
+dev.db
 backend/dev.db
 backend/uploads/
 
