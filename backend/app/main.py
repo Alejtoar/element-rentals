@@ -5,7 +5,8 @@ from app.config import settings
 from app.db import init_db
 from app.users.models import User
 from app.owners.models import Owner
-from app.properties.models import Property, PropertyImage
+from app.properties.models import Property, PropertyImage, ExternalCalendar
+from app.calendar.models import CalendarBlock
 from app.leads.models import OwnerLead, GuestLead
 from app.guests.models import Guest
 from app.reservations.models import Reservation, Payment, Charge, Channel

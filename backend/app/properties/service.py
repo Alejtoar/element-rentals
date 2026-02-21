@@ -1,5 +1,6 @@
 import uuid
 import logging
+from datetime import date
 from typing import List, Optional
 from fastapi import HTTPException, status, UploadFile
 from sqlmodel import Session
@@ -34,15 +35,78 @@ class PropertyService:
         return property
 
     def get_properties(
-        self, 
-        city: Optional[str] = None, 
-        max_guests: Optional[int] = None, 
-        active: Optional[bool] = None, 
+        self,
+        city: Optional[str] = None,
+        max_guests: Optional[int] = None,
+        active: Optional[bool] = None,
         featured: Optional[bool] = None,
-        offset: int = 0, 
-        limit: int = 100
+        offset: int = 0,
+        limit: int = 100,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
     ) -> List[Property]:
-        return self.repository.get_all(city, max_guests, active, featured, offset, limit)
+        return self.repository.get_all(
+            city, max_guests, active, featured, offset, limit,
+            start_date=start_date, end_date=end_date
+        )
+
+    def get_availability(self, property_id: uuid.UUID):
+        """
+        Returns all blocked date ranges for a property, aggregated from:
+        - Confirmed/active Reservations (non-cancelled)
+        - Imported CalendarBlocks (from all external sources)
+
+        Sorted chronologically by start_date.
+        """
+        from sqlmodel import select
+        from app.reservations.models import Reservation
+        from app.calendar.models import CalendarBlock
+        from app.properties.schemas import AvailabilityBlockRead, AvailabilityResponse
+
+        # Verify property exists
+        self.get_property_by_id(property_id)
+
+        blocks: List[AvailabilityBlockRead] = []
+
+        # 1. Collect non-cancelled reservations
+        reservations = self.repository.session.exec(
+            select(Reservation).where(
+                Reservation.property_id == property_id,
+                Reservation.status != "cancelled",
+            )
+        ).all()
+        for r in reservations:
+            blocks.append(
+                AvailabilityBlockRead(
+                    start_date=r.start_date,
+                    end_date=r.end_date,
+                    type="reservation",
+                    source="elemnt",
+                    reason=r.reservation_type,  # "commercial" or "owner_use"
+                )
+            )
+
+        # 2. Collect calendar blocks from all sources
+        cal_blocks = self.repository.session.exec(
+            select(CalendarBlock).where(
+                CalendarBlock.property_id == property_id,
+            )
+        ).all()
+        for cb in cal_blocks:
+            blocks.append(
+                AvailabilityBlockRead(
+                    start_date=cb.start_date,
+                    end_date=cb.end_date,
+                    type="calendar_block",
+                    source=cb.source,
+                    reason=cb.reason,
+                )
+            )
+
+        # 3. Sort chronologically
+        blocks.sort(key=lambda b: b.start_date)
+
+        return AvailabilityResponse(property_id=property_id, blocked=blocks)
 
     def _generate_unique_slug(self, name: str) -> str:
         from app.utils.slugs import generate_slug

@@ -54,6 +54,8 @@ All schema changes MUST be reflected here before code or migrations are updated.
 - StayEvent
 - ContractAcceptance
 - InventoryItem
+- ExternalCalendar (Session 018)
+- CalendarBlock (Session 020)
 - User
 
 ---
@@ -93,6 +95,7 @@ Represents a managed physical property.
 | country | VARCHAR | |
 | max_guests | INTEGER | Capacity limit |
 | active | BOOLEAN | |
+| ical_secret | UUID | Unique token for iCal export URL |
 | created_at | TIMESTAMP | |
 
 ---
@@ -322,6 +325,21 @@ Represents a continuous date range during which a property is unavailable, synch
 
 ---
 
+### ExternalCalendar
+
+**Session 018**: Stores URLs for importing availability from external platforms.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| property_id | UUID (FK → Property.id) | |
+| name | VARCHAR | e.g., Airbnb, Booking |
+| url | TEXT | The secret .ics URL from the platform |
+| last_sync | TIMESTAMP | Nullable - when it was last updated |
+| created_at | TIMESTAMP | |
+
+---
+
 ### FinancialStatement
 
 Monthly immutable financial statement per property.
@@ -430,7 +448,41 @@ Stores references to property photos. Supports normalization and gallery orderin
 
 ---
 
-## Net Revenue & Financial Invariants
+### ExternalCalendar
+
+Registers external `.ics` feed URLs from platforms like Airbnb or Booking.com for a property. Used by the iCal import service to know where to fetch blocks from.
+**Added**: Session 018 (iCal Export), managed via import in Session 020.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| property_id | UUID (FK → Property.id) | |
+| name | VARCHAR | Human label, e.g. "Airbnb", "Booking" |
+| url | TEXT | The remote `.ics` feed URL |
+| last_sync | TIMESTAMP | UTC timestamp of last successful sync. Nullable |
+| created_at | TIMESTAMP | |
+
+---
+
+### CalendarBlock
+
+Stores unavailable date ranges imported from external iCal feeds. Populated exclusively by `ICalImportService` using the **replace-by-source** strategy (ADR-017). Never created manually via UI.
+**Added**: Session 020.
+
+| Field | Type | Notes |
+|-----|-----|-----|
+| id | UUID (PK) | |
+| property_id | UUID (FK → Property.id) | Indexed |
+| start_date | DATE | Inclusive |
+| end_date | DATE | Inclusive |
+| source | VARCHAR | Origin platform: `airbnb`, `booking`, `manual` |
+| external_uid | VARCHAR | `UID` from the iCal VEVENT. Nullable. Indexed for deduplication |
+| reason | VARCHAR | SUMMARY from iCal event. Nullable |
+| created_at | TIMESTAMP | |
+
+**Sync strategy**: On each sync for a `(property_id, source)` pair, all existing rows are deleted and replaced with newly parsed events. This avoids complex diffing at the cost of always re-inserting.
+
+---
 
 - Reservations must have at least one payment if commercial.
 - Deposit payments are non-refundable.

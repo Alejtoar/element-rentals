@@ -192,11 +192,69 @@ Returns property details.
 
 ### GET `/properties`
 
+**Auth**: Staff, Admin
+
 Query params:
 
 * `city`
 * `active`
 * `owner_id`
+* `start_date` (ISO 8601 date) — Filter: exclude properties blocked on this date onwards
+* `end_date` (ISO 8601 date) — Filter: exclude properties blocked up to this date
+
+**Availability Filtering**: When both `start_date` and `end_date` are provided, properties with any overlapping `Reservation` (non-cancelled) or `CalendarBlock` are excluded from results.
+
+---
+
+### GET `/properties/public`
+
+Public listing for the Landing Page.
+
+**Query Params**: `city`, `max_guests`, `featured`, `start_date`, `end_date`
+
+**Note**: Always returns only `active=true` properties.
+**Availability Filtering**: Same as above — date range filtering is supported.
+
+---
+
+### GET `/properties/{property_id}/availability`
+
+Returns all blocked date ranges for a property calendar. **Public endpoint — no authentication required.**
+
+Aggregates from two sources:
+- **Reservations**: All non-cancelled reservations for the property
+- **CalendarBlocks**: All imported blocks from external iCal sources
+
+**Response**:
+```json
+{
+  "property_id": "uuid",
+  "blocked": [
+    {
+      "start_date": "2026-03-01",
+      "end_date": "2026-03-08",
+      "type": "reservation",
+      "source": "elemnt",
+      "reason": "commercial"
+    },
+    {
+      "start_date": "2026-03-15",
+      "end_date": "2026-03-20",
+      "type": "calendar_block",
+      "source": "airbnb",
+      "reason": "Blocked"
+    }
+  ]
+}
+```
+
+**Fields**:
+- `type`: `"reservation"` | `"calendar_block"` — discriminator for the frontend
+- `source`: `"elemnt"`, `"airbnb"`, `"booking"`, `"manual"`, etc.
+- `reason`: `"commercial"` / `"owner_use"` for reservations; iCal summary for blocks
+- Results are sorted chronologically by `start_date`
+
+**Added**: Session 020
 
 ---
 
@@ -774,6 +832,100 @@ At this point the system has:
 ✅ Clear API contract
 ✅ Ready for FastAPI / NestJS
 ✅ Prepared for MCP / AI integrations
+
+---
+
+## 1️⃣5️⃣ iCal Synchronization (Session 018/020)
+
+Manages the bidirectional iCal integration between Elemnt Rentals and external platforms.
+
+### iCal Export (Phase 1 – Session 018)
+
+#### GET `/properties/{property_id}/ical?token={ical_secret}`
+
+Exports property confirmed reservations as RFC 5545 `.ics`. Share with Airbnb/Booking.
+
+**Auth**: Public (protected by `ical_secret` token in query param)
+
+**Response**: `text/calendar` file
+
+---
+
+### iCal Import – External Calendar CRUD (Phase 2 – Session 020)
+
+#### GET `/properties/{property_id}/external-calendars`
+
+Lists all external iCal source URLs registered for a property.
+
+**Auth**: Staff, Admin
+
+**Response**: `ExternalCalendarRead[]`
+
+---
+
+#### POST `/properties/{property_id}/external-calendars`
+
+Register a new external iCal source.
+
+**Auth**: Staff, Admin
+
+**Request**:
+```json
+{
+  "name": "Airbnb",
+  "url": "https://www.airbnb.com/calendar/ical/..."
+}
+```
+
+**Response**: `ExternalCalendarRead` (201 Created)
+
+---
+
+#### DELETE `/properties/{property_id}/external-calendars/{calendar_id}`
+
+Remove an external iCal source link.
+
+**Auth**: Staff, Admin
+
+**Response**: 204 No Content
+
+---
+
+### iCal Import – Sync Trigger (Phase 2 – Session 020)
+
+#### POST `/properties/{property_id}/sync`
+
+Manually triggers sync of all external iCal sources for a property.
+
+**Auth**: Staff, Admin
+
+**Strategy (ADR-017 – Replace-by-Source)**: Deletes all `CalendarBlock` rows for each source, then inserts fresh ones from the live feed.
+
+**Response**:
+```json
+[
+  {
+    "calendar_id": "uuid",
+    "calendar_name": "Airbnb",
+    "status": "ok",
+    "blocks_deleted": 5,
+    "blocks_created": 7,
+    "error": null
+  }
+]
+```
+
+One `SyncResult` per registered calendar. Failures do not stop other calendars.
+
+---
+
+#### GET `/properties/{property_id}/calendar-blocks`
+
+List all `CalendarBlock` entries for a property (all sources).
+
+**Auth**: Staff, Admin
+
+**Response**: `CalendarBlockRead[]`
 
 ---
 

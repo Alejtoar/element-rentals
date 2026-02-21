@@ -16,19 +16,38 @@ interface PropertyListingProps {
         filter_guests: string;
         filter_featured: string;
         no_properties: string;
+        filter_check_in?: string;
+        filter_check_out?: string;
+        filter_search?: string;
     };
     propertyDict: any;
     lang: "en" | "es";
+    initialStartDate?: string;
+    initialEndDate?: string;
 }
 
-export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, propertyDict, lang }) => {
+export const PropertyListing: React.FC<PropertyListingProps> = ({
+    dict,
+    propertyDict,
+    lang,
+    initialStartDate = "",
+    initialEndDate = "",
+}) => {
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({ city: "", guests: 0, featured: false });
+    const [startDate, setStartDate] = useState(initialStartDate);
+    const [endDate, setEndDate] = useState(initialEndDate);
+
+    // When parent updates dates (from Hero search), sync
+    useEffect(() => {
+        setStartDate(initialStartDate);
+        setEndDate(initialEndDate);
+    }, [initialStartDate, initialEndDate]);
 
     useEffect(() => {
         loadProperties();
-    }, [filters]);
+    }, [filters, startDate, endDate]);
 
     const loadProperties = async () => {
         setLoading(true);
@@ -37,6 +56,8 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
                 city: filters.city || undefined,
                 max_guests: filters.guests || undefined,
                 featured: filters.featured || undefined,
+                start_date: startDate || undefined,
+                end_date: endDate || undefined,
             });
             setProperties(data);
         } catch (error) {
@@ -58,10 +79,12 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
     const featured = filters.featured ? [] : properties.filter(p => p.featured);
     const catalogResults = filters.featured ? properties : properties.filter(p => !p.featured);
 
+    const isFiltered = startDate || endDate || filters.city || filters.guests > 0 || filters.featured;
+
     return (
         <section className="py-24 container mx-auto px-6" id="catalog">
-            {/* Featured Section (only shown when not explicitly filtering by featured) */}
-            {featured.length > 0 && (
+            {/* Featured Section (only shown when not explicitly filtering by featured or dates) */}
+            {featured.length > 0 && !startDate && !endDate && (
                 <div className="mb-20">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                         <div>
@@ -90,10 +113,14 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
                     <div>
                         <h2 className="text-4xl font-bold mb-4">
-                            {filters.featured ? dict.featured_title : dict.catalog_title}
+                            {isFiltered && (startDate || endDate)
+                                ? (lang === 'en' ? 'Available Properties' : 'Propiedades Disponibles')
+                                : filters.featured ? dict.featured_title : dict.catalog_title}
                         </h2>
                         <p className="text-foreground/60 max-w-xl">
-                            {filters.featured ? dict.featured_subtitle : dict.catalog_subtitle}
+                            {startDate && endDate
+                                ? `${new Date(startDate + 'T00:00:00').toLocaleDateString(lang === 'es' ? 'es-CO' : 'en-US', { month: 'short', day: 'numeric' })} → ${new Date(endDate + 'T00:00:00').toLocaleDateString(lang === 'es' ? 'es-CO' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                                : filters.featured ? dict.featured_subtitle : dict.catalog_subtitle}
                         </p>
                     </div>
 
@@ -123,6 +150,17 @@ export const PropertyListing: React.FC<PropertyListingProps> = ({ dict, property
                             </svg>
                             {dict.filter_featured}
                         </button>
+                        {isFiltered && (startDate || endDate) && (
+                            <button
+                                onClick={() => { setStartDate(""); setEndDate(""); }}
+                                className="flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-medium text-foreground/50 hover:text-foreground/80 hover:bg-foreground/5 transition-all"
+                                title={lang === 'en' ? 'Clear date filter' : 'Limpiar fechas'}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
                     </div>
                 </div>
 

@@ -9,16 +9,7 @@ import { getDictionary } from "@/lib/get-dictionary";
 import type { Locale } from "@/lib/i18n-config";
 
 export default function ReservationsPage({ params }: { params: Promise<{ lang: string }> }) {
-    const { lang } = use(params || {}); // params might be undefined if used directly, but usually nextjs passes it. Wait, the previous file didn't use params in props, so I assume it's a page component.
-    // Actually, I should use `useParams` if I don't want to change the props if it's not a page. But it is a page.
-    // Let's assume params are passed.
-
-    // However, if I change the signature, I should be careful.
-    // The previous code was: export default function ReservationsPage() {
-    // I will change it to: export default function ReservationsPage({ params }: { params: Promise<{ lang: string }> }) {
-
-    // Wait, createReservationModal might need i18n too? Yes, but let's focus on the page first.
-
+    const { lang } = use(params || {});
     const [dict, setDict] = useState<any>(null);
     const router = useRouter();
     const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -31,6 +22,8 @@ export default function ReservationsPage({ params }: { params: Promise<{ lang: s
 
     const [filterProperty, setFilterProperty] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
+    const [filterStartDate, setFilterStartDate] = useState("");
+    const [filterEndDate, setFilterEndDate] = useState("");
 
     useEffect(() => {
         const loadInit = async () => {
@@ -93,11 +86,25 @@ export default function ReservationsPage({ params }: { params: Promise<{ lang: s
         return reservation.total_amount - totalPaid;
     };
 
+    const clearDateFilters = () => {
+        setFilterStartDate("");
+        setFilterEndDate("");
+    };
+
     const filteredReservations = reservations.filter(res => {
         if (filterProperty && res.property_id !== filterProperty) return false;
         if (filterStatus && res.status !== filterStatus) return false;
+        // Date range filter: reservation overlaps with the searched period
+        if (filterStartDate || filterEndDate) {
+            const resStart = res.start_date;
+            const resEnd = res.end_date;
+            if (filterStartDate && resEnd < filterStartDate) return false;
+            if (filterEndDate && resStart > filterEndDate) return false;
+        }
         return true;
     });
+
+    const hasDateFilter = filterStartDate || filterEndDate;
 
     if (loading && !dict) {
         return (
@@ -125,27 +132,116 @@ export default function ReservationsPage({ params }: { params: Promise<{ lang: s
                 </div>
             )}
 
-            <div className="mb-6 flex gap-4">
-                <select
-                    value={filterProperty}
-                    onChange={(e) => setFilterProperty(e.target.value)}
-                    className="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
-                >
-                    <option value="">{dict?.admin?.properties?.filter_all || "All Properties"}</option>
-                    {properties.map(prop => (
-                        <option key={prop.id} value={prop.id}>{prop.name}</option>
-                    ))}
-                </select>
-                <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
-                >
-                    <option value="">{dict?.admin?.common?.all_statuses || "All Statuses"}</option>
-                    <option value="confirmed">{dict?.admin?.reservations?.confirmed || "Confirmed"}</option>
-                    <option value="cancelled">{dict?.admin?.reservations?.cancelled || "Cancelled"}</option>
-                    <option value="completed">{dict?.admin?.reservations?.completed || "Completed"}</option>
-                </select>
+            {/* Filters */}
+            <div className="mb-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 p-5 space-y-4">
+                <div className="flex flex-wrap gap-4 items-end">
+                    {/* Property filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                            {dict?.table?.property || "Property"}
+                        </label>
+                        <select
+                            value={filterProperty}
+                            onChange={(e) => setFilterProperty(e.target.value)}
+                            className="px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20 text-sm"
+                        >
+                            <option value="">{dict?.admin?.properties?.filter_all || "All Properties"}</option>
+                            {properties.map(prop => (
+                                <option key={prop.id} value={prop.id}>{prop.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Status filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                            {dict?.admin?.table?.status || "Status"}
+                        </label>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            className="px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20 text-sm"
+                        >
+                            <option value="">{dict?.admin?.common?.all_statuses || "All Statuses"}</option>
+                            <option value="confirmed">{dict?.admin?.reservations?.confirmed || "Confirmed"}</option>
+                            <option value="cancelled">{dict?.admin?.reservations?.cancelled || "Cancelled"}</option>
+                            <option value="completed">{dict?.admin?.reservations?.completed || "Completed"}</option>
+                        </select>
+                    </div>
+
+                    {/* Date range divider */}
+                    <div className="hidden md:block w-px h-10 bg-slate-700/60 self-end mb-0.5" />
+
+                    {/* Start date filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                            {dict?.admin?.reservations?.filter_start_date || "From Date"}
+                        </label>
+                        <div className="relative">
+                            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <input
+                                type="date"
+                                value={filterStartDate}
+                                onChange={(e) => setFilterStartDate(e.target.value)}
+                                className="pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20 text-sm [color-scheme:dark]"
+                            />
+                        </div>
+                    </div>
+
+                    {/* End date filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                            {dict?.admin?.reservations?.filter_end_date || "To Date"}
+                        </label>
+                        <div className="relative">
+                            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <input
+                                type="date"
+                                value={filterEndDate}
+                                min={filterStartDate}
+                                onChange={(e) => setFilterEndDate(e.target.value)}
+                                className="pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20 text-sm [color-scheme:dark]"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Clear dates */}
+                    {hasDateFilter && (
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-xs text-transparent font-medium uppercase tracking-wider select-none">x</label>
+                            <button
+                                onClick={clearDateFilters}
+                                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 text-sm transition-all"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                {dict?.admin?.reservations?.clear_filters || "Clear Filters"}
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Active filter chips */}
+                {(filterStartDate || filterEndDate) && (
+                    <div className="flex items-center gap-2 text-xs text-purple-300 bg-purple-500/10 border border-purple-500/20 rounded-xl px-4 py-2 w-fit">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <span>
+                            {filterStartDate && filterEndDate
+                                ? `${filterStartDate} → ${filterEndDate}`
+                                : filterStartDate
+                                    ? `${dict?.admin?.reservations?.filter_start_date || "From"}: ${filterStartDate}`
+                                    : `${dict?.admin?.reservations?.filter_end_date || "To"}: ${filterEndDate}`}
+                        </span>
+                        <span className="text-purple-400/60">• {filteredReservations.length} results</span>
+                    </div>
+                )}
             </div>
 
             <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">

@@ -15,7 +15,11 @@
         "filter_city": "Ciudad (ej. Cartagena)",
         "filter_guests": "Huéspedes",
         "filter_featured": "Solo Destacados",
-        "no_properties": "No se encontraron propiedades que coincidan con tus criterios."
+        "no_properties": "No se encontraron propiedades que coincidan con tus criterios.",
+        "filter_check_in": "Entrada",
+        "filter_check_out": "Salida",
+        "filter_dates": "Fechas de Viaje",
+        "filter_search": "Ver disponibilidad"
     },
     "property_card": {
         "night": "noche",
@@ -50,7 +54,13 @@
         "specifications": "Especificaciones",
         "guests_label": "Huéspedes",
         "price_label": "Precio por noche",
-        "location_label": "Ubicación"
+        "location_label": "Ubicación",
+        "availability_title": "Calendario de Disponibilidad",
+        "availability_subtitle": "Las fechas rojas no están disponibles. Las verdes están libres.",
+        "availability_loading": "Cargando disponibilidad...",
+        "availability_error": "No se pudo cargar la disponibilidad.",
+        "booked": "Ocupado",
+        "available": "Disponible"
     },
     "footer": {
         "rights": "© 2026 Elemnt Rentals. Todos los derechos reservados.",
@@ -195,7 +205,10 @@
             "financial_summary": "Resumen Financiero",
             "record_payment": "Registrar Pago",
             "payments": "Pagos",
-            "filter_all": "Todas las Reservas"
+            "filter_all": "Todas las Reservas",
+            "filter_start_date": "Desde Fecha",
+            "filter_end_date": "Hasta Fecha",
+            "clear_filters": "Limpiar Filtros"
         },
         "payments": {
             "title": "Pagos",
@@ -330,6 +343,29 @@
             "no_contracts": "No se encontraron contratos",
             "overlap_error": "Las fechas del contrato se solapan con uno existente",
             "created_at": "Creado El"
+        },
+        "ical": {
+            "title": "Sincronización de Calendarios",
+            "subtitle": "Gestiona la integración iCal con Airbnb, Booking.com y otras plataformas",
+            "export_title": "Exportar tu Calendario (iCal)",
+            "export_desc": "Comparte esta URL con Airbnb, Booking.com o cualquier plataforma que soporte iCal para bloquear fechas automáticamente.",
+            "copy_url": "Copiar URL",
+            "copied": "¡Copiado!",
+            "import_title": "Importar Calendarios Externos",
+            "import_desc": "Agrega URLs iCal de otras plataformas para bloquear fechas no disponibles automáticamente.",
+            "add_calendar": "Agregar Calendario",
+            "calendar_name": "Nombre del Calendario (ej. Airbnb)",
+            "calendar_url": "URL iCal",
+            "no_calendars": "No hay calendarios externos vinculados aún.",
+            "sync_all": "Sincronizar Todos",
+            "syncing": "Sincronizando...",
+            "sync_success": "¡Calendarios sincronizados exitosamente!",
+            "sync_error": "Error al sincronizar. Por favor intenta de nuevo.",
+            "delete_confirm": "¿Eliminar este calendario?",
+            "name_placeholder": "ej. Airbnb, Booking.com",
+            "url_placeholder": "https://www.airbnb.com/calendar/ical/...",
+            "add_loading": "Agregando...",
+            "synchronized": "Sincronizado"
         },
         "reports": {
             "title": "Reportes Financieros",

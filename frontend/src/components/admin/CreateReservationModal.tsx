@@ -362,8 +362,11 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                 <input
                                     type="number"
                                     min="1"
-                                    value={guestCount}
-                                    onChange={(e) => setGuestCount(parseInt(e.target.value))}
+                                    value={isNaN(guestCount) ? "" : guestCount}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setGuestCount(val === "" ? 1 : parseInt(val));
+                                    }}
                                     className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
                                 />
                             </div>
@@ -373,8 +376,11 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                 <input
                                     type="number"
                                     min="0"
-                                    value={totalAmount}
-                                    onChange={(e) => setTotalAmount(parseFloat(e.target.value))}
+                                    value={isNaN(totalAmount) ? "" : totalAmount}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setTotalAmount(val === "" ? 0 : parseFloat(val));
+                                    }}
                                     className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
                                 />
                             </div>

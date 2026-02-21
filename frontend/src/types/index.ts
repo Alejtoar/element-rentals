@@ -19,6 +19,41 @@ export interface Property {
     active: boolean;
     main_image_url?: string;
     images?: PropertyImage[];
+    ical_secret?: string;
+}
+
+// iCal / Availability Types
+export interface ExternalCalendar {
+    id: string;
+    property_id: string;
+    name: string;
+    url: string;
+    created_at: string;
+}
+
+export interface ExternalCalendarCreate {
+    name: string;
+    url: string;
+}
+
+export interface AvailabilityBlock {
+    start_date: string;
+    end_date: string;
+    reason?: string;
+}
+
+export interface AvailabilityResponse {
+    property_id: string;
+    blocked: AvailabilityBlock[];
+}
+
+export interface SyncResult {
+    calendar_id: string;
+    calendar_name: string;
+    status: 'ok' | 'error';
+    blocks_deleted: number;
+    blocks_created: number;
+    error?: string;
 }
 
 export interface GuestLead {

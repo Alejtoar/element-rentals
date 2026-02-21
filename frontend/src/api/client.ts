@@ -36,7 +36,12 @@ import {
     FinancialSummary,
     Contract,
     ContractCreate,
-    ContractUpdate
+    ContractUpdate,
+    ExternalCalendar,
+    ExternalCalendarCreate,
+    AvailabilityBlock,
+    AvailabilityResponse,
+    SyncResult
 } from "../types";
 
 // API Base URL Strategy:
@@ -125,17 +130,22 @@ export const api = {
         },
     },
     properties: {
-        getPublic: async (params: { city?: string; max_guests?: number; featured?: boolean } = {}): Promise<Property[]> => {
+        getPublic: async (params: { city?: string; max_guests?: number; featured?: boolean; start_date?: string; end_date?: string } = {}): Promise<Property[]> => {
             const searchParams = new URLSearchParams();
             if (params.city) searchParams.append("city", params.city);
             if (params.max_guests) searchParams.append("max_guests", params.max_guests.toString());
             if (params.featured !== undefined) searchParams.append("featured", params.featured.toString());
+            if (params.start_date) searchParams.append("start_date", params.start_date);
+            if (params.end_date) searchParams.append("end_date", params.end_date);
 
             const response = await fetch(`${API_BASE_URL}/properties/public?${searchParams.toString()}`);
             return handleResponse<Property[]>(response);
         },
         getById: async (id: string): Promise<Property> => {
-            const response = await fetch(`${API_BASE_URL}/properties/${id}`);
+            const token = getAuthToken();
+            const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
+                headers: token ? { "Authorization": `Bearer ${token}` } : {},
+            });
             return handleResponse<Property>(response);
         },
         getBySlug: async (slug: string): Promise<Property> => {
@@ -220,6 +230,53 @@ export const api = {
                 }
             );
             return handleResponse<Property>(response);
+        },
+        // iCal / External Calendar methods
+        getExternalCalendars: async (propertyId: string): Promise<ExternalCalendar[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/external-calendars`, {
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+            return handleResponse<ExternalCalendar[]>(response);
+        },
+        addExternalCalendar: async (propertyId: string, data: ExternalCalendarCreate): Promise<ExternalCalendar> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/external-calendars`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+            return handleResponse<ExternalCalendar>(response);
+        },
+        deleteExternalCalendar: async (propertyId: string, calendarId: string): Promise<void> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/external-calendars/${calendarId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ detail: "Unknown error" }));
+                throw new Error(error.detail || response.statusText);
+            }
+        },
+        syncCalendars: async (propertyId: string): Promise<SyncResult[]> => {
+            const token = getAuthToken();
+            if (!token) throw new Error("No authentication token found");
+            const response = await fetch(`${API_BASE_URL}/properties/${propertyId}/sync`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+            });
+            return handleResponse<SyncResult[]>(response);
+        },
+        getPropertyAvailability: async (property_id: string): Promise<AvailabilityResponse> => {
+            const response = await fetch(`${API_BASE_URL}/properties/${property_id}/availability`);
+            return handleResponse<AvailabilityResponse>(response);
         },
     },
     leads: {

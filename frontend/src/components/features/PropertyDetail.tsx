@@ -7,6 +7,7 @@ import { Property } from "@/types";
 import { api } from "@/api/client";
 import { getMediaUrl } from "@/lib/media";
 import { formatCOP } from "@/lib/currency";
+import AvailabilityCalendar from "./AvailabilityCalendar";
 
 interface PropertyDetailProps {
     property: Property;
@@ -37,6 +38,15 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
     }, [property.id, lang]);
 
     const images = property.images || [];
+
+    const availabilityDict = {
+        availability_title: dict.property_detail?.availability_title || "Availability Calendar",
+        availability_subtitle: dict.property_detail?.availability_subtitle || "Red dates are unavailable. Green dates are open.",
+        availability_loading: dict.property_detail?.availability_loading || "Loading availability...",
+        availability_error: dict.property_detail?.availability_error || "Could not load availability.",
+        booked: dict.property_detail?.booked || "Booked",
+        available: dict.property_detail?.available || "Available",
+    };
 
     return (
         <div className="max-w-7xl mx-auto animate-fade-in">
@@ -97,6 +107,14 @@ export default function PropertyDetail({ property, dict, lang }: PropertyDetailP
                             ))}
                         </div>
                     )}
+
+                    {/* Availability Calendar - placed below gallery on left */}
+                    <div className="mt-6">
+                        <AvailabilityCalendar
+                            propertyId={property.id}
+                            dict={availabilityDict}
+                        />
+                    </div>
                 </div>
 
                 {/* Right Column: Details */}
