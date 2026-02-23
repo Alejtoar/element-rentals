@@ -11,6 +11,11 @@ const nextConfig = {
         port: '8000',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.elemntrentals.com',
+        pathname: '/uploads/**',
+      },
     ],
   },
   async rewrites() {
