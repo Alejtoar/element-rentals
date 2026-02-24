@@ -89,12 +89,14 @@ Represents a managed physical property.
 | owner_id | UUID (FK → Owner.id) | |
 | name | VARCHAR | Internal reference |
 | slug | VARCHAR | Unique SEO-friendly URL part |
+| description | TEXT | Detailed property description |
 | nightly_price | DECIMAL | |
 | address | TEXT | |
 | city | VARCHAR | |
 | country | VARCHAR | |
 | max_guests | INTEGER | Capacity limit |
 | active | BOOLEAN | |
+| featured | BOOLEAN | |
 | ical_secret | UUID | Unique token for iCal export URL |
 | created_at | TIMESTAMP | |
 
@@ -474,7 +476,7 @@ Stores unavailable date ranges imported from external iCal feeds. Populated excl
 | id | UUID (PK) | |
 | property_id | UUID (FK → Property.id) | Indexed |
 | start_date | DATE | Inclusive |
-| end_date | DATE | Inclusive |
+| end_date | DATE | Exclusive (checkout day is available) |
 | source | VARCHAR | Origin platform: `airbnb`, `booking`, `manual` |
 | external_uid | VARCHAR | `UID` from the iCal VEVENT. Nullable. Indexed for deduplication |
 | reason | VARCHAR | SUMMARY from iCal event. Nullable |

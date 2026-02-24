@@ -87,11 +87,10 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
     };
 
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-        }).format(price);
+        const formatted = Math.round(price)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return `$ ${formatted}`;
     };
 
     if (isFormOpen && user) {

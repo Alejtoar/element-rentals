@@ -34,6 +34,26 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
     });
 
     useEffect(() => {
+        if (property) {
+            setFormData({
+                name: property.name || "",
+                description: property.description || "",
+                address: property.address || "",
+                city: property.city || "",
+                country: property.country || "Colombia",
+                max_guests: property.max_guests || 2,
+                nightly_price: property.nightly_price || 100,
+                active: property.active ?? true,
+                featured: property.featured ?? false,
+                owner_id: (property as any)?.owner_id || "",
+            });
+            if (property.images) {
+                setImages(property.images);
+            }
+        }
+    }, [property]);
+
+    useEffect(() => {
         const fetchOwners = async () => {
             setIsLoadingOwners(true);
             try {

@@ -175,6 +175,7 @@ Creates a property.
 {
   "owner_id": "uuid",
   "name": "Apartment 402",
+  "description": "Luxurious stay in the heart of the city...",
   "address": "Street 123",
   "city": "Cartagena",
   "country": "Colombia",

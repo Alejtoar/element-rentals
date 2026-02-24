@@ -8,6 +8,7 @@ from pydantic import computed_field
 # Shared Base Model
 class PropertyBase(SQLModel):
     name: str
+    description: str = ""
     nightly_price: Decimal
     address: str
     city: str
@@ -23,6 +24,7 @@ class PropertyCreate(PropertyBase):
 # Update
 class PropertyUpdate(SQLModel):
     name: Optional[str] = None
+    description: Optional[str] = None
     nightly_price: Optional[Decimal] = None
     address: Optional[str] = None
     city: Optional[str] = None
