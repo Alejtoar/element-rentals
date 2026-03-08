@@ -74,12 +74,18 @@ module.exports = {
 
 ## 4. Visual Assets Implementation (Logos)
 
-| Asset Context | Logo Version to Use |
-| :--- | :--- |
-| **Header (Sticky)** | White over Forest Green (`brand-forest`) |
-| **Footer** | Main Logo (Colored version) over `brand-bone` |
-| **Favicon** | The "Wave/Building" icon part of the logo |
-| **Image Watermarks** | White version with 50% opacity |
+| Asset Context | Logo Version to Use | Filename |
+| :--- | :--- | :--- |
+| **Header (Sticky)** | White over Forest Green | `Logo_principal_blanco.png` |
+| **Footer** | Main Logo (Colored) over Bone | `Logo_colores_principales.png` |
+| **Mobile / Minimal** | Typographic White | `Logo_tipografico_blanco.png` |
+| **Admin / High Contrast** | Main Logo (Black) | `Logo_principal_negro.png` |
+
+### 4.1 Use of Black Logos
+The "Negro" (Black) versions (`Logo_principal_negro.png` and `Logo_tipografico_negro.png`) are reserved for:
+*   High-contrast printing needs.
+*   Minimalist UI sections with pure white or light cream backgrounds where the brand colors are not desired.
+*   Admin dashboard sections where a "neutral" look is preferred.
 
 ---
 
