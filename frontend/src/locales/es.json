@@ -19,7 +19,7 @@
         "filter_check_in": "Entrada",
         "filter_check_out": "Salida",
         "filter_dates": "Fechas de Viaje",
-        "filter_search": "Ver disponibilidad"
+        "filter_search": "Disponibilidad"
     },
     "property_card": {
         "night": "noche",
@@ -74,35 +74,45 @@
     },
     "partners": {
         "hero_title": "Asóciate con Elemnt Rentals",
-        "hero_subtitle": "No somos dueños de propiedades — nos asociamos con propietarios. Nuestro modelo está diseñado para maximizar ingresos, proteger tu activo y mantener todo transparente.",
-        "how_it_works_title": "Cómo Funciona la Asociación",
-        "how_it_works_desc": "Operamos bajo un Acuerdo de Gestión de Propiedades, donde tú sigues siendo el propietario legal de la propiedad, nosotros actuamos como operador y gestor comercial, y los ingresos, gastos y resultados se reportan claramente cada mes.",
-        "management_fee_title": "Tarifa de Gestión",
-        "management_fee_desc": "Nuestra tarifa de gestión estándar es de hasta el 20% de los ingresos brutos por reservas. La tarifa se calcula solo sobre estancias completadas. Sin ingresos → sin tarifa. El porcentaje exacto puede variar según el tipo de propiedad, ubicación, ocupación esperada y nivel de servicios requeridos.",
-        "management_fee_note": "Cada propiedad es diferente. Los términos finales se acuerdan directamente con el propietario.",
-        "whats_included_title": "Qué Está Incluido",
-        "whats_included_items": [
-            "Creación y optimización de listados (Airbnb, Booking, directo)",
-            "Estrategia de precios y gestión de calendario",
-            "Comunicación con huéspedes (pre-estancia, durante, post-estancia)",
-            "Coordinación de check-in / check-out",
-            "Coordinación de limpieza",
-            "Manejo de problemas operativos menores",
-            "Reportes financieros mensuales"
+        "hero_subtitle": "Trabajamos junto a propietarios que desean rentabilizar su propiedad sin complicaciones. Nos encargamos de la gestión estratégica, la operación y la experiencia del huésped para maximizar ingresos y cuidar tu inversión.",
+        "how_it_works_title": "¿Por qué elegirnos?",
+        "how_it_works_desc": "Gestionamos tu propiedad de forma integral para maximizar su rentabilidad. Desde la promoción hasta la experiencia del huésped, nuestro equipo se encarga de todo mientras tú conservas el control de tu inversión. Una alianza simple y transparente.",
+        "steps": [
+            {
+                "title": "1. Evaluamos tu propiedad",
+                "desc": "Analizamos su potencial de rentabilidad."
+            },
+            {
+                "title": "2. La preparamos y promocionamos",
+                "desc": "Fotos profesionales, publicación en plataformas y marketing."
+            },
+            {
+                "title": "3. Gestionamos todo por ti",
+                "desc": "Reservas, huéspedes, limpieza y reportes de ingresos."
+            }
         ],
-        "expenses_title": "Gastos y Transparencia",
-        "expenses_desc": "Algunos costos no forman parte de la tarifa de gestión y se manejan por separado. Los gastos deducibles típicos incluyen servicios de limpieza, consumibles (artículos de tocador, reemplazo de ropa de cama), tarifas de plataforma (Airbnb, Booking, etc.) y mantenimiento directamente relacionado con las estancias de huéspedes.",
-        "expenses_note": "Todos los gastos están detallados. Solo los gastos deducibles afectan los pagos al propietario. Los gastos compartidos (si los hay) se asignan claramente.",
-        "owner_usage_title": "Uso del Propietario",
-        "owner_usage_desc": "Los propietarios pueden reservar su propiedad para uso personal, sujeto a aviso mínimo (típicamente 7 días) y sin conflictos con reservas activas de huéspedes. Las estancias personales no generan ingresos y no se cobran tarifas de gestión.",
-        "payments_title": "Pagos y Reportes",
-        "payments_desc": "Los huéspedes típicamente pagan un depósito de confirmación y un saldo antes del check-in. Los pagos al propietario se calculan después de la finalización de la estancia y las deducciones de gastos. Recibes un estado financiero mensual, inmutable y auditable.",
-        "flexibility_title": "Flexibilidad y Acuerdos Personalizados",
-        "flexibility_desc": "Entendemos que las asociaciones a largo plazo requieren flexibilidad. Lo siguiente se puede personalizar: porcentaje de tarifa de gestión, reglas de manejo de gastos, términos de uso del propietario y calendarios de pago.",
-        "flexibility_note": "Nuestro objetivo es la alineación, no la rigidez.",
-        "cta_title": "¿Listo para Explorar una Asociación?",
-        "cta_desc": "Si estás interesado en asociarte con Elemnt Rentals, cuéntanos sobre tu propiedad, evaluaremos su potencial y recibirás una propuesta personalizada.",
-        "cta_button": "Conviértete en Socio Propietario"
+        "management_fee_title": "Tarifa de Gestión",
+        "management_fee_desc": "Nuestro modelo se basa en una comisión sobre los ingresos generados, lo que significa que nuestro objetivo es el mismo que el tuyo: maximizar la ocupación y la rentabilidad de tu propiedad.",
+        "whats_included_title": "Qué Está Incluido",
+        "whats_included_desc": "Nuestro equipo gestiona cada detalle: desde la promoción y distribución en plataformas hasta la atención al huésped y la operación diaria, garantizando una experiencia de alto nivel para propietarios y huéspedes.\nIncluye:",
+        "whats_included_items": [
+            "Publicación y gestión en plataformas como Airbnb y Booking",
+            "Atención al huésped 24/7",
+            "Limpieza profesional y reposición de insumos",
+            "Coordinación de mantenimiento menor",
+            "Reportes de ingresos y ocupación"
+        ],
+        "expenses_title": "Balances y Reportes",
+        "expenses_desc": "Te mantenemos informado con reportes claros y detallados que incluyen reservas, ingresos, ocupación y gastos, para que tengas control total sobre tu inversión. Informes mensuales respaldados con datos y comprobantes.",
+        "owner_usage_title": "Uso flexible de tu propiedad",
+        "owner_usage_desc": "Tu propiedad siempre estará disponible para ti. Puedes reservar las fechas que desees para uso personal, coordinándolo con nuestro equipo para gestionar la disponibilidad sin afectar la operación.",
+        "payments_title": "Marketing profesional de la propiedad.",
+        "payments_desc": "Tu propiedad se promociona con fotografía profesional, presencia en nuestra web, redes sociales y plataformas globales como Airbnb, Booking y Expedia, además de nuestro portafolio de clientes directos.",
+        "flexibility_title": "Libertad y confianza",
+        "flexibility_desc": "Creemos que una buena alianza se mantiene por resultados, no por obligación. Por eso no trabajamos con cláusulas de permanencia ni multas por terminación.",
+        "cta_title": "Descubre el potencial de tu propiedad",
+        "cta_desc": "Te ayudamos a analizar su rentabilidad y a gestionarla estratégicamente para generar mayores ingresos.",
+        "cta_button": "Solicitar evaluación"
     },
     "admin": {
         "portal_title": "Portal Admin",
@@ -208,7 +218,42 @@
             "filter_all": "Todas las Reservas",
             "filter_start_date": "Desde Fecha",
             "filter_end_date": "Hasta Fecha",
-            "clear_filters": "Limpiar Filtros"
+            "clear_filters": "Limpiar Filtros",
+            "detail_title": "Detalles de la Reserva",
+            "detail_desc": "Administrar reserva y pagos",
+            "back": "Volver a Reservas",
+            "info_title": "Información de la Reserva",
+            "guest_count": "Cant. Huéspedes",
+            "total_amount": "Monto Total",
+            "quick_actions": "Acciones Rápidas",
+            "edit": "Editar Reserva",
+            "guest_contact": "Información de Contacto",
+            "reservation_type": "Tipo de Reserva",
+            "guest_booking": "Reserva de Huésped",
+            "payment_history": "Historial de Pagos",
+            "cancel": "Cancelar",
+            "amount_cop": "Monto (COP) *",
+            "payment_type": "Tipo de Pago *",
+            "deposit": "Depósito",
+            "balance_option": "Saldo",
+            "penalty": "Penalidad",
+            "payment_method_label": "Método de Pago *",
+            "none_no_fees": "Ninguno (Sin comisiones)",
+            "no_payment_methods": "No hay métodos de pago",
+            "beneficiary": "Beneficiario *",
+            "company": "Compañía",
+            "third_party": "Tercero",
+            "pending": "Pendiente",
+            "date": "Fecha",
+            "type": "Tipo",
+            "method": "Método",
+            "amount": "Monto",
+            "net_amount": "Monto Neto",
+            "actions": "Acciones",
+            "not_found": "Reserva no encontrada",
+            "edit_action": "Editar",
+            "delete": "Eliminar",
+            "payment_progress": "Progreso de Pago"
         },
         "payments": {
             "title": "Pagos",

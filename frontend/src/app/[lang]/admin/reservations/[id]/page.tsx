@@ -6,6 +6,8 @@ import { api } from "@/api/client";
 import { Reservation, Property, Guest, Channel } from "@/types";
 import { PaymentManagement } from "@/components/admin/PaymentManagement";
 import { Button } from "@/components/ui/Button";
+import { getDictionary } from "@/lib/get-dictionary";
+import type { Locale } from "@/lib/i18n-config";
 
 export default function ReservationDetailPage({ params }: { params: Promise<{ id: string; lang: string }> }) {
     const { id, lang } = use(params);
@@ -16,6 +18,7 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
     const [channel, setChannel] = useState<Channel | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [dict, setDict] = useState<any>(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showGuestInfoModal, setShowGuestInfoModal] = useState(false);
 
@@ -40,12 +43,14 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
             setEditStartDate(resData.start_date.split('T')[0]);
             setEditEndDate(resData.end_date.split('T')[0]);
 
-            const [propData, channelData] = await Promise.all([
+            const [propData, channelData, d] = await Promise.all([
                 api.properties.getById(resData.property_id),
                 api.channels.getById(resData.channel_id),
+                getDictionary(lang as Locale)
             ]);
             setProperty(propData);
             setChannel(channelData);
+            setDict(d);
 
             if (resData.guest_id) {
                 const guestData = await api.guests.getById(resData.guest_id);
@@ -102,13 +107,13 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'confirmed':
-                return 'bg-green-500/20 text-green-400 border-green-500/30';
+                return { bg: 'rgba(38,81,64,0.05)', text: '#265140', border: 'rgba(38,81,64,0.1)' };
             case 'cancelled':
-                return 'bg-red-500/20 text-red-400 border-red-500/30';
+                return { bg: 'rgba(255,100,100,0.05)', text: '#cc4444', border: 'rgba(255,100,100,0.1)' };
             case 'completed':
-                return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                return { bg: 'rgba(75,61,28,0.05)', text: '#4b3d1c', border: 'rgba(75,61,28,0.1)' };
             default:
-                return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+                return { bg: 'rgba(75,61,28,0.05)', text: 'rgba(75,61,28,0.5)', border: 'rgba(75,61,28,0.1)' };
         }
     };
 
@@ -123,7 +128,7 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
     if (loading) {
         return (
             <div className="p-8 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
             </div>
         );
     }
@@ -131,79 +136,94 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
     if (error || !reservation) {
         return (
             <div className="p-8">
-                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
-                    {error || "Reservation not found"}
+                <div className="rounded-sm p-4 text-sm" style={{ backgroundColor: 'rgba(255,100,100,0.05)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
+                    {error || dict?.admin?.reservations?.not_found || "Reservation not found"}
                 </div>
             </div>
         );
     }
 
+    const resStatusStyle = getStatusColor(reservation.status);
+
     return (
         <div className="p-8">
-            <div className="mb-8">
-                <button
-                    onClick={() => router.push(`/${lang}/admin/reservations`)}
-                    className="text-slate-400 hover:text-white transition-colors mb-4"
-                >
-                    ← Back to Reservations
-                </button>
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold text-white">Reservation Details</h1>
-                        <p className="text-slate-400 mt-1">Manage reservation and payments</p>
-                    </div>
-                    <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(reservation.status)}`}>
-                        {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
-                    </span>
+            <div className="mb-0 flex items-center justify-between pb-6" style={{ borderBottom: '1px solid rgba(82,120,88,0.2)' }}>
+                <div>
+                    <button
+                        onClick={() => router.push(`/${lang}/admin/reservations`)}
+                        className="flex items-center gap-2 mb-4 font-bold uppercase tracking-widest text-[10px] transition-colors"
+                        style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}
+                        onMouseOver={(e) => e.currentTarget.style.color = '#265140'}
+                        onMouseOut={(e) => e.currentTarget.style.color = 'rgba(75,61,28,0.5)'}
+                    >
+                        ← {dict?.admin?.reservations?.back || "Back to Reservations"}
+                    </button>
+                    <h1 className="text-3xl font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.detail_title || "Reservation Details"}</h1>
+                    <p className="mt-1 font-medium text-sm" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{dict?.admin?.reservations?.detail_desc || "Manage reservation and payments"}</p>
                 </div>
+                <span className={`px-4 py-2 rounded-sm text-[10px] font-bold uppercase tracking-widest`} style={{
+                    backgroundColor: resStatusStyle.bg,
+                    color: resStatusStyle.text,
+                    border: `1px solid ${resStatusStyle.border}`,
+                    fontFamily: "'Berlin Sans', sans-serif"
+                }}>
+                    {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
+                </span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">Reservation Information</h2>
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-sm p-6" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
+                        <h2 className="text-lg font-bold uppercase tracking-widest mb-6" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.info_title || "Reservation Information"}</h2>
+                        <div className="grid grid-cols-2 gap-6 p-4 rounded-sm" style={{ backgroundColor: 'rgba(38,81,64,0.02)', border: '1px solid rgba(82,120,88,0.1)' }}>
                             <div>
-                                <div className="text-slate-400 text-sm">Property</div>
-                                <div className="text-white font-medium">{property?.name || "Unknown"}</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.property || "Property"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{property?.name || "Unknown"}</div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Channel</div>
-                                <div className="text-white font-medium">{channel?.name || "Unknown"}</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.channel || "Channel"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{channel?.name || "Unknown"}</div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Guest</div>
-                                <div className="text-white font-medium">
-                                    {reservation.reservation_type === 'owner_use' ? 'Owner Use' : guest?.full_name || "Unknown"}
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.guest || "Guest"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
+                                    {reservation.reservation_type === 'owner_use' ? (dict?.admin?.reservations?.owner_use || 'Owner Use') : guest?.full_name || "Unknown"}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Guest Count</div>
-                                <div className="text-white font-medium">{reservation.guest_count}</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.guest_count || "Guest Count"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{reservation.guest_count}</div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Check-in</div>
-                                <div className="text-white font-medium">
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.check_in || "Check-in"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
                                     {new Date(reservation.start_date).toLocaleDateString()}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Check-out</div>
-                                <div className="text-white font-medium">
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.check_out || "Check-out"}</div>
+                                <div className="font-bold text-base" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
                                     {new Date(reservation.end_date).toLocaleDateString()}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Total Amount</div>
-                                <div className="text-white font-medium text-lg">
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.total_amount || "Total Amount"}</div>
+                                <div className="font-bold text-lg" style={{ color: '#265140', fontFamily: "'MegantZ', serif" }}>
                                     {formatCurrency(reservation.total_amount)}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">Status</div>
-                                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(reservation.status)}`}>
-                                    {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
-                                </span>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.status || "Status"}</div>
+                                {(() => {
+                                    const st = getStatusColor(reservation.status);
+                                    return (
+                                        <span className={`inline-block px-3 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest`} style={{
+                                            backgroundColor: st.bg, color: st.text, border: `1px solid ${st.border}`, fontFamily: "'Berlin Sans', sans-serif"
+                                        }}>
+                                            {reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1)}
+                                        </span>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </div>
@@ -212,37 +232,40 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
                         reservationId={reservation.id}
                         totalAmount={reservation.total_amount}
                         onPaymentAdded={loadData}
+                        dict={dict}
                     />
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
-                        <div className="space-y-2">
-                            <button
+                    <div className="rounded-sm p-6" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
+                        <h3 className="text-lg font-bold uppercase tracking-widest mb-4" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.quick_actions || "Quick Actions"}</h3>
+                        <div className="space-y-3">
+                            <Button
                                 onClick={() => {
                                     resetEditForm();
                                     setShowEditModal(true);
                                 }}
-                                className="w-full px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/30 rounded-lg text-white transition-all duration-200 text-left font-medium"
+                                className="w-full text-left justify-start"
+                                variant="sand"
                             >
-                                Edit Reservation
-                            </button>
+                                {dict?.admin?.reservations?.edit || "Edit Reservation"}
+                            </Button>
                             {guest && (
-                                <button
+                                <Button
                                     onClick={() => setShowGuestInfoModal(true)}
-                                    className="w-full px-4 py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-white transition-colors text-left"
+                                    className="w-full text-left justify-start"
+                                    variant="outline"
                                 >
-                                    Guest Contact Info
-                                </button>
+                                    {dict?.admin?.reservations?.guest_contact || "Guest Contact Info"}
+                                </Button>
                             )}
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-2xl p-6">
-                        <h3 className="text-lg font-semibold text-purple-300 mb-3">Reservation Type</h3>
-                        <p className="text-white font-medium">
-                            {reservation.reservation_type === 'owner_use' ? 'Owner Use' : 'Guest Booking'}
+                    <div className="rounded-sm p-6" style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.2)', boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}>
+                        <h3 className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reservations?.reservation_type || "Reservation Type"}</h3>
+                        <p className="font-bold text-lg" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
+                            {reservation.reservation_type === 'owner_use' ? (dict?.admin?.reservations?.owner_use || 'Owner Use') : (dict?.admin?.reservations?.guest_booking || 'Guest Booking')}
                         </p>
                     </div>
                 </div>
@@ -250,62 +273,59 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
 
             {/* Edit Reservation Modal */}
             {showEditModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-slate-800 border border-slate-700 rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-                        <h2 className="text-2xl font-bold text-white mb-6">Edit Reservation</h2>
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="rounded-sm max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
+                        <h2 className="text-2xl font-bold uppercase tracking-widest mb-6" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Edit Reservation</h2>
 
                         {error && (
-                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                            <div className="mb-4 p-3 rounded-sm text-sm" style={{ backgroundColor: 'rgba(255,100,100,0.05)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                                 {error}
                             </div>
                         )}
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {/* Status */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-3">
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                     Status
                                 </label>
-                                <div className="grid grid-cols-3 gap-2">
-                                    <label className="flex flex-col items-center p-3 bg-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-700 transition-colors">
+                                <div className="grid grid-cols-3 gap-3">
+                                    <label className="flex flex-col items-center p-4 rounded-sm cursor-pointer transition-colors" style={{ backgroundColor: editStatus === 'confirmed' ? 'rgba(38,81,64,0.1)' : '#e6e3d7', border: editStatus === 'confirmed' ? '1px solid #265140' : '1px solid transparent' }}>
                                         <input
                                             type="radio"
                                             value="confirmed"
                                             checked={editStatus === 'confirmed'}
                                             onChange={(e) => setEditStatus(e.target.value as 'confirmed' | 'cancelled' | 'completed')}
-                                            className="w-4 h-4 text-green-500 mb-2"
+                                            className="hidden"
                                         />
-                                        <span className="text-white text-sm">Confirmed</span>
-                                        <span className="mt-1 px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">Active</span>
+                                        <span className="font-bold text-sm uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Confirmed</span>
                                     </label>
-                                    <label className="flex flex-col items-center p-3 bg-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-700 transition-colors">
+                                    <label className="flex flex-col items-center p-4 rounded-sm cursor-pointer transition-colors" style={{ backgroundColor: editStatus === 'completed' ? 'rgba(75,61,28,0.1)' : '#e6e3d7', border: editStatus === 'completed' ? '1px solid #4b3d1c' : '1px solid transparent' }}>
                                         <input
                                             type="radio"
                                             value="completed"
                                             checked={editStatus === 'completed'}
                                             onChange={(e) => setEditStatus(e.target.value as 'confirmed' | 'cancelled' | 'completed')}
-                                            className="w-4 h-4 text-blue-500 mb-2"
+                                            className="hidden"
                                         />
-                                        <span className="text-white text-sm">Completed</span>
-                                        <span className="mt-1 px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded">Finished</span>
+                                        <span className="font-bold text-sm uppercase tracking-widest" style={{ color: '#4b3d1c', fontFamily: "'Berlin Sans', sans-serif" }}>Completed</span>
                                     </label>
-                                    <label className="flex flex-col items-center p-3 bg-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-700 transition-colors">
+                                    <label className="flex flex-col items-center p-4 rounded-sm cursor-pointer transition-colors" style={{ backgroundColor: editStatus === 'cancelled' ? 'rgba(255,100,100,0.1)' : '#e6e3d7', border: editStatus === 'cancelled' ? '1px solid #cc4444' : '1px solid transparent' }}>
                                         <input
                                             type="radio"
                                             value="cancelled"
                                             checked={editStatus === 'cancelled'}
                                             onChange={(e) => setEditStatus(e.target.value as 'confirmed' | 'cancelled' | 'completed')}
-                                            className="w-4 h-4 text-red-500 mb-2"
+                                            className="hidden"
                                         />
-                                        <span className="text-white text-sm">Cancelled</span>
-                                        <span className="mt-1 px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">Inactive</span>
+                                        <span className="font-bold text-sm uppercase tracking-widest" style={{ color: '#cc4444', fontFamily: "'Berlin Sans', sans-serif" }}>Cancelled</span>
                                     </label>
                                 </div>
                             </div>
 
                             {/* Total Amount */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                     Total Amount (COP)
                                 </label>
                                 <input
@@ -314,40 +334,43 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
                                     step="1000"
                                     value={editAmount}
                                     onChange={(e) => setEditAmount(parseFloat(e.target.value) || 0)}
-                                    className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-4 py-3 rounded-sm outline-none font-medium"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             {/* Dates */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                                    <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                         Check-in Date
                                     </label>
                                     <input
                                         type="date"
                                         value={editStartDate}
                                         onChange={(e) => setEditStartDate(e.target.value)}
-                                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-4 py-3 rounded-sm outline-none font-medium"
+                                        style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                                    <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                         Check-out Date
                                     </label>
                                     <input
                                         type="date"
                                         value={editEndDate}
                                         onChange={(e) => setEditEndDate(e.target.value)}
-                                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-4 py-3 rounded-sm outline-none font-medium"
+                                        style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 mt-6">
+                        <div className="flex gap-4 mt-8">
                             <Button
-                                variant="secondary"
+                                variant="outline"
                                 onClick={() => {
                                     setShowEditModal(false);
                                     resetEditForm();
@@ -357,6 +380,7 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
                                 Cancel
                             </Button>
                             <Button
+                                variant="sand"
                                 onClick={handleUpdateReservation}
                                 disabled={updating}
                                 className="flex-1"
@@ -370,43 +394,46 @@ export default function ReservationDetailPage({ params }: { params: Promise<{ id
 
             {/* Guest Contact Info Modal */}
             {showGuestInfoModal && guest && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-slate-800 border border-slate-700 rounded-lg max-w-md w-full p-6">
-                        <h2 className="text-2xl font-bold text-white mb-6">Guest Contact Information</h2>
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="rounded-sm max-w-md w-full p-8" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}>
+                        <h2 className="text-2xl font-bold uppercase tracking-widest mb-6" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Guest Contact Info</h2>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div>
-                                <div className="text-slate-400 text-sm mb-1">Full Name</div>
-                                <div className="text-white font-medium text-lg">{guest.full_name}</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>Full Name</div>
+                                <div className="font-bold text-xl" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{guest.full_name}</div>
                             </div>
 
                             <div>
-                                <div className="text-slate-400 text-sm mb-1">Email</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>Email</div>
                                 {guest.email ? (
                                     <a
                                         href={`mailto:${guest.email}`}
-                                        className="text-purple-400 hover:text-purple-300 font-medium"
+                                        className="font-medium text-lg transition-colors"
+                                        style={{ color: '#265140', fontFamily: "'MegantZ', serif" }}
                                     >
                                         {guest.email}
                                     </a>
                                 ) : (
-                                    <div className="text-slate-500">Not provided</div>
+                                    <div className="font-medium" style={{ color: 'rgba(75,61,28,0.4)', fontFamily: "'MegantZ', serif" }}>Not provided</div>
                                 )}
                             </div>
 
                             <div>
-                                <div className="text-slate-400 text-sm mb-1">Phone</div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>Phone</div>
                                 <a
                                     href={`tel:${guest.phone}`}
-                                    className="text-purple-400 hover:text-purple-300 font-medium"
+                                    className="font-medium text-lg transition-colors"
+                                    style={{ color: '#265140', fontFamily: "'MegantZ', serif" }}
                                 >
                                     {guest.phone}
                                 </a>
                             </div>
                         </div>
 
-                        <div className="mt-6">
+                        <div className="mt-8">
                             <Button
+                                variant="sand"
                                 onClick={() => setShowGuestInfoModal(false)}
                                 className="w-full"
                             >

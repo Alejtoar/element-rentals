@@ -24,7 +24,10 @@ export default async function PropertyPage({ params }: Props) {
         }
 
         return (
-            <main className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+            <main
+                className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8"
+                style={{ backgroundColor: '#e6e3d7' }} /* brand-bone */
+            >
                 <Suspense fallback={<div className="animate-pulse h-96 bg-foreground/5 rounded-3xl" />}>
                     <PropertyDetailContent
                         property={property}

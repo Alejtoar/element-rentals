@@ -111,7 +111,7 @@ export default function OwnersPage({ params }: { params: Promise<{ lang: string 
     if (loading && owners.length === 0 && !dict) {
         return (
             <div className="p-8 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
             </div>
         );
     }
@@ -120,77 +120,81 @@ export default function OwnersPage({ params }: { params: Promise<{ lang: string 
         <div className="p-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">{dict?.admin?.owners?.title || "Property Owners"}</h1>
-                    <p className="text-slate-400 mt-1">{dict?.admin?.owners?.subtitle || "Manage owner information and bank details"}</p>
+                    <h1 className="text-3xl font-bold" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.owners?.title || "Property Owners"}</h1>
+                    <p className="text-sm font-medium mt-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{dict?.admin?.owners?.subtitle || "Manage owner information and bank details"}</p>
                 </div>
-                <Button onClick={handleAdd}>{dict?.admin?.owners?.add_owner || "Add Owner"}</Button>
+                <Button onClick={handleAdd} variant="sand">{dict?.admin?.owners?.add_owner || "Add Owner"}</Button>
             </div>
 
             {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+                <div className="mb-6 p-4 rounded-sm text-sm font-medium" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                     {dict?.admin?.common?.error || error}
                 </div>
             )}
 
             {showForm && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl max-w-2xl w-full">
-                        <div className="p-6 border-b border-slate-700/50">
-                            <h2 className="text-2xl font-bold text-white">
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="rounded-sm max-w-2xl w-full shadow-2xl" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+                        <div className="p-6" style={{ borderBottom: '1px solid rgba(82,120,88,0.2)' }}>
+                            <h2 className="text-xl font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>
                                 {editingOwner ? (dict?.admin?.owners?.edit_owner || "Edit Owner") : (dict?.admin?.owners?.add_owner || "Add New Owner")}
                             </h2>
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.name || "Full Name"} *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.name || "Full Name"} *</label>
                                 <input
                                     type="text"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.email || "Email"} *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.email || "Email"} *</label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.table?.phone || "Phone"} *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.phone || "Phone"} *</label>
                                 <input
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.owners?.bank_details || "Bank Details (Optional)"}</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.owners?.bank_details || "Bank Details (Optional)"}</label>
                                 <textarea
                                     value={bankDetails}
                                     onChange={(e) => setBankDetails(e.target.value)}
                                     rows={3}
                                     placeholder="e.g., Bancolombia Ahorros 123456789"
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none resize-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             <div className="flex justify-end gap-2 pt-4">
-                                <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
+                                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
                                     {dict?.admin?.common?.cancel || "Cancel"}
                                 </Button>
-                                <Button type="submit" disabled={loading}>
+                                <Button type="submit" disabled={loading} variant="sand">
                                     {loading ? (dict?.admin?.common?.save_loading || "Saving...") : editingOwner ? (dict?.admin?.common?.save || "Update Owner") : (dict?.admin?.common?.add || "Create Owner")}
                                 </Button>
                             </div>
@@ -199,50 +203,50 @@ export default function OwnersPage({ params }: { params: Promise<{ lang: string 
                 </div>
             )}
 
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">
+            <div className="rounded-sm overflow-hidden" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
                 <table className="w-full">
-                    <thead className="bg-slate-700/30">
-                        <tr>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.table?.name || "Name"}</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.table?.contact || "Contact"}</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">{dict?.admin?.owners?.bank_details || "Bank Details"}</th>
-                            <th className="px-6 py-4 text-right text-sm font-semibold text-slate-300">{dict?.admin?.table?.actions || "Actions"}</th>
+                    <thead style={{ backgroundColor: 'rgba(38,81,64,0.05)' }}>
+                        <tr style={{ borderBottom: '1px solid rgba(82,120,88,0.2)' }}>
+                            <th className="px-6 py-4 text-left text-xs font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.name || "Name"}</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.contact || "Contact"}</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.owners?.bank_details || "Bank Details"}</th>
+                            <th className="px-6 py-4 text-right text-xs font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.actions || "Actions"}</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-700/30">
+                    <tbody>
                         {owners.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
+                                <td colSpan={4} className="px-6 py-12 text-center text-sm font-medium" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'MegantZ', serif" }}>
                                     {dict?.admin?.common?.no_data || "No owners found. Create one to get started."}
                                 </td>
                             </tr>
                         ) : (
                             owners.map((owner) => (
-                                <tr key={owner.id} className="hover:bg-slate-700/20 transition-colors">
-                                    <td className="px-6 py-4 text-white font-medium">{owner.full_name}</td>
-                                    <td className="px-6 py-4 text-slate-300">
+                                <tr key={owner.id} className="transition-colors hover:bg-black/5" style={{ borderBottom: '1px solid rgba(82,120,88,0.1)' }}>
+                                    <td className="px-6 py-4 font-bold" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{owner.full_name}</td>
+                                    <td className="px-6 py-4 font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
                                         <div className="text-sm">{owner.email}</div>
-                                        <div className="text-sm text-slate-400">{owner.phone}</div>
+                                        <div className="text-sm" style={{ color: 'rgba(75,61,28,0.7)' }}>{owner.phone}</div>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-300 text-sm">
-                                        {owner.bank_details || <span className="text-slate-500 italic">{dict?.admin?.common?.not_provided || "Not provided"}</span>}
+                                    <td className="px-6 py-4 text-sm font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
+                                        {owner.bank_details || <span className="italic" style={{ color: 'rgba(75,61,28,0.5)' }}>{dict?.admin?.common?.not_provided || "Not provided"}</span>}
                                     </td>
                                     <td className="px-6 py-4 text-right space-x-2">
                                         <Link
                                             href={`/${lang}/admin/owners/${owner.id}`}
-                                            className="text-green-400 hover:text-green-300 transition-colors mr-2"
+                                            className="uppercase tracking-widest font-bold transition-colors hover:text-[#527858] mr-2" style={{ color: '#265140', fontSize: '10px' }}
                                         >
                                             {dict?.admin?.common?.view || "View"}
                                         </Link>
                                         <button
                                             onClick={() => handleEdit(owner)}
-                                            className="text-blue-400 hover:text-blue-300 transition-colors"
+                                            className="uppercase tracking-widest font-bold transition-colors hover:text-[#527858]" style={{ color: '#265140', fontSize: '10px' }}
                                         >
                                             {dict?.admin?.common?.edit || "Edit"}
                                         </button>
                                         <button
                                             onClick={() => handleDelete(owner.id)}
-                                            className="text-red-400 hover:text-red-300 transition-colors"
+                                            className="uppercase tracking-widest font-bold transition-colors" style={{ color: '#cc4444', fontSize: '10px' }}
                                         >
                                             {dict?.admin?.common?.delete || "Delete"}
                                         </button>

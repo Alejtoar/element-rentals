@@ -19,7 +19,7 @@
         "filter_check_in": "Check-in",
         "filter_check_out": "Check-out",
         "filter_dates": "Travel Dates",
-        "filter_search": "Check availability"
+        "filter_search": "Availability"
     },
     "property_card": {
         "night": "night",
@@ -74,35 +74,45 @@
     },
     "partners": {
         "hero_title": "Partner with Elemnt Rentals",
-        "hero_subtitle": "We don't own properties — we partner with owners. Our model is designed to maximize revenue, protect your asset, and keep everything transparent.",
-        "how_it_works_title": "How the Partnership Works",
-        "how_it_works_desc": "We operate under a Property Management Agreement, where you remain the legal owner of the property, we act as the operator and commercial manager, and revenue, expenses, and results are clearly reported every month.",
-        "management_fee_title": "Management Fee",
-        "management_fee_desc": "Our standard management fee is up to 20% of gross booking revenue. The fee is calculated only on completed stays. No revenue → no fee. The exact percentage can vary based on property type, location, expected occupancy, and level of services required.",
-        "management_fee_note": "Every property is different. Final terms are agreed directly with the owner.",
-        "whats_included_title": "What's Included",
-        "whats_included_items": [
-            "Listing creation and optimization (Airbnb, Booking, direct)",
-            "Pricing strategy and calendar management",
-            "Guest communication (pre-stay, during stay, post-stay)",
-            "Check-in / check-out coordination",
-            "Cleaning coordination",
-            "Minor operational issue handling",
-            "Monthly financial reporting"
+        "hero_subtitle": "We work alongside owners who want to monetize their property without complications. We take care of strategic management, operations, and the guest experience to maximize income and protect your investment.",
+        "how_it_works_title": "Why choose us?",
+        "how_it_works_desc": "We manage your property comprehensively to maximize its profitability. From promotion to guest experience, our team takes care of everything while you retain control of your investment. A simple and transparent alliance.",
+        "steps": [
+            {
+                "title": "1. We evaluate your property",
+                "desc": "We analyze its potential for profitability."
+            },
+            {
+                "title": "2. We prepare and promote it",
+                "desc": "Professional photography, platform listings, and marketing."
+            },
+            {
+                "title": "3. We manage everything for you",
+                "desc": "Bookings, guests, cleaning, and income reporting."
+            }
         ],
-        "expenses_title": "Expenses & Transparency",
-        "expenses_desc": "Some costs are not part of the management fee and are handled separately. Typical deductible expenses include cleaning services, consumables (toiletries, linens replacement), platform fees (Airbnb, Booking, etc.), and maintenance directly related to guest stays.",
-        "expenses_note": "All expenses are itemized. Only deductible expenses affect owner payouts. Shared expenses (if any) are clearly allocated.",
-        "owner_usage_title": "Owner Usage",
-        "owner_usage_desc": "Owners may reserve their property for personal use, subject to minimum notice (typically 7 days) and no active guest reservation conflicts. Personal stays generate no revenue and are not charged management fees.",
-        "payments_title": "Payments & Reporting",
-        "payments_desc": "Guests typically pay a confirmation deposit and a balance before check-in. Owner payouts are calculated after stay completion and expense deductions. You receive a monthly financial statement, immutable and auditable.",
-        "flexibility_title": "Flexibility & Custom Agreements",
-        "flexibility_desc": "We understand that long-term partnerships require flexibility. The following can be customized: management fee percentage, expense handling rules, owner usage terms, and payment schedules.",
-        "flexibility_note": "Our goal is alignment, not rigidity.",
-        "cta_title": "Ready to Explore a Partnership?",
-        "cta_desc": "If you're interested in partnering with Elemnt Rentals, tell us about your property, we'll evaluate its potential, and you'll receive a tailored proposal.",
-        "cta_button": "Become an Owner Partner"
+        "management_fee_title": "Management Fee",
+        "management_fee_desc": "Our model is based on a commission on the income generated, which means our goal is the same as yours: to maximize the occupancy and profitability of your property.",
+        "whats_included_title": "What's Included",
+        "whats_included_desc": "Our team manages every detail: from promotion and distribution on platforms to guest attention and daily operation, guaranteeing a high-level experience for owners and guests.\nIncludes:",
+        "whats_included_items": [
+            "Publication and management on platforms like Airbnb and Booking",
+            "24/7 guest support",
+            "Professional cleaning and replenishment of supplies",
+            "Minor maintenance coordination",
+            "Income and occupancy reports"
+        ],
+        "expenses_title": "Balances and Reports",
+        "expenses_desc": "We keep you informed with clear and detailed reports that include bookings, income, occupancy, and expenses, so you have full control over your investment. Monthly reports backed by data and receipts.",
+        "owner_usage_title": "Flexible use of your property",
+        "owner_usage_desc": "Your property will always be available to you. You can book the dates you want for personal use, coordinating with our team to manage availability without affecting the operation.",
+        "payments_title": "Professional property marketing.",
+        "payments_desc": "Your property is promoted with professional photography, presence on our website, social media, and global platforms like Airbnb, Booking, and Expedia, in addition to our direct client portfolio.",
+        "flexibility_title": "Freedom and trust",
+        "flexibility_desc": "We believe that a good alliance is maintained by results, not by obligation. That's why we don't work with permanence clauses or termination fines.",
+        "cta_title": "Discover your property's potential",
+        "cta_desc": "We help you analyze its profitability and manage it strategically to generate higher income.",
+        "cta_button": "Request evaluation"
     },
     "admin": {
         "portal_title": "Admin Portal",
@@ -209,7 +219,42 @@
             "filter_all": "All Reservations",
             "filter_start_date": "From Date",
             "filter_end_date": "To Date",
-            "clear_filters": "Clear Filters"
+            "clear_filters": "Clear Filters",
+            "detail_title": "Reservation Details",
+            "detail_desc": "Manage reservation and payments",
+            "back": "Back to Reservations",
+            "info_title": "Reservation Information",
+            "guest_count": "Guest Count",
+            "total_amount": "Total Amount",
+            "quick_actions": "Quick Actions",
+            "edit": "Edit Reservation",
+            "guest_contact": "Guest Contact Info",
+            "reservation_type": "Reservation Type",
+            "guest_booking": "Guest Booking",
+            "payment_history": "Payment History",
+            "cancel": "Cancel",
+            "amount_cop": "Amount (COP) *",
+            "payment_type": "Payment Type *",
+            "deposit": "Deposit",
+            "balance_option": "Balance",
+            "penalty": "Penalty",
+            "payment_method_label": "Payment Method *",
+            "none_no_fees": "None (No fees)",
+            "no_payment_methods": "No payment methods available",
+            "beneficiary": "Beneficiary *",
+            "company": "Company",
+            "third_party": "Third Party",
+            "pending": "Pending",
+            "date": "Date",
+            "type": "Type",
+            "method": "Method",
+            "amount": "Amount",
+            "net_amount": "Net Amount",
+            "actions": "Actions",
+            "not_found": "Reservation not found",
+            "edit_action": "Edit",
+            "delete": "Delete",
+            "payment_progress": "Payment Progress"
         },
         "guests": {
             "title": "Guests",

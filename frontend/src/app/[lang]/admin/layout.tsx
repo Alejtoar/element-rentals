@@ -83,12 +83,13 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
     // Show loading state while checking auth or dict
     if (isLoading || !dict) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#265140' }}>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#cfbb9b' }}></div>
             </div>
         );
     }
 
+    // Nav icons stay the same...
     const navItems = [
         {
             name: dict.admin.sidebar.properties,
@@ -184,22 +185,23 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-900 flex">
+        <div className="min-h-screen flex" style={{ backgroundColor: '#265140' }}>
             {/* Sidebar */}
-            <aside className="w-64 bg-slate-800/50 backdrop-blur-xl border-r border-slate-700/50 flex flex-col">
+            <aside className="w-64 flex flex-col" style={{ backgroundColor: '#1a3a2d', borderRight: '1px solid rgba(82,120,88,0.2)' }}>
                 {/* Logo */}
-                <div className="p-6 border-b border-slate-700/50">
+                <div className="p-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            <h1 className="text-2xl font-bold" style={{ color: '#e6e3d7', fontFamily: "'Berlin Sans', sans-serif", letterSpacing: '-0.02em' }}>
                                 Elemnt
                             </h1>
-                            <p className="text-xs text-slate-400 mt-1">{dict.admin.portal_title}</p>
+                            <p className="text-xs mt-1" style={{ color: 'rgba(230,227,215,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.portal_title}</p>
                         </div>
                         {/* Language Switcher */}
                         <button
                             onClick={toggleLanguage}
-                            className="px-2 py-1 text-xs font-medium text-slate-300 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded transition-colors"
+                            className="px-2 py-1 text-xs font-medium rounded transition-colors"
+                            style={{ backgroundColor: 'rgba(82,120,88,0.3)', color: '#cfbb9b', fontFamily: "'Berlin Sans', sans-serif" }}
                             title="Switch Language"
                         >
                             {lang.toUpperCase()}
@@ -207,50 +209,65 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
                     </div>
                 </div>
 
+                <div className="mx-4 h-px border-t border-dashed" style={{ borderColor: 'rgba(82,120,88,0.3)' }} />
+
                 {/* Navigation */}
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="flex-1 p-4 space-y-2 relative overflow-y-auto">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                    ? "bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border border-purple-500/30"
-                                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-                                    }`}
+                                className="flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-200"
+                                style={{
+                                    backgroundColor: isActive ? 'rgba(82,120,88,0.2)' : 'transparent',
+                                    color: isActive ? '#cfbb9b' : '#e6e3d7',
+                                    border: isActive ? '1px solid rgba(82,120,88,0.4)' : '1px solid transparent',
+                                    fontFamily: "'Berlin Sans', sans-serif",
+                                    fontSize: '0.875rem',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
+                                }}
                             >
                                 {item.icon}
-                                <span className="font-medium">{item.name}</span>
+                                <span>{item.name}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
+                <div className="mx-4 h-px border-t border-dashed" style={{ borderColor: 'rgba(82,120,88,0.3)' }} />
+
                 {/* User Info & Logout */}
-                <div className="p-4 border-t border-slate-700/50">
+                <div className="p-4">
                     {user && (
-                        <div className="mb-3 px-4 py-2 bg-slate-700/30 rounded-lg">
-                            <p className="text-sm font-medium text-slate-200">{user.full_name}</p>
-                            <p className="text-xs text-slate-400">{user.email}</p>
-                            <p className="text-xs text-purple-400 mt-1 capitalize">{user.role}</p>
+                        <div className="mb-3 px-4 py-3 rounded-sm" style={{ backgroundColor: 'rgba(38,81,64,0.3)', border: '1px solid rgba(82,120,88,0.2)' }}>
+                            <p className="text-sm font-bold" style={{ color: '#e6e3d7', fontFamily: "'Berlin Sans', sans-serif" }}>{user.full_name}</p>
+                            <p className="text-xs" style={{ color: 'rgba(230,227,215,0.6)', fontFamily: "'MegantZ', serif" }}>{user.email}</p>
+                            <p className="text-xs mt-1 uppercase tracking-widest font-bold" style={{ color: '#527858', fontFamily: "'Berlin Sans', sans-serif" }}>{user.role}</p>
                         </div>
                     )}
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-200"
+                        style={{ color: '#e6e3d7', backgroundColor: 'transparent', fontFamily: "'Berlin Sans', sans-serif", fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,100,100,0.1)'; (e.currentTarget as HTMLElement).style.color = '#ff8888'; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#e6e3d7'; }}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className="font-medium">{dict.admin.logout}</span>
+                        <span>{dict.admin.logout}</span>
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-auto">
-                {children}
+            <main className="flex-1 overflow-auto" style={{ backgroundColor: '#e6e3d7' }}>
+                <div className="p-8">
+                    {children}
+                </div>
             </main>
         </div>
     );

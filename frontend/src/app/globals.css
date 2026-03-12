@@ -1,74 +1,212 @@
+/* =======================================================
+   ELEMNT RENTALS — Global Stylesheet
+   Session 022: High-End Nature & Luxury Rebrand
+   ======================================================= */
+
+/* ---- Custom Fonts ---- */
+@font-face {
+  font-family: 'Berlin Sans';
+  src: url('/fonts/berlin_sans/berlinsans.woff') format('woff'),
+    url('/fonts/berlin_sans/berlinsans.otf') format('opentype'),
+    url('/fonts/berlin_sans/berlinsans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MegantZ';
+  src: url('/fonts/megante/Meganté-Personal-Use.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Tailwind v4 Core Import ---- */
 @import "tailwindcss";
 
+/* ---- Brand Design Tokens (Tailwind v4 @theme) ---- */
 @theme inline {
-  --color-border: var(--border);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), "Outfit", sans-serif;
-  --font-mono: var(--font-geist-mono);
+  /* Brand Color Palette */
+  --color-brand-sand: #cfbb9b;
+  /* Accents / Highlighting */
+  --color-brand-sage: #527858;
+  /* Secondary / Buttons */
+  --color-brand-forest: #265140;
+  /* Primary / Dark Backgrounds */
+  --color-brand-olive: #4b3d1c;
+  /* Main Typography / Contrast */
+  --color-brand-bone: #e6e3d7;
+  /* Page Background (Primary) */
+  --color-brand-cream: #f4f2eb;
+  /* Lighter variant for cards */
 
-  --color-primary: #0066FF;
-  --color-primary-dark: #0052CC;
-  --color-secondary: #7000FF;
-  --color-accent: #FF00C7;
+  /* Re-map semantic tokens to brand */
+  --color-background: #e6e3d7;
+  /* brand-bone as default bg */
+  --color-foreground: #4b3d1c;
+  /* brand-olive as default text */
+  --color-border: rgba(75, 61, 28, 0.15);
+  --color-primary: #265140;
+  /* brand-forest */
+  --color-primary-dark: #1a3a2d;
+  --color-secondary: #527858;
+  /* brand-sage */
 
-  --shadow-premium: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-  --shadow-premium-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.15);
+  /* Typography */
+  --font-sans: 'Berlin Sans', sans-serif;
+  --font-serif: 'MegantZ', serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  /* Brand Shadows (olive-tinted) */
+  --shadow-brand: 0 4px 20px rgba(75, 61, 28, 0.08);
+  --shadow-brand-hover: 0 8px 30px rgba(75, 61, 28, 0.16);
+  --shadow-premium: 0 20px 40px -15px rgba(75, 61, 28, 0.12);
+  --shadow-premium-hover: 0 30px 60px -12px rgba(75, 61, 28, 0.20);
+
+  /* Glass effects (warm-tinted) */
+  --color-glass: rgba(230, 227, 215, 0.7);
+  --color-glass-border: rgba(75, 61, 28, 0.08);
 }
 
+/* ---- CSS Variables for convenience ---- */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --border: #e2e8f0;
-  --primary: #0066FF;
-  --secondary: #7000FF;
-  --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.05);
+  --background: #e6e3d7;
+  --foreground: #4b3d1c;
+  --border: rgba(75, 61, 28, 0.15);
+  --primary: #265140;
+  --secondary: #527858;
+  --glass: rgba(230, 227, 215, 0.7);
+  --glass-border: rgba(75, 61, 28, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --border: #1e293b;
-    --glass: rgba(15, 23, 42, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-  }
-}
-
+/* ---- Base Layer ---- */
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--color-border);
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    background-color: #e6e3d7;
+    /* brand-bone */
+    color: #4b3d1c;
+    /* brand-olive */
+    font-family: 'MegantZ', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Heading hierarchy — Berlin Sans */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .brand-heading {
+    font-family: 'Berlin Sans', sans-serif;
+    color: #4b3d1c;
+    /* brand-olive */
+    letter-spacing: -0.02em;
+  }
+
+  /* Body / Luxury text — MegantZ */
+  p,
+  .luxury-text {
+    font-family: 'MegantZ', serif;
+    color: #4b3d1c;
+    line-height: 1.8;
   }
 }
 
+/* ---- Utility Layer ---- */
 @layer utilities {
+
+  /* Warm glassmorphism */
   .glass {
-    @apply backdrop-blur-xl border;
+    backdrop-filter: blur(24px);
+    border-width: 1px;
     background-color: var(--glass);
     border-color: var(--glass-border);
   }
 
+  /* Forest-on-bone text gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, #265140, #527858);
   }
 
+  /* Property card with olive shadow */
   .premium-card {
-    @apply rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2;
-    box-shadow: var(--shadow-premium);
+    border-radius: 2px;
+    /* rounded-sm */
+    overflow: hidden;
+    transition: all 500ms;
+    background-color: #f4f2eb;
+    /* brand-cream */
+    box-shadow: var(--shadow-brand);
   }
 
   .premium-card:hover {
-    box-shadow: var(--shadow-premium-hover);
+    transform: translateY(-0.25rem);
+    /* hover:-translate-y-1 */
+    border: 1px solid #cfbb9b;
+    /* brand-sand */
+    box-shadow: var(--shadow-brand-hover);
+  }
+
+  /* Olive-tinted soft shadow utility */
+  .shadow-brand {
+    box-shadow: var(--shadow-brand);
+  }
+
+  .shadow-brand-hover {
+    box-shadow: var(--shadow-brand-hover);
+  }
+
+  /* Forest hover overlay for images */
+  .img-forest-overlay {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .img-forest-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    background-color: rgba(38, 81, 64, 0.20);
+    /* brand-forest at 20% */
+  }
+
+  .img-forest-overlay:hover::after {
+    opacity: 1;
   }
 }
 
-/* Animations */
-@keyframes fadeIn {
+/* ---- Property Card overrides ---- */
+.property-card {
+  background-color: #f4f2eb;
+  transition: transform 0.3s ease;
+  border-radius: 2px;
+  /* rounded-sm */
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  border: 1px solid #cfbb9b;
+}
+
+/* ---- Animations ---- */
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -81,7 +219,11 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in.opacity-0 {
+  opacity: 0;
 }
 
 .delay-100 {
@@ -94,4 +236,63 @@
 
 .delay-300 {
   animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* ---- Scroll-driven navbar transition ---- */
+.navbar-scrolled {
+  background-color: #265140 !important;
+  /* brand-forest */
+}
+
+/* ---- Form focus overrides ---- */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #cfbb9b;
+  /* brand-sand */
+  box-shadow: 0 0 0 3px rgba(207, 187, 155, 0.25);
+}
+
+/* ---- Footer link hovers (CSS-only, no JS event handlers) ---- */
+.footer-social-link {
+  color: rgba(75, 61, 28, 0.60);
+}
+
+.footer-social-link:hover {
+  color: #527858;
+  /* brand-sage */
+}
+
+.footer-admin-link:hover {
+  scale: 1.03;
+  background-color: rgba(38, 81, 64, 0.14) !important;
+}
+
+/* ---- Partner info cards (CSS-only hover) ---- */
+.partner-card {
+  background-color: #f4f2eb;
+  /* brand-cream */
+  border: 1px solid rgba(82, 120, 88, 0.18);
+  box-shadow: 0 4px 20px rgba(75, 61, 28, 0.07);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.partner-card:hover {
+  box-shadow: 0 8px 30px rgba(75, 61, 28, 0.14);
+  border-color: #cfbb9b;
+  /* brand-sand */
+}
+
+/* ---- Date input color-scheme for brand-bone backgrounds ---- */
+input[type="date"] {
+  color-scheme: light;
 }

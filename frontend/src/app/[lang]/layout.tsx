@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { Locale, i18n } from "@/lib/i18n-config";
 import { GlobalBackground } from "@/components/common/GlobalBackground";
 import { UTMTracker } from "@/components/common/UTMTracker";
+import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getDictionary } from "@/lib/get-dictionary";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Elemnt Rentals | Premium Stays",
-  description: "Discover exceptional vacation rentals and luxury stays.",
+  title: "Elemnt Rentals | Estancias Premium en la Naturaleza",
+  description: "Descubre alojamientos exclusivos rodeados de naturaleza. Elemnt Rentals — hospedaje de lujo boutique en Colombia.",
+  openGraph: {
+    title: "Elemnt Rentals | Premium Nature Stays",
+    description: "Luxury boutique rental properties immersed in nature.",
+    images: ["/images/brand/Logo_colores_principales.png"],
+  },
 };
 
 export async function generateStaticParams() {
@@ -39,11 +34,18 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
+        style={{
+          backgroundColor: '#e6e3d7',  /* brand-bone — global page background */
+          color: '#4b3d1c',             /* brand-olive — global text */
+          fontFamily: "'MegantZ', serif",
+        }}
       >
         <GlobalBackground />
         <UTMTracker />
         <div className="flex flex-col min-h-screen">
+          {/* Forest-green navbar sits above all content */}
+          <Navbar lang={lang} />
           <main className="flex-grow">
             {children}
           </main>

@@ -43,7 +43,7 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ lang
     if (loading) {
         return (
             <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
             </div>
         );
     }
@@ -51,42 +51,48 @@ export default function PropertyDetailsPage({ params }: { params: Promise<{ lang
     if (!property) return <div className="text-white">Property not found</div>;
 
     return (
-        <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8">
+        <div className="rounded-sm p-8" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
             <div className="flex flex-col md:flex-row gap-8">
                 {property.main_image_url && (
                     <img
                         src={getMediaUrl(property.main_image_url)}
                         alt={property.name}
-                        className="w-full md:w-64 h-64 object-cover rounded-xl shadow-lg border border-slate-700"
+                        className="w-full md:w-64 h-64 object-cover rounded-sm shadow-md"
+                        style={{ border: '1px solid rgba(82,120,88,0.1)' }}
                     />
                 )}
                 <div className="flex-1">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h2 className="text-3xl font-bold text-white mb-2">{property.name}</h2>
-                            <p className="text-slate-400 mb-6 max-w-2xl">{property.description}</p>
+                            <h2 className="text-3xl font-bold mb-2 tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{property.name}</h2>
+                            <p className="mb-6 max-w-2xl font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif", lineHeight: '1.6' }}>{property.description}</p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${property.active ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-slate-500/20 text-slate-400 border-slate-500/30"}`}>
+                        <span className={`px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-widest`} style={{
+                            backgroundColor: property.active ? 'rgba(38,81,64,0.05)' : 'rgba(75,61,28,0.05)',
+                            color: property.active ? '#265140' : 'rgba(75,61,28,0.5)',
+                            border: property.active ? '1px solid rgba(38,81,64,0.1)' : '1px solid rgba(75,61,28,0.1)',
+                            fontFamily: "'Berlin Sans', sans-serif"
+                        }}>
                             {property.active ? (dict?.admin?.table?.active || "Active") : (dict?.admin?.table?.inactive || "Inactive")}
                         </span>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm p-6 rounded-sm mt-4" style={{ backgroundColor: 'rgba(38,81,64,0.02)', border: '1px solid rgba(82,120,88,0.1)' }}>
                         <div>
-                            <p className="text-slate-500 mb-1">{dict?.admin?.properties?.city || "City"}</p>
-                            <p className="text-white font-medium text-lg">{property.city}</p>
+                            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.properties?.city || "City"}</p>
+                            <p className="font-bold text-lg" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{property.city}</p>
                         </div>
                         <div>
-                            <p className="text-slate-500 mb-1">{dict?.admin?.properties?.guests || "Guests"}</p>
-                            <p className="text-white font-medium text-lg">{property.max_guests}</p>
+                            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.properties?.guests || "Guests"}</p>
+                            <p className="font-bold text-lg" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{property.max_guests}</p>
                         </div>
                         <div>
-                            <p className="text-slate-500 mb-1">{dict?.admin?.properties?.price || "Price/Night"}</p>
-                            <p className="text-white font-medium text-lg text-purple-400">{formatCurrency(property.nightly_price)}</p>
+                            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.properties?.price || "Price/Night"}</p>
+                            <p className="font-bold text-lg" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{formatCurrency(property.nightly_price)}</p>
                         </div>
                         <div>
-                            <p className="text-slate-500 mb-1">{dict?.admin?.table?.created_at || "Created"}</p>
-                            <p className="text-white font-medium text-lg">
+                            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.created_at || "Created"}</p>
+                            <p className="font-bold text-lg" style={{ color: 'rgba(75,61,28,0.4)', fontFamily: "'MegantZ', serif" }}>
                                 {/* CreateAt might not be detailed on Property type, check if needed */}
                                 -
                             </p>

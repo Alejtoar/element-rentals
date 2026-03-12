@@ -67,7 +67,10 @@ export default function PropertyLayout({
             <div className="mb-8">
                 <Link
                     href={`/${lang}/admin/properties`}
-                    className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 mb-4"
+                    className="flex items-center gap-2 mb-4 font-bold uppercase tracking-widest text-[10px] transition-colors"
+                    style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}
+                    onMouseOver={(e) => e.currentTarget.style.color = '#265140'}
+                    onMouseOut={(e) => e.currentTarget.style.color = 'rgba(75,61,28,0.6)'}
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -76,15 +79,20 @@ export default function PropertyLayout({
                 </Link>
             </div>
 
-            <div className="flex gap-1 p-1 bg-slate-800/50 rounded-xl border border-slate-700/50 mb-8 max-w-fit">
+            <div className="flex gap-1 p-1 rounded-sm mb-8 max-w-fit" style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.2)', boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}>
                 {tabs.map(tab => (
                     <Link
                         key={tab.href}
                         href={tab.href}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${tab.active
-                                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20"
-                                : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-                            }`}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs font-bold uppercase tracking-widest transition-all duration-200`}
+                        style={{
+                            fontFamily: "'Berlin Sans', sans-serif",
+                            ...(tab.active
+                                ? { backgroundColor: '#cfbb9b', color: '#fff', boxShadow: '0 4px 10px rgba(75,61,28,0.1)' }
+                                : { color: 'rgba(75,61,28,0.5)', backgroundColor: 'transparent' })
+                        }}
+                        onMouseOver={(e) => { if (!tab.active) { e.currentTarget.style.color = '#4b3d1c'; e.currentTarget.style.backgroundColor = 'rgba(75,61,28,0.03)'; } }}
+                        onMouseOut={(e) => { if (!tab.active) { e.currentTarget.style.color = 'rgba(75,61,28,0.5)'; e.currentTarget.style.backgroundColor = 'transparent'; } }}
                     >
                         {tab.icon}
                         {tab.label}

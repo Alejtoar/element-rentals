@@ -84,7 +84,7 @@ export default function SettingsPage({ params }: SettingsPageProps) {
     if (!dict) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
             </div>
         );
     }
@@ -92,26 +92,27 @@ export default function SettingsPage({ params }: SettingsPageProps) {
     return (
         <div className="p-8">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white mb-2">{dict.admin.settings.title}</h1>
-                <p className="text-slate-400">Manage your account and preferences</p>
+                <h1 className="text-3xl font-bold mb-2" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.settings.title}</h1>
+                <p className="text-sm font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>Manage your account and preferences</p>
             </div>
 
             <div className="max-w-2xl space-y-6">
                 {/* Quick Links Section */}
                 {user && (user.role === 'admin' || user.role === 'finance') && (
-                    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">Quick Links</h2>
+                    <div className="rounded-sm p-6" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+                        <h2 className="text-xl font-bold uppercase tracking-widest mb-4" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Quick Links</h2>
                         <div className="space-y-2">
                             <Link
                                 href={`/${lang}/admin/settings/financial`}
-                                className="block px-4 py-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-200"
+                                className="block px-4 py-3 rounded-sm transition-all duration-200"
+                                style={{ backgroundColor: 'rgba(38,81,64,0.05)', border: '1px solid rgba(82,120,88,0.1)' }}
                             >
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <div className="text-white font-medium">{dict.admin.settings.financial}</div>
-                                        <div className="text-slate-400 text-sm">{dict.admin.payment_methods.title}</div>
+                                        <div className="font-bold" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.settings.financial}</div>
+                                        <div className="text-sm font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{dict.admin.payment_methods.title}</div>
                                     </div>
-                                    <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5" style={{ color: '#527858' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
@@ -122,23 +123,25 @@ export default function SettingsPage({ params }: SettingsPageProps) {
 
                 {/* Profile Information */}
                 {user && (
-                    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
-                        <h2 className="text-xl font-semibold text-white mb-4">{dict.admin.settings.profile}</h2>
+                    <div className="rounded-sm p-6" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+                        <h2 className="text-xl font-bold uppercase tracking-widest mb-4" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.settings.profile}</h2>
                         <div className="space-y-3">
                             <div>
-                                <div className="text-slate-400 text-sm">{dict.admin.table.name}</div>
-                                <div className="text-white font-medium">{user.full_name}</div>
+                                <div className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.table.name}</div>
+                                <div className="font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{user.full_name}</div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">{dict.admin.table.email}</div>
-                                <div className="text-white font-medium">{user.email}</div>
+                                <div className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.table.email}</div>
+                                <div className="font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{user.email}</div>
                             </div>
                             <div>
-                                <div className="text-slate-400 text-sm">{dict.admin.users.role}</div>
-                                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
-                                    user.role === 'finance' ? 'bg-green-500/20 text-green-300' :
-                                        'bg-blue-500/20 text-blue-300'
-                                    }`}>
+                                <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.users.role}</div>
+                                <span className="inline-block px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-widest"
+                                    style={{
+                                        color: user.role === 'admin' ? '#4b3d1c' : user.role === 'finance' ? '#527858' : '#265140',
+                                        backgroundColor: user.role === 'admin' ? 'rgba(207,187,155,0.2)' : user.role === 'finance' ? 'rgba(82,120,88,0.1)' : 'rgba(38,81,64,0.05)',
+                                        border: `1px solid ${user.role === 'admin' ? '#cfbb9b' : user.role === 'finance' ? '#527858' : '#265140'}`
+                                    }}>
                                     {dict.admin.users[user.role] || user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                                 </span>
                             </div>
@@ -147,63 +150,66 @@ export default function SettingsPage({ params }: SettingsPageProps) {
                 )}
 
                 {/* Change Password */}
-                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
-                    <h2 className="text-xl font-semibold text-white mb-4">{dict.admin.settings.change_password}</h2>
+                <div className="rounded-sm p-6" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+                    <h2 className="text-xl font-bold uppercase tracking-widest mb-4" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict.admin.settings.change_password}</h2>
 
                     {error && (
-                        <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+                        <div className="mb-4 p-4 rounded-sm text-sm font-medium" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                             {error}
                         </div>
                     )}
 
                     {success && (
-                        <div className="mb-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400">
+                        <div className="mb-4 p-4 rounded-sm text-sm font-medium" style={{ backgroundColor: 'rgba(82,120,88,0.1)', border: '1px solid rgba(82,120,88,0.2)', color: '#527858' }}>
                             {success}
                         </div>
                     )}
 
                     <form onSubmit={handlePasswordChange} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                            <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                 {dict.admin.settings.old_password} *
                             </label>
                             <input
                                 type="password"
                                 value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                className="w-full px-4 py-3 rounded-sm outline-none"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 placeholder="Enter your current password"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                            <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                 {dict.admin.users.new_password} *
                             </label>
                             <input
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                className="w-full px-4 py-3 rounded-sm outline-none"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 placeholder="Enter new password (min. 8 characters)"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                            <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>
                                 Confirm {dict.admin.users.new_password} *
                             </label>
                             <input
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                className="w-full px-4 py-3 rounded-sm outline-none"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 placeholder="Confirm your new password"
                             />
                         </div>
 
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={loading}>
+                            <Button type="submit" disabled={loading} variant="sand">
                                 {loading ? 'Updating...' : 'Update Password'}
                             </Button>
                         </div>
@@ -211,9 +217,9 @@ export default function SettingsPage({ params }: SettingsPageProps) {
                 </div>
 
                 {/* Security Tips */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6">
-                    <h3 className="text-lg font-semibold text-blue-300 mb-3">Security Tips</h3>
-                    <ul className="space-y-2 text-slate-300 text-sm">
+                <div className="rounded-sm p-6" style={{ backgroundColor: 'rgba(82,120,88,0.05)', border: '1px solid rgba(82,120,88,0.2)' }}>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Security Tips</h3>
+                    <ul className="space-y-2 text-sm font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>
                         <li>• Use a strong password with at least 8 characters</li>
                         <li>• Include uppercase, lowercase, numbers, and symbols</li>
                         <li>• Do not reuse passwords from other accounts</li>

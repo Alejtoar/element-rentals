@@ -140,9 +140,9 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
     const prevStep = () => setStep(prev => prev - 1);
 
     return (
-        <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden max-w-2xl w-full">
-            <div className="p-6 border-b border-slate-700/50 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">
+        <div className="rounded-sm overflow-hidden max-w-2xl w-full shadow-2xl" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+            <div className="p-6 border-b flex justify-between items-center" style={{ borderColor: 'rgba(82,120,88,0.2)' }}>
+                <h2 className="text-xl font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>
                     {property ? "Edit Property" : "Add New Property"}
                 </h2>
                 <div className="flex gap-2">
@@ -156,10 +156,14 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             key={num}
                             type="button"
                             onClick={() => setStep(num)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${step === num
-                                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
-                                : "bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
-                                }`}
+                            className="px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-widest transition-all duration-200"
+                            style={{
+                                backgroundColor: step === num ? '#527858' : 'rgba(82,120,88,0.1)',
+                                color: step === num ? '#f4f2eb' : '#265140',
+                                fontFamily: "'Berlin Sans', sans-serif",
+                                boxShadow: step === num ? '0 4px 10px rgba(82,120,88,0.2)' : 'none',
+                                opacity: step === num ? 1 : 0.7
+                            }}
                         >
                             <span className="mr-1">{icon}</span>
                             <span className="hidden sm:inline">{label}</span>
@@ -170,7 +174,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
 
             <form onSubmit={handleSubmit} className="p-8">
                 {error && (
-                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                    <div className="mb-6 p-4 rounded-sm text-sm font-medium" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                         {error}
                     </div>
                 )}
@@ -186,12 +190,19 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             required
                         />
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Property Owner</label>
+                            <label className="text-xs font-bold uppercase tracking-widest ml-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Property Owner</label>
                             <select
                                 name="owner_id"
                                 value={formData.owner_id}
                                 onChange={(e) => setFormData(prev => ({ ...prev, owner_id: e.target.value }))}
-                                className="px-4 py-3 rounded-2xl bg-slate-900/50 border border-slate-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all duration-300 text-white"
+                                className="px-4 py-3 rounded-sm transition-all duration-200 outline-none"
+                                style={{
+                                    backgroundColor: '#e6e3d7',
+                                    border: '1px solid rgba(82,120,88,0.3)',
+                                    color: '#4b3d1c',
+                                    fontFamily: "'MegantZ', serif",
+                                    boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)'
+                                }}
                                 required
                             >
                                 <option value="" disabled>Select an owner</option>
@@ -203,16 +214,23 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                 )}
                             </select>
                             {owners.length === 0 && !isLoadingOwners && (
-                                <p className="text-xs text-amber-400 ml-1">⚠️ You must create an owner in the database before adding properties.</p>
+                                <p className="text-xs text-amber-600 ml-1">⚠️ You must create an owner in the database before adding properties.</p>
                             )}
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Description</label>
+                            <label className="text-xs font-bold uppercase tracking-widest ml-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Description</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
-                                className="px-4 py-3 rounded-2xl bg-slate-900/50 border border-slate-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all duration-300 text-white min-h-[120px]"
+                                className="px-4 py-3 rounded-sm transition-all duration-200 outline-none min-h-[120px]"
+                                style={{
+                                    backgroundColor: '#e6e3d7',
+                                    border: '1px solid rgba(82,120,88,0.3)',
+                                    color: '#4b3d1c',
+                                    fontFamily: "'MegantZ', serif",
+                                    boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)'
+                                }}
                                 placeholder="Describe the property..."
                                 required
                             />
@@ -227,15 +245,11 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                         />
                         <div className="pt-4 flex gap-3">
                             {property?.id ? (
-                                <Button
-                                    type="submit"
-                                    isLoading={isLoading}
-                                    className="w-full"
-                                >
+                                <Button type="submit" isLoading={isLoading} className="w-full" variant="sand">
                                     Save Changes
                                 </Button>
                             ) : (
-                                <Button type="button" onClick={nextStep} className="w-full">
+                                <Button type="button" onClick={nextStep} className="w-full" variant="sand">
                                     Next: Location
                                 </Button>
                             )}
@@ -275,15 +289,11 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             <Button type="button" variant="outline" onClick={prevStep} className="flex-1">Back</Button>
 
                             {property?.id ? (
-                                <Button
-                                    type="submit"
-                                    isLoading={isLoading}
-                                    className="flex-1"
-                                >
+                                <Button type="submit" isLoading={isLoading} className="flex-1" variant="sand">
                                     Save Changes
                                 </Button>
                             ) : (
-                                <Button type="button" onClick={nextStep} className="flex-1">
+                                <Button type="button" onClick={nextStep} className="flex-1" variant="sand">
                                     Next: Pricing
                                 </Button>
                             )}
@@ -312,10 +322,10 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                         onChange={handleChange}
                                         className="sr-only"
                                     />
-                                    <div className={`w-12 h-6 rounded-full transition-colors duration-200 ${formData.active ? 'bg-purple-600' : 'bg-slate-700'}`} />
-                                    <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${formData.active ? 'translate-x-6' : ''}`} />
+                                    <div className="w-12 h-6 rounded-full transition-colors duration-200" style={{ backgroundColor: formData.active ? '#527858' : 'rgba(75,61,28,0.2)' }} />
+                                    <div className={`absolute top-1 left-1 w-4 h-4 rounded-full transition-transform duration-200 ${formData.active ? 'translate-x-6' : ''}`} style={{ backgroundColor: '#f4f2eb' }} />
                                 </div>
-                                <span className="text-slate-300 group-hover:text-white transition-colors">Active (Publicly Visible)</span>
+                                <span className="font-medium transition-colors" style={{ color: '#265140', fontFamily: "'MegantZ', serif" }}>Active (Publicly Visible)</span>
                             </label>
 
                             <label className="flex items-center gap-3 cursor-pointer group">
@@ -327,10 +337,10 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                         onChange={handleChange}
                                         className="sr-only"
                                     />
-                                    <div className={`w-12 h-6 rounded-full transition-colors duration-200 ${formData.featured ? 'bg-yellow-600' : 'bg-slate-700'}`} />
-                                    <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${formData.featured ? 'translate-x-6' : ''}`} />
+                                    <div className="w-12 h-6 rounded-full transition-colors duration-200" style={{ backgroundColor: formData.featured ? '#cfbb9b' : 'rgba(75,61,28,0.2)' }} />
+                                    <div className={`absolute top-1 left-1 w-4 h-4 rounded-full transition-transform duration-200 ${formData.featured ? 'translate-x-6' : ''}`} style={{ backgroundColor: '#f4f2eb' }} />
                                 </div>
-                                <span className="text-slate-300 group-hover:text-white transition-colors">Featured Property</span>
+                                <span className="font-medium transition-colors" style={{ color: '#265140', fontFamily: "'MegantZ', serif" }}>Featured Property</span>
                             </label>
                         </div>
 
@@ -338,15 +348,11 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             <Button type="button" variant="outline" onClick={prevStep} className="flex-1">Back</Button>
 
                             {property?.id ? (
-                                <Button
-                                    type="submit"
-                                    isLoading={isLoading}
-                                    className="flex-1"
-                                >
+                                <Button type="submit" isLoading={isLoading} className="flex-1" variant="sand">
                                     Save Changes
                                 </Button>
                             ) : (
-                                <Button type="button" onClick={nextStep} className="flex-1">
+                                <Button type="button" onClick={nextStep} className="flex-1" variant="sand">
                                     Next: Media
                                 </Button>
                             )}
@@ -357,13 +363,9 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                 {step === 4 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                         {!property?.id ? (
-                            <div className="p-6 border-2 border-dashed border-slate-700 rounded-2xl text-center">
-                                <p className="text-slate-400 mb-4">You can upload images after creating the property</p>
-                                <Button
-                                    type="submit"
-                                    isLoading={isLoading}
-                                    className="w-full"
-                                >
+                            <div className="p-6 border-2 border-dashed rounded-sm text-center" style={{ borderColor: 'rgba(82,120,88,0.3)', backgroundColor: '#e6e3d7' }}>
+                                <p className="mb-4 text-sm font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>You can upload images after creating the property</p>
+                                <Button type="submit" isLoading={isLoading} className="w-full" variant="sand">
                                     Create Property
                                 </Button>
                             </div>
@@ -371,14 +373,14 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                             <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-3">
                                     {images.map((img) => (
-                                        <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden border border-slate-700 group">
+                                        <div key={img.id} className="relative aspect-square rounded-sm overflow-hidden border group" style={{ borderColor: 'rgba(82,120,88,0.2)' }}>
                                             <img
                                                 src={getMediaUrl(img.url)}
                                                 className="w-full h-full object-cover"
                                                 alt={img.is_main ? "Main property image" : "Property image"}
                                             />
                                             {img.is_main && (
-                                                <div className="absolute top-1 left-1 bg-purple-600 text-[10px] px-1.5 py-0.5 rounded text-white font-bold">
+                                                <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded-sm text-[10px] uppercase font-bold tracking-widest" style={{ backgroundColor: '#265140', color: '#cfbb9b', fontFamily: "'Berlin Sans', sans-serif" }}>
                                                     MAIN
                                                 </div>
                                             )}
@@ -394,7 +396,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                             </button>
                                         </div>
                                     ))}
-                                    <label className={`aspect-square rounded-xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:border-purple-500/50 transition-colors ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`}>
+                                    <label className={`aspect-square rounded-sm border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}`} style={{ borderColor: 'rgba(82,120,88,0.3)', backgroundColor: '#e6e3d7' }}>
                                         <input
                                             type="file"
                                             className="hidden"
@@ -402,20 +404,20 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                                             accept="image/*"
                                         />
                                         {uploadingImage ? (
-                                            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-purple-500" />
+                                            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2" style={{ borderColor: '#527858' }} />
                                         ) : (
                                             <>
-                                                <svg className="w-6 h-6 text-slate-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-6 h-6 mb-1" style={{ color: 'rgba(75,61,28,0.6)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                                 </svg>
-                                                <span className="text-xs text-slate-500">Upload</span>
+                                                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'Berlin Sans', sans-serif" }}>Upload</span>
                                             </>
                                         )}
                                     </label>
                                 </div>
                                 <div className="pt-4 flex gap-3">
                                     <Button type="button" variant="outline" onClick={prevStep} className="flex-1">Back</Button>
-                                    <Button onClick={onSuccess} className="flex-1">Finish</Button>
+                                    <Button onClick={onSuccess} className="flex-1" variant="sand">Finish</Button>
                                 </div>
                             </div>
                         )}
@@ -423,10 +425,11 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ property, user, onSu
                 )}
             </form>
 
-            <div className="p-4 bg-slate-900/50 border-t border-slate-700/50 flex justify-end">
+            <div className="p-4 flex justify-end" style={{ backgroundColor: 'rgba(230,227,215,0.5)', borderTop: '1px solid rgba(82,120,88,0.2)' }}>
                 <button
                     onClick={onCancel}
-                    className="text-sm text-slate-400 hover:text-white transition-colors"
+                    className="text-xs uppercase tracking-widest font-bold transition-colors"
+                    style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}
                 >
                     Cancel
                 </button>

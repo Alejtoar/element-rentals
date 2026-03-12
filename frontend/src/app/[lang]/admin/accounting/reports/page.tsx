@@ -99,19 +99,19 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
     if (loading) {
         return (
             <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
             </div>
         );
     }
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-white mb-2">{dict?.admin?.reports?.title || "Financial Reports"}</h1>
-            <p className="text-slate-400 mb-8">{dict?.admin?.reports?.subtitle || "Generate owner statements"}</p>
+            <h1 className="text-3xl font-bold mb-2" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reports?.title || "Financial Reports"}</h1>
+            <p className="mb-8 text-sm font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{dict?.admin?.reports?.subtitle || "Generate owner statements"}</p>
 
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
+            <div className="rounded-sm p-8 shadow-2xl" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
                 {error && (
-                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+                    <div className="mb-6 p-4 rounded-sm text-sm font-medium" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                         {error}
                     </div>
                 )}
@@ -119,11 +119,18 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
                 <form onSubmit={handleGenerate} className="space-y-8">
                     {/* Property Selector */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.reports?.select_property || "Select Property"}</label>
+                        <label className="block text-xs uppercase tracking-widest font-bold mb-2 ml-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reports?.select_property || "Select Property"}</label>
                         <select
                             value={selectedProperty}
                             onChange={(e) => setSelectedProperty(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl bg-slate-700/50 border border-slate-600 text-white outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all cursor-pointer"
+                            className="w-full px-4 py-3 rounded-sm transition-all outline-none cursor-pointer"
+                            style={{
+                                backgroundColor: '#e6e3d7',
+                                border: '1px solid rgba(82,120,88,0.3)',
+                                color: '#4b3d1c',
+                                fontFamily: "'MegantZ', serif",
+                                boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)'
+                            }}
                             required
                         >
                             <option value="">-- {dict?.admin?.reports?.select_property || "Select Property"} --</option>
@@ -135,27 +142,30 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
 
                     {/* Date Range */}
                     <div>
-                        <div className="flex justify-between items-center mb-2">
-                            <label className="block text-sm font-medium text-slate-300">{dict?.admin?.reports?.date_range || "Date Range"}</label>
+                        <div className="flex justify-between items-center mb-2 ml-1">
+                            <label className="block text-xs uppercase tracking-widest font-bold" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reports?.date_range || "Date Range"}</label>
                             <div className="flex gap-2">
                                 <button
                                     type="button"
                                     onClick={() => setDateRange('this_month')}
-                                    className="px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300 hover:bg-purple-500 hover:text-white transition-colors"
+                                    className="px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-sm transition-colors hover:bg-black/5"
+                                    style={{ color: '#265140', border: '1px solid rgba(38,81,64,0.2)' }}
                                 >
                                     {dict?.admin?.reports?.this_month || "This Month"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setDateRange('last_month')}
-                                    className="px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300 hover:bg-purple-500 hover:text-white transition-colors"
+                                    className="px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-sm transition-colors hover:bg-black/5"
+                                    style={{ color: '#265140', border: '1px solid rgba(38,81,64,0.2)' }}
                                 >
                                     {dict?.admin?.reports?.last_month || "Last Month"}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setDateRange('ytd')}
-                                    className="px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300 hover:bg-purple-500 hover:text-white transition-colors"
+                                    className="px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-sm transition-colors hover:bg-black/5"
+                                    style={{ color: '#265140', border: '1px solid rgba(38,81,64,0.2)' }}
                                 >
                                     {dict?.admin?.reports?.ytd || "YTD"}
                                 </button>
@@ -179,7 +189,7 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
 
                     {/* Report Language */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">{dict?.admin?.reports?.language || "Report Language"}</label>
+                        <label className="block text-xs uppercase tracking-widest font-bold mb-2 ml-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.reports?.language || "Report Language"}</label>
                         <div className="flex gap-4">
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -188,9 +198,9 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
                                     value="en"
                                     checked={reportLang === 'en'}
                                     onChange={() => setReportLang('en')}
-                                    className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-500 focus:ring-purple-500/20"
+                                    className="w-4 h-4"
                                 />
-                                <span className="text-slate-300">{dict?.admin?.reports?.english || "English"}</span>
+                                <span className="text-sm font-bold uppercase tracking-widest" style={{ color: '#4b3d1c' }}>{dict?.admin?.reports?.english || "English"}</span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -199,9 +209,9 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
                                     value="es"
                                     checked={reportLang === 'es'}
                                     onChange={() => setReportLang('es')}
-                                    className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-500 focus:ring-purple-500/20"
+                                    className="w-4 h-4"
                                 />
-                                <span className="text-slate-300">{dict?.admin?.reports?.spanish || "Spanish"}</span>
+                                <span className="text-sm font-bold uppercase tracking-widest" style={{ color: '#4b3d1c' }}>{dict?.admin?.reports?.spanish || "Spanish"}</span>
                             </label>
                         </div>
                     </div>
@@ -210,7 +220,8 @@ export default function ReportsPage({ params }: { params: Promise<{ lang: string
                     <Button
                         type="submit"
                         isLoading={submitting}
-                        className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                        className="w-full py-4 uppercase tracking-widest font-bold text-lg"
+                        variant="sand"
                     >
                         {dict?.admin?.reports?.generate_pdf || "Generate Statement (PDF)"}
                     </Button>

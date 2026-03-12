@@ -114,10 +114,14 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
             {/* Header */}
             <div className="mb-8 flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">{dict?.admin?.properties?.title || "Properties"}</h1>
-                    <p className="text-slate-400">{dict?.admin?.properties?.subtitle || "Manage all properties in the system"}</p>
+                    <h1 className="text-3xl font-bold mb-2" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>
+                        {dict?.admin?.properties?.title || "Properties"}
+                    </h1>
+                    <p className="text-sm font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>
+                        {dict?.admin?.properties?.subtitle || "Manage all properties in the system"}
+                    </p>
                 </div>
-                <Button onClick={handleAdd}>
+                <Button onClick={handleAdd} variant="primary">
                     {dict?.admin?.properties?.add_property || "Add Property"}
                 </Button>
             </div>
@@ -126,28 +130,34 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
             <div className="mb-6 flex gap-3">
                 <button
                     onClick={() => setFilter("all")}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${filter === "all"
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                        : "bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-                        }`}
+                    className="px-5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest transition-all duration-200"
+                    style={{
+                        backgroundColor: filter === "all" ? '#265140' : 'rgba(38,81,64,0.1)',
+                        color: filter === "all" ? '#e6e3d7' : '#265140',
+                        fontFamily: "'Berlin Sans', sans-serif"
+                    }}
                 >
                     {dict?.admin?.properties?.filter_all || "All Properties"}
                 </button>
                 <button
                     onClick={() => setFilter("active")}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${filter === "active"
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                        : "bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-                        }`}
+                    className="px-5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest transition-all duration-200"
+                    style={{
+                        backgroundColor: filter === "active" ? '#265140' : 'rgba(38,81,64,0.1)',
+                        color: filter === "active" ? '#e6e3d7' : '#265140',
+                        fontFamily: "'Berlin Sans', sans-serif"
+                    }}
                 >
                     {dict?.admin?.properties?.filter_active || "Active Only"}
                 </button>
                 <button
                     onClick={() => setFilter("inactive")}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${filter === "inactive"
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                        : "bg-slate-800/50 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
-                        }`}
+                    className="px-5 py-2 rounded-sm text-xs font-bold uppercase tracking-widest transition-all duration-200"
+                    style={{
+                        backgroundColor: filter === "inactive" ? '#265140' : 'rgba(38,81,64,0.1)',
+                        color: filter === "inactive" ? '#e6e3d7' : '#265140',
+                        fontFamily: "'Berlin Sans', sans-serif"
+                    }}
                 >
                     {dict?.admin?.properties?.filter_inactive || "Inactive Only"}
                 </button>
@@ -155,7 +165,7 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
 
             {/* Error State */}
             {error && (
-                <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-300">
+                <div className="mb-6 rounded-sm p-4 text-sm font-medium" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                     {dict?.admin?.properties?.error_load || error}
                 </div>
             )}
@@ -163,30 +173,30 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
             {/* Loading State */}
             {isLoading && (
                 <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }}></div>
                 </div>
             )}
 
             {/* Table */}
             {!isLoading && !error && (
-                <div className="backdrop-blur-xl bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
+                <div className="rounded-sm overflow-hidden" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-slate-700/50">
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.table?.property || "Property"}</th>
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.table?.location || "Location"}</th>
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.table?.guests || "Guests"}</th>
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.properties?.price || "Price/Night"}</th>
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.table?.status || "Status"}</th>
-                                    <th className="text-left px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.properties?.featured || "Featured"}</th>
-                                    <th className="text-right px-6 py-4 text-sm font-semibold text-slate-300">{dict?.admin?.table?.actions || "Actions"}</th>
+                            <thead style={{ backgroundColor: 'rgba(38,81,64,0.05)' }}>
+                                <tr style={{ borderBottom: '1px solid rgba(82,120,88,0.2)' }}>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.property || "Property"}</th>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.location || "Location"}</th>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.guests || "Guests"}</th>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.properties?.price || "Price/Night"}</th>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.status || "Status"}</th>
+                                    <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.properties?.featured || "Featured"}</th>
+                                    <th className="text-right px-6 py-4 text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{dict?.admin?.table?.actions || "Actions"}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {properties.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-6 py-12 text-center text-slate-400">
+                                        <td colSpan={7} className="px-6 py-12 text-center text-sm font-medium" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'MegantZ', serif" }}>
                                             {dict?.admin?.properties?.no_properties || "No properties found"}
                                         </td>
                                     </tr>
@@ -194,7 +204,8 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                     properties.map((property) => (
                                         <tr
                                             key={property.id}
-                                            className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors duration-150"
+                                            className="transition-colors duration-150 hover:bg-black/5"
+                                            style={{ borderBottom: '1px solid rgba(82,120,88,0.1)' }}
                                         >
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
@@ -202,48 +213,50 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                                         <img
                                                             src={getMediaUrl(property.main_image_url)}
                                                             alt={property.name}
-                                                            className="w-12 h-12 rounded-lg object-cover"
+                                                            className="w-12 h-12 rounded-sm object-cover"
                                                         />
                                                     )}
                                                     <div>
-                                                        <Link href={`/${lang}/admin/properties/${property.id}`} className="font-medium text-white hover:text-purple-400 transition-colors">
+                                                        <Link href={`/${lang}/admin/properties/${property.id}`} className="font-bold transition-colors" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>
                                                             {property.name}
                                                         </Link>
-                                                        <p className="text-xs text-slate-400 truncate max-w-xs">
+                                                        <p className="text-xs truncate max-w-xs mt-1" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'MegantZ', serif" }}>
                                                             {property.description}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="text-sm text-slate-300">{property.city}</p>
-                                                <p className="text-xs text-slate-500">{property.country}</p>
+                                                <p className="text-sm font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{property.city}</p>
+                                                <p className="text-xs" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'MegantZ', serif" }}>{property.country}</p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm text-slate-300">{property.max_guests}</span>
+                                                <span className="text-sm font-medium" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>{property.max_guests}</span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm font-semibold text-purple-400">
+                                                <span className="text-sm font-bold" style={{ color: '#527858', fontFamily: "'Berlin Sans', sans-serif" }}>
                                                     {formatPrice(property.nightly_price)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span
-                                                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${property.active
-                                                        ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                                        : "bg-slate-500/20 text-slate-400 border border-slate-500/30"
-                                                        }`}
+                                                    className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-widest"
+                                                    style={{
+                                                        backgroundColor: property.active ? 'rgba(82,120,88,0.1)' : 'rgba(75,61,28,0.1)',
+                                                        color: property.active ? '#527858' : 'rgba(75,61,28,0.6)',
+                                                        border: property.active ? '1px solid rgba(82,120,88,0.3)' : '1px solid rgba(75,61,28,0.2)',
+                                                    }}
                                                 >
                                                     {property.active ? (dict?.admin?.table?.active || "Active") : (dict?.admin?.table?.inactive || "Inactive")}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 {property.featured && (
-                                                    <span className="inline-flex items-center gap-1 text-yellow-400">
-                                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                    <span className="inline-flex items-center gap-1" style={{ color: '#cfbb9b' }}>
+                                                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                         </svg>
-                                                        <span className="text-xs">{dict?.admin?.properties?.featured || "Featured"}</span>
+                                                        <span className="text-xs uppercase font-bold tracking-widest" style={{ color: '#4b3d1c' }}>{dict?.admin?.properties?.featured || "Featured"}</span>
                                                     </span>
                                                 )}
                                             </td>
@@ -251,31 +264,27 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
                                                 <div className="flex justify-end gap-2">
                                                     <Link
                                                         href={`/${lang}/admin/properties/${property.id}`}
-                                                        className="p-2 text-slate-400 hover:text-blue-400 transition-colors"
+                                                        className="p-2 transition-colors hover:text-[#527858]"
+                                                        style={{ color: 'rgba(38,81,64,0.5)' }}
                                                         title={dict?.admin?.common?.view || "View"}
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                        </svg>
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                                     </Link>
                                                     <button
                                                         onClick={() => handleEdit(property)}
-                                                        className="p-2 text-slate-400 hover:text-purple-400 transition-colors"
+                                                        className="p-2 transition-colors hover:text-[#265140]"
+                                                        style={{ color: 'rgba(38,81,64,0.5)' }}
                                                         title="Edit"
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                        </svg>
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(property.id)}
-                                                        className="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                                                        className="p-2 transition-colors hover:text-red-700"
+                                                        style={{ color: 'rgba(38,81,64,0.5)' }}
                                                         title="Delete"
                                                     >
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                     </button>
                                                 </div>
                                             </td>
@@ -290,18 +299,18 @@ export default function PropertiesPage({ params }: PropertiesPageProps) {
 
             {/* Stats Footer */}
             {!isLoading && !error && properties.length > 0 && (
-                <div className="mt-6 flex items-center justify-between text-sm text-slate-400">
+                <div className="mt-6 flex items-center justify-between text-sm uppercase tracking-widest font-bold" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'Berlin Sans', sans-serif" }}>
                     <p>
-                        Showing <span className="font-semibold text-slate-300">{properties.length}</span> properties
+                        Showing <span style={{ color: '#4b3d1c' }}>{properties.length}</span> properties
                     </p>
                     <div className="flex gap-4">
                         <p>
-                            Active: <span className="font-semibold text-green-400">
+                            Active: <span style={{ color: '#527858' }}>
                                 {properties.filter(p => p.active).length}
                             </span>
                         </p>
                         <p>
-                            Featured: <span className="font-semibold text-yellow-400">
+                            Featured: <span style={{ color: '#cfbb9b' }}>
                                 {properties.filter(p => p.featured).length}
                             </span>
                         </p>

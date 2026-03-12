@@ -143,17 +143,17 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-slate-800/95 backdrop-blur-xl border-b border-slate-700/50 p-6">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="rounded-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)' }}>
+                <div className="sticky top-0 z-10 p-6" style={{ backgroundColor: 'rgba(244,242,235,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(82,120,88,0.2)' }}>
                     <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-2xl font-bold text-white">Create Reservation</h2>
-                            <p className="text-slate-400 text-sm mt-1">Step {step} of 3</p>
+                            <h2 className="text-xl font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Create Reservation</h2>
+                            <p className="text-sm font-medium mt-1" style={{ color: 'rgba(75,61,28,0.6)', fontFamily: "'MegantZ', serif" }}>Step {step} of 3</p>
                         </div>
                         <button
                             onClick={() => { resetForm(); onClose(); }}
-                            className="text-slate-400 hover:text-white transition-colors"
+                            className="transition-colors hover:text-[#265140]" style={{ color: 'rgba(75,61,28,0.5)' }}
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -165,7 +165,8 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                         {[1, 2, 3].map(s => (
                             <div
                                 key={s}
-                                className={`h-1 flex-1 rounded-full transition-colors ${s <= step ? 'bg-purple-500' : 'bg-slate-700'}`}
+                                className="h-1 flex-1 rounded-sm transition-colors"
+                                style={{ backgroundColor: s <= step ? '#265140' : 'rgba(82,120,88,0.2)' }}
                             />
                         ))}
                     </div>
@@ -173,7 +174,7 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
 
                 <div className="p-6">
                     {error && (
-                        <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+                        <div className="mb-4 p-4 rounded-sm text-sm font-bold" style={{ backgroundColor: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', color: '#cc4444' }}>
                             {error}
                         </div>
                     )}
@@ -181,11 +182,12 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                     {step === 1 && (
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Property *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Property *</label>
                                 <select
                                     value={propertyId}
                                     onChange={(e) => setPropertyId(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none cursor-pointer"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 >
                                     <option value="">Select a property</option>
                                     {properties.map(prop => (
@@ -195,11 +197,12 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Channel *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Channel *</label>
                                 <select
                                     value={channelId}
                                     onChange={(e) => setChannelId(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none cursor-pointer"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 >
                                     <option value="">Select a channel</option>
                                     {channels.map(channel => (
@@ -211,7 +214,7 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Reservation Type *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Reservation Type *</label>
                                 <div className="flex gap-4">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
@@ -219,9 +222,9 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                             value="commercial"
                                             checked={reservationType === 'commercial'}
                                             onChange={(e) => setReservationType(e.target.value as 'commercial')}
-                                            className="text-purple-500"
+                                            style={{ accentColor: '#265140' }}
                                         />
-                                        <span className="text-white">Commercial</span>
+                                        <span className="text-sm font-bold" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>Commercial</span>
                                     </label>
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
@@ -229,9 +232,9 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                             value="owner_use"
                                             checked={reservationType === 'owner_use'}
                                             onChange={(e) => setReservationType(e.target.value as 'owner_use')}
-                                            className="text-purple-500"
+                                            style={{ accentColor: '#265140' }}
                                         />
-                                        <span className="text-white">Owner Use</span>
+                                        <span className="text-sm font-bold" style={{ color: '#4b3d1c', fontFamily: "'MegantZ', serif" }}>Owner Use</span>
                                     </label>
                                 </div>
                             </div>
@@ -245,13 +248,14 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                     {!showQuickCreate ? (
                                         <>
                                             <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">Search Guest</label>
+                                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Search Guest</label>
                                                 <input
                                                     type="text"
                                                     value={guestSearch}
                                                     onChange={(e) => setGuestSearch(e.target.value)}
                                                     placeholder="Search by name, email, or phone..."
-                                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                                 />
                                             </div>
 
@@ -260,21 +264,25 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                                     <div
                                                         key={guest.id}
                                                         onClick={() => setGuestId(guest.id)}
-                                                        className={`p-4 rounded-lg border cursor-pointer transition-all ${guestId === guest.id
-                                                            ? 'bg-purple-500/20 border-purple-500'
-                                                            : 'bg-slate-900/30 border-slate-700 hover:border-slate-600'
-                                                            }`}
+                                                        className="p-4 rounded-sm cursor-pointer transition-all"
+                                                        style={{
+                                                            border: guestId === guest.id ? '2px solid #265140' : '1px solid rgba(82,120,88,0.2)',
+                                                            backgroundColor: guestId === guest.id ? 'rgba(38,81,64,0.05)' : 'transparent'
+                                                        }}
                                                     >
-                                                        <div className="font-medium text-white">{guest.full_name}</div>
-                                                        <div className="text-sm text-slate-400">{guest.phone}</div>
-                                                        {guest.email && <div className="text-sm text-slate-400">{guest.email}</div>}
+                                                        <div className="font-bold" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{guest.full_name}</div>
+                                                        <div className="text-sm font-medium mt-1" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{guest.phone}</div>
+                                                        {guest.email && <div className="text-sm font-medium" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{guest.email}</div>}
                                                     </div>
                                                 ))}
                                             </div>
 
                                             <button
                                                 onClick={() => setShowQuickCreate(true)}
-                                                className="w-full py-3 border-2 border-dashed border-slate-600 rounded-lg text-slate-400 hover:border-purple-500 hover:text-purple-400 transition-colors"
+                                                className="w-full py-3 border-2 border-dashed rounded-sm font-bold tracking-wider uppercase transition-colors"
+                                                style={{ borderColor: 'rgba(82,120,88,0.3)', color: '#527858', fontSize: '12px' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#265140'}
+                                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(82,120,88,0.3)'}
                                             >
                                                 + Quick Create New Guest
                                             </button>
@@ -282,43 +290,46 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                     ) : (
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-center">
-                                                <h3 className="text-lg font-semibold text-white">Quick Create Guest</h3>
-                                                <button onClick={() => setShowQuickCreate(false)} className="text-slate-400 hover:text-white">
+                                                <h3 className="text-lg font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Quick Create Guest</h3>
+                                                <button onClick={() => setShowQuickCreate(false)} className="text-xs font-bold uppercase tracking-widest transition-colors hover:text-[#527858]" style={{ color: 'rgba(75,61,28,0.6)' }}>
                                                     Cancel
                                                 </button>
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">Full Name *</label>
+                                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Full Name *</label>
                                                 <input
                                                     type="text"
                                                     value={newGuestName}
                                                     onChange={(e) => setNewGuestName(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                                 />
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">Phone *</label>
+                                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Phone *</label>
                                                 <input
                                                     type="tel"
                                                     value={newGuestPhone}
                                                     onChange={(e) => setNewGuestPhone(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                                 />
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">Email (Optional)</label>
+                                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Email (Optional)</label>
                                                 <input
                                                     type="email"
                                                     value={newGuestEmail}
                                                     onChange={(e) => setNewGuestEmail(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                                 />
                                             </div>
 
-                                            <Button onClick={handleQuickCreateGuest} disabled={loading} className="w-full">
+                                            <Button onClick={handleQuickCreateGuest} disabled={loading} className="w-full" variant="sand">
                                                 {loading ? 'Creating...' : 'Create Guest'}
                                             </Button>
                                         </div>
@@ -326,8 +337,8 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                 </>
                             ) : (
                                 <div className="text-center py-8">
-                                    <div className="text-purple-400 text-lg font-medium">Owner Use Reservation</div>
-                                    <div className="text-slate-400 mt-2">No guest selection required</div>
+                                    <div className="text-lg font-bold" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>Owner Use Reservation</div>
+                                    <div className="text-sm font-medium mt-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>No guest selection required</div>
                                 </div>
                             )}
                         </div>
@@ -337,28 +348,30 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">Start Date *</label>
+                                    <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Start Date *</label>
                                     <input
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                        className="w-full px-4 py-3 rounded-sm outline-none"
+                                        style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">End Date *</label>
+                                    <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>End Date *</label>
                                     <input
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                        className="w-full px-4 py-3 rounded-sm outline-none"
+                                        style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Guest Count *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Guest Count *</label>
                                 <input
                                     type="number"
                                     min="1"
@@ -367,12 +380,13 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                         const val = e.target.value;
                                         setGuestCount(val === "" ? 1 : parseInt(val));
                                     }}
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Total Amount (COP) *</label>
+                                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'Berlin Sans', sans-serif" }}>Total Amount (COP) *</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -381,26 +395,27 @@ export function CreateReservationModal({ isOpen, onClose, onSuccess }: CreateRes
                                         const val = e.target.value;
                                         setTotalAmount(val === "" ? 0 : parseFloat(val));
                                     }}
-                                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white outline-none focus:ring-2 focus:ring-purple-500/20"
+                                    className="w-full px-4 py-3 rounded-sm outline-none"
+                                    style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 />
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="sticky bottom-0 bg-slate-800/95 backdrop-blur-xl border-t border-slate-700/50 p-6 flex justify-between">
+                <div className="sticky bottom-0 p-6 flex justify-between" style={{ backgroundColor: 'rgba(244,242,235,0.95)', backdropFilter: 'blur(8px)', borderTop: '1px solid rgba(82,120,88,0.2)' }}>
                     <Button
                         onClick={() => setStep(Math.max(1, step - 1))}
                         disabled={step === 1}
-                        variant="secondary"
+                        variant="outline"
                     >
                         Previous
                     </Button>
 
                     {step < 3 ? (
-                        <Button onClick={() => setStep(step + 1)}>Next</Button>
+                        <Button onClick={() => setStep(step + 1)} variant="sand">Next</Button>
                     ) : (
-                        <Button onClick={handleSubmit} disabled={loading}>
+                        <Button onClick={handleSubmit} disabled={loading} variant="sand">
                             {loading ? 'Creating...' : 'Create Reservation'}
                         </Button>
                     )}

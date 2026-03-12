@@ -106,7 +106,7 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
     if (loading) {
         return (
             <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500" />
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#265140' }} />
             </div>
         );
     }
@@ -116,17 +116,17 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
     return (
         <div className="space-y-8 max-w-3xl">
             {/* --- EXPORT SECTION --- */}
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">
-                <div className="p-6 border-b border-slate-700/50">
+            <div className="rounded-sm overflow-hidden" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
+                <div className="p-6" style={{ borderBottom: '1px solid rgba(82,120,88,0.1)' }}>
                     <div className="flex items-center gap-3 mb-1">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-8 h-8 rounded-sm flex items-center justify-center shadow-sm" style={{ backgroundColor: 'rgba(38,81,64,0.05)', border: '1px solid rgba(38,81,64,0.1)' }}>
+                            <svg className="w-4 h-4 text-[#265140]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h2 className="text-lg font-bold text-white">{t.export_title || "Export your Calendar (iCal)"}</h2>
+                        <h2 className="text-lg font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{t.export_title || "Export your Calendar (iCal)"}</h2>
                     </div>
-                    <p className="text-slate-400 text-sm ml-11">{t.export_desc || "Share this URL with external platforms."}</p>
+                    <p className="text-sm font-medium ml-11" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{t.export_desc || "Share this URL with external platforms."}</p>
                 </div>
 
                 <div className="p-6">
@@ -135,15 +135,19 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                             <input
                                 readOnly
                                 value={icalUrl}
-                                className="flex-1 px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-slate-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-purple-500/30 truncate"
+                                className="flex-1 px-4 py-3 rounded-sm outline-none font-mono text-xs truncate"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                                 onClick={(e) => (e.target as HTMLInputElement).select()}
                             />
                             <button
                                 onClick={handleCopy}
-                                className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${copied
-                                    ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                    : "bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/20"
-                                    }`}
+                                className={`flex items-center gap-2 px-5 py-3 rounded-sm font-bold uppercase tracking-widest text-[10px] transition-all duration-300`}
+                                style={{
+                                    backgroundColor: copied ? 'rgba(82,120,88,0.1)' : '#cfbb9b',
+                                    color: copied ? '#527858' : '#fff',
+                                    border: copied ? '1px solid rgba(82,120,88,0.2)' : '1px solid #c1a982',
+                                    fontFamily: "'Berlin Sans', sans-serif"
+                                }}
                             >
                                 {copied ? (
                                     <>
@@ -163,7 +167,7 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                             </button>
                         </div>
                     ) : (
-                        <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700 text-slate-400 text-sm text-center">
+                        <div className="p-4 rounded-sm text-sm font-medium text-center" style={{ backgroundColor: 'rgba(75,61,28,0.05)', border: '1px solid rgba(75,61,28,0.1)', color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>
                             <svg className="w-5 h-5 inline mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -174,23 +178,24 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
             </div>
 
             {/* --- IMPORT / EXTERNAL CALENDARS SECTION --- */}
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden">
-                <div className="p-6 border-b border-slate-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="rounded-sm overflow-hidden" style={{ backgroundColor: '#f4f2eb', border: '1px solid rgba(82,120,88,0.2)', boxShadow: '0 4px 20px rgba(75,61,28,0.05)' }}>
+                <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ borderBottom: '1px solid rgba(82,120,88,0.1)' }}>
                     <div>
                         <div className="flex items-center gap-3 mb-1">
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center shadow-lg">
-                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-8 h-8 rounded-sm flex items-center justify-center shadow-sm" style={{ backgroundColor: 'rgba(75,61,28,0.05)', border: '1px solid rgba(75,61,28,0.1)' }}>
+                                <svg className="w-4 h-4 text-[#4b3d1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                 </svg>
                             </div>
-                            <h2 className="text-lg font-bold text-white">{t.import_title || "Import External Calendars"}</h2>
+                            <h2 className="text-lg font-bold tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{t.import_title || "Import External Calendars"}</h2>
                         </div>
-                        <p className="text-slate-400 text-sm ml-11">{t.import_desc || "Add iCal URLs from Airbnb, Booking.com, etc."}</p>
+                        <p className="text-sm font-medium ml-11" style={{ color: 'rgba(75,61,28,0.7)', fontFamily: "'MegantZ', serif" }}>{t.import_desc || "Add iCal URLs from Airbnb, Booking.com, etc."}</p>
                     </div>
                     <button
                         onClick={handleSyncAll}
                         disabled={syncing || calendars.length === 0}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-orange-500/20 whitespace-nowrap"
+                        className="flex items-center gap-2 px-5 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold uppercase tracking-widest text-[10px] rounded-sm transition-all whitespace-nowrap"
+                        style={{ backgroundColor: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}
                     >
                         {syncing ? (
                             <>
@@ -213,10 +218,12 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
 
                 {/* Sync message */}
                 {syncMsg && (
-                    <div className={`mx-6 mt-4 px-4 py-3 rounded-xl text-sm font-medium border ${syncMsg.type === 'success'
-                        ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                        : 'bg-red-500/10 text-red-400 border-red-500/20'
-                        }`}>
+                    <div className={`mx-6 mt-4 px-4 py-3 rounded-sm text-sm font-bold uppercase tracking-widest`} style={{
+                        backgroundColor: syncMsg.type === 'success' ? 'rgba(82,120,88,0.1)' : 'rgba(255,100,100,0.1)',
+                        color: syncMsg.type === 'success' ? '#527858' : '#cc4444',
+                        border: syncMsg.type === 'success' ? '1px solid rgba(82,120,88,0.2)' : '1px solid rgba(255,100,100,0.2)',
+                        fontFamily: "'Berlin Sans', sans-serif"
+                    }}>
                         {syncMsg.text}
                     </div>
                 )}
@@ -224,8 +231,8 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                 {/* Calendars list */}
                 <div className="p-6 space-y-3">
                     {calendars.length === 0 ? (
-                        <div className="text-center py-8 text-slate-500 text-sm">
-                            <svg className="w-10 h-10 mx-auto mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="text-center py-8 font-medium text-sm" style={{ color: 'rgba(75,61,28,0.5)', fontFamily: "'MegantZ', serif" }}>
+                            <svg className="w-10 h-10 mx-auto mb-3" style={{ color: 'rgba(75,61,28,0.3)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                             </svg>
                             {t.no_calendars || "No external calendars linked yet."}
@@ -234,20 +241,22 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                         calendars.map(cal => (
                             <div
                                 key={cal.id}
-                                className="flex items-center gap-4 p-4 bg-slate-900/40 rounded-xl border border-slate-700/50 group hover:border-slate-600 transition-all"
+                                className="flex items-center gap-4 p-4 rounded-sm transition-all group hover:bg-black/5"
+                                style={{ backgroundColor: 'rgba(75,61,28,0.02)', border: '1px solid rgba(82,120,88,0.1)' }}
                             >
-                                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0">
-                                    <svg className="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="w-9 h-9 rounded-sm flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(38,81,64,0.05)', border: '1px solid rgba(38,81,64,0.1)' }}>
+                                    <svg className="w-4 h-4 text-[#265140]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                     </svg>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-white font-medium text-sm">{cal.name}</p>
-                                    <p className="text-slate-500 text-xs font-mono truncate">{cal.url}</p>
+                                    <p className="font-bold text-sm tracking-widest uppercase" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{cal.name}</p>
+                                    <p className="text-xs font-mono truncate" style={{ color: 'rgba(75,61,28,0.6)' }}>{cal.url}</p>
                                 </div>
                                 <button
                                     onClick={() => handleDeleteCalendar(cal.id)}
-                                    className="opacity-0 group-hover:opacity-100 p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                    className="opacity-0 group-hover:opacity-100 p-2 rounded-sm transition-all"
+                                    style={{ color: '#cc4444' }}
                                     title="Remove"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,8 +268,8 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                     )}
 
                     {/* Add calendar form */}
-                    <form onSubmit={handleAddCalendar} className="pt-3 space-y-3 border-t border-slate-700/50">
-                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.add_calendar || "Add Calendar"}</p>
+                    <form onSubmit={handleAddCalendar} className="pt-4 space-y-3" style={{ borderTop: '1px solid rgba(82,120,88,0.1)' }}>
+                        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}>{t.add_calendar || "Add Calendar"}</p>
                         <div className="flex flex-col sm:flex-row gap-3">
                             <input
                                 type="text"
@@ -268,7 +277,8 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                                 onChange={e => setNewName(e.target.value)}
                                 placeholder={t.name_placeholder || "e.g. Airbnb, Booking.com"}
                                 required
-                                className="flex-shrink-0 sm:w-44 px-4 py-2.5 bg-slate-900/50 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/50 transition-all"
+                                className="flex-shrink-0 sm:w-44 px-4 py-2.5 rounded-sm outline-none text-sm font-medium"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', fontFamily: "'MegantZ', serif", boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                             />
                             <input
                                 type="url"
@@ -276,12 +286,14 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                                 onChange={e => setNewUrl(e.target.value)}
                                 placeholder={t.url_placeholder || "https://www.airbnb.com/calendar/ical/..."}
                                 required
-                                className="flex-1 px-4 py-2.5 bg-slate-900/50 border border-slate-600 rounded-xl text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/50 transition-all font-mono"
+                                className="flex-1 px-4 py-2.5 rounded-sm outline-none text-sm font-mono"
+                                style={{ backgroundColor: '#e6e3d7', border: '1px solid rgba(82,120,88,0.3)', color: '#4b3d1c', boxShadow: 'inset 0 2px 4px rgba(75,61,28,0.02)' }}
                             />
                             <button
                                 type="submit"
                                 disabled={adding}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-all whitespace-nowrap"
+                                className="flex items-center gap-2 px-5 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold uppercase tracking-widest text-[10px] rounded-sm transition-all whitespace-nowrap"
+                                style={{ backgroundColor: '#cfbb9b', fontFamily: "'Berlin Sans', sans-serif" }}
                             >
                                 {adding ? (
                                     <>
@@ -302,7 +314,7 @@ export default function PropertySyncPage({ params }: { params: Promise<{ lang: s
                             </button>
                         </div>
                         {addError && (
-                            <p className="text-red-400 text-xs">{addError}</p>
+                            <p className="text-[#cc4444] text-xs font-bold uppercase tracking-widest" style={{ fontFamily: "'Berlin Sans', sans-serif" }}>{addError}</p>
                         )}
                     </form>
                 </div>

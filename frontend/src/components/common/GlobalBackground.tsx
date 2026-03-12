@@ -1,31 +1,28 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 export const GlobalBackground: React.FC = () => {
     const pathname = usePathname();
     const [isLoaded, setIsLoaded] = useState(false);
-    const [currentStage, setCurrentStage] = useState<0 | 1 | 2 | 3>(0); // Start at 0 to force first load detection
+    const [currentStage, setCurrentStage] = useState<0 | 1 | 2 | 3>(0);
 
-    // Determine stage based on route
     useEffect(() => {
         let newStage: 0 | 1 | 2 | 3 = 1;
-
-        // Pathname parsing (friendly with i18n)
         const segments = pathname.split('/').filter(Boolean);
         const relativePath = segments.slice(1).join('/');
 
         if (relativePath === "" || relativePath === "/") {
-            newStage = 1; // Stage 1 for Landing Page
+            newStage = 1;
         } else if (relativePath.startsWith('property/')) {
-            newStage = 2; // Stage 2 for Property Details
+            newStage = 2;
         } else if (relativePath.startsWith('admin')) {
-            newStage = 0; // Stage 0 (flat dark) for Admin Portal
+            newStage = 0; // flat for admin
         } else if (relativePath.startsWith('partners') || relativePath.startsWith('owner')) {
-            newStage = 3; // Stage 3 for Future Partner pages
+            newStage = 3;
         } else {
-            newStage = 1; // Default fallback
+            newStage = 1;
         }
 
         if (newStage !== currentStage) {
@@ -34,21 +31,25 @@ export const GlobalBackground: React.FC = () => {
         }
     }, [pathname, currentStage]);
 
-    // Construct image sources
     const hasImage = currentStage > 0;
     const desktopSrc = hasImage ? `/bg-s${currentStage}-desktop.webp` : "";
     const mobileSrc = hasImage ? `/bg-s${currentStage}-mob.webp` : "";
 
+    // For admin: dark base. For all public pages: brand-bone base.
+    const isAdmin = currentStage === 0;
+
     return (
         <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
-            {/* Base color / Admin Background */}
-            <div className="absolute inset-0 bg-[#020617]" />
+            {/* Base color layer */}
+            <div
+                className="absolute inset-0 transition-colors duration-700"
+                style={{ backgroundColor: isAdmin ? '#020617' : '#e6e3d7' }}
+            />
 
-            {/* Background Image Layer */}
+            {/* Background image (when available) */}
             {hasImage && (
                 <div
-                    className={`relative w-full h-full transition-all duration-1000 ease-in-out ${isLoaded ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-105 blur-2xl"
-                        }`}
+                    className={`relative w-full h-full transition-all duration-1000 ease-in-out ${isLoaded ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-105 blur-2xl"}`}
                 >
                     <picture>
                         <source media="(max-width: 768px)" srcSet={mobileSrc} />
@@ -62,21 +63,49 @@ export const GlobalBackground: React.FC = () => {
                 </div>
             )}
 
-            {/* Premium Overlays */}
-            {/* 1. Darkening Gradient - Stronger on non-image pages */}
-            <div className={`absolute inset-0 transition-colors duration-1000 ${hasImage
-                    ? "bg-gradient-to-b from-black/20 via-black/40 to-[#020617]/80"
-                    : "bg-[#020617]/40"
-                } z-10`} />
+            {/* Overlay gradient — warm organic for public, dark for admin */}
+            <div
+                className="absolute inset-0 z-10 transition-colors duration-700"
+                style={isAdmin
+                    ? { background: 'linear-gradient(to bottom, rgba(2,6,23,0.2), rgba(2,6,23,0.6))' }
+                    : {
+                        background: hasImage
+                            ? 'linear-gradient(to bottom, rgba(38,81,64,0.15), rgba(230,227,215,0.70))'
+                            : 'rgba(230,227,215,0.0)'
+                    }
+                }
+            />
 
-            {/* 2. Animated Glow Accents */}
-            <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-                <div className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] bg-primary/10 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '8s' }} />
-                <div className="absolute -bottom-[10%] -left-[10%] w-[70%] h-[70%] bg-secondary/10 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
-            </div>
+            {/* Subtle olive-tinted ambient glows (public only) */}
+            {!isAdmin && (
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                    <div
+                        className="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full animate-pulse"
+                        style={{
+                            backgroundColor: 'rgba(82, 120, 88, 0.06)',
+                            filter: 'blur(100px)',
+                            animationDuration: '10s',
+                        }}
+                    />
+                    <div
+                        className="absolute -bottom-[10%] -left-[10%] w-[60%] h-[60%] rounded-full animate-pulse"
+                        style={{
+                            backgroundColor: 'rgba(207, 187, 155, 0.08)',
+                            filter: 'blur(100px)',
+                            animationDuration: '14s',
+                            animationDelay: '3s',
+                        }}
+                    />
+                </div>
+            )}
 
-            {/* 3. Subtle Grain Texture */}
-            <div className="absolute inset-0 z-30 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+            {/* Admin glow accents (dark mode) */}
+            {isAdmin && (
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                    <div className="absolute -top-[10%] -right-[10%] w-[70%] h-[70%] bg-primary/10 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '8s' }} />
+                    <div className="absolute -bottom-[10%] -left-[10%] w-[70%] h-[70%] bg-secondary/10 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+                </div>
+            )}
         </div>
     );
 };
