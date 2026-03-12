@@ -77,16 +77,16 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
 
             {/* Card Body */}
             <div className="p-6">
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex flex-col mb-4">
                     <h3
-                        className="text-xl font-bold"
+                        className="text-xl font-bold mb-1"
                         style={{ color: '#4b3d1c', fontFamily: "'Berlin Sans', sans-serif" }}
                     >
                         {property.name}
                     </h3>
-                    <span className="text-right ml-2 flex-shrink-0">
+                    <div className="flex items-baseline gap-1">
                         <span
-                            className="text-lg font-bold block"
+                            className="text-lg font-bold"
                             style={{ color: '#265140', fontFamily: "'Berlin Sans', sans-serif" }}
                         >
                             {formatCOP(property.nightly_price)}
@@ -97,7 +97,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
                         >
                             / {dict.night}
                         </span>
-                    </span>
+                    </div>
                 </div>
 
                 {/* Location */}

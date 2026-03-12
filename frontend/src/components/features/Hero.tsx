@@ -85,7 +85,7 @@ export const Hero: React.FC<HeroProps> = ({ dict, catalogDict, lang, onSearch })
 
                     {/* Main Headline — Berlin Sans */}
                     <h1
-                        className="text-5xl md:text-7xl font-extrabold mb-6"
+                        className="text-3xl sm:text-4xl md:text-7xl font-extrabold mb-6"
                         style={{
                             fontFamily: "'Berlin Sans', sans-serif",
                             color: '#4b3d1c',       /* brand-olive (consistent with ELEMNT color) */
