@@ -1,105 +1,80 @@
 # Session 022 — Frontend Handoff: Rebrand & Luxury UI Implementation
-
-## Status: ✅ COMPLETE
+## Status: ✅ COMPLETE (v1.4.0 Ready)
 
 ---
 
 ## Executive Summary
 
-The complete "High-End Nature & Luxury" visual rebrand has been implemented across the Elemnt Rentals frontend. The platform has transitioned from a dark sci-fi glassmorphism aesthetic to a warm, organic luxury palette centered on the Forest, Sand, Sage, Olive, Bone, and Cream brand colors, with Berlin Sans and MegantZ as the typography system.
+The "High-End Nature & Luxury" visual rebrand has been fully implemented across both the public site and key sections of the Admin portal. This session transformed the platform from a dark glassmorphism look to a warm, organic luxury palette (Forest, Sand, Sage, Olive, Bone, Cream). Highlights include a complete overhaul of the Partners (Owners) page, rebranding of the Reservations and Financial Admin sections, and global typography refinements for an editorial, high-end fee.
 
 ---
 
-## Files Modified
+## Key Files Modified & New Components
 
-| File | Change Type | Description |
-|:-----|:-----------|:------------|
-| `src/app/globals.css` | **Full Rewrite** | Brand tokens via `@theme`, `@font-face` for Berlin Sans + MegantZ, base/utility layers, all animations |
-| `src/app/[lang]/layout.tsx` | **Full Rewrite** | Drops Geist fonts, applies brand-bone body bg, integrates new Navbar, updates SEO metadata |
-| `src/components/layout/Navbar.tsx` | **New File** | Forest-green sticky navbar with Logo_principal_blanco.png, bone links, sand hover, scroll transition, mobile menu |
-| `src/components/layout/Footer.tsx` | **Full Rewrite** | Bone background, cream card, Logo_colores_principales.png, sage borders, branded typography |
-| `src/components/common/GlobalBackground.tsx` | **Full Rewrite** | Brand-bone public background, warm sage/sand ambient glows, retains dark admin mode |
-| `src/components/features/Hero.tsx` | **Full Rewrite** | Forest/olive headline, MegantZ subtitle (1.8 line-height), cream search card, brand-forest primary CTA, brand-sand secondary CTA |
-| `src/components/features/PropertyDetail.tsx` | **Full Rewrite** | MegantZ description at 1.8 line-height, forest sticky booking widget, sand price in Berlin Sans, sand CTA, rounded-sm gallery, forest tint hover overlay |
-| `src/components/features/PropertyListing.tsx` | **Full Rewrite** | Brand section headers, sand/forest accent lines, cream filter bar, brand-aligned skeletons |
-| `src/components/features/LeadForms.tsx` | **Full Rewrite** | Cream cards, Berlin Sans labels, sand focus states, sage success indicators, brand buttons |
-| `src/components/ui/PropertyCard.tsx` | **Full Rewrite** | Cream bg, rounded-sm, sage icons, olive typography, forest tint hover, sand featured badge |
-| `src/components/ui/Button.tsx` | **Full Rewrite** | Brand variants: primary (forest), secondary (sage), outline (forest), sand (sand/olive), glass (warm bone) |
-| `src/app/[lang]/partners/page.tsx` | **Full Rewrite** | Forest hero section, cream info cards w/ sage borders & icons, sand CTA |
-| `src/app/[lang]/property/[slug]/page.tsx` | **Minor Edit** | `pt-24` + brand-bone background on page wrapper |
+| Area | Change | Description |
+|:-----|:-------|:------------|
+| **Global Styling** | `globals.css` | Implemented T4 tokens, custom fonts (Berlin Sans, MegantZ), and global line-height (1.8) for luxury feel. |
+| **Hero Component** | `Hero.tsx` | Consistent brand-olive headline, sub-headline increased to **1.45rem** with **2.0** line-height. Search button overflow fix. |
+| **Partners Page** | `partners/page.tsx` | Full copy update (marketing-focused), added **3-Step Visual Guide**, increased line-height to **2.1**, removed legacy disclaimers. |
+| **Admin UI (Rebrand)** | `admin/reservations/*` | Rebranded Reservation Details, Payment Management, and History to "Luxury Light" (Bone/Cream backgrounds, Forest accents). |
+| **Admin UI (Finance)** | `admin/settings/financial` | Applied brand palette to Payment Methods management, tables, and modals. |
+| **Locales** | `es.json` & `en.json` | Comprehensive translation update for Partners, Admin Reservations, and Financial sections. |
+| **Design Specs** | `design_specification.md` | Updated with full Admin UI guidelines and refined typography standards for future agents. |
 
 ---
 
-## Design Tokens Implemented
+## Design Tokens & Typography Refinements
 
 ```css
-brand-sand:   #cfbb9b   /* Accents / Highlighting */
-brand-sage:   #527858   /* Secondary / Buttons / Icons */
-brand-forest: #265140   /* Primary / Dark Backgrounds / Navbar */
-brand-olive:  #4b3d1c   /* Main Typography / Contrast */
-brand-bone:   #e6e3d7   /* Page Background (Primary) */
-brand-cream:  #f4f2eb   /* Cards / Elevated surfaces */
+/* Final Session 022 Palette */
+brand-sand:   #cfbb9b   /* Accents / Secondary Buttons */
+brand-sage:   #527858   /* Success / Icons / Progress */
+brand-forest: #265140   /* Primary Action / Headers / Nav */
+brand-olive:  #4b3d1c   /* Main Typography / Brand Color */
+brand-bone:   #e6e3d7   /* Main Background (Off-White) */
+brand-cream:  #f4f2eb   /* Card Surfaces / Elevated UI */
 ```
 
-### Shadow System (olive-tinted)
-```css
---shadow-brand:       0 4px 20px rgba(75,61,28,0.08)
---shadow-brand-hover: 0 8px 30px rgba(75,61,28,0.16)
-```
-
-### Typography
-- **Berlin Sans** — H1, H2, headings, nav labels, button text, filter labels (uppercase, -0.02em tracking)
-- **MegantZ** — Body text, property descriptions (1.8 line-height), taglines, form hints
+### Typography Updates (Luxury Standard)
+- **Berlin Sans:** Used for all Headlines, Labels, and UI controls. Uppercase + tracking for premium look.
+- **MegantZ:** Standardized at **1.8 line-height** globally, **2.0** in Hero, and **2.1** in editorial sections (Partners).
+- **Hero Subtitle:** Increased from `text-xl` to **1.45rem** for better visual hierarchy and "Wow" factor.
 
 ---
 
-## Logo Assets Used
+## Admin Portal: "Luxury Light" Transition
 
-| Location | Asset | Rationale |
-|:---------|:------|:---------|
-| Navbar (Header) | `Logo_principal_blanco.png` | White logo on forest-green dark background |
-| Footer | `Logo_colores_principales.png` | Color logo on light bone/cream background |
-
----
-
-## Micro-Interactions Implemented
-
-1. **Fade-in slide-up** — `@keyframes fadeInUp` (20px upward), applied to Hero, Partners hero, section headers
-2. **Image hover overlay** — Forest tint at 20% opacity on PropertyCard and PropertyDetail main image
-3. **Scroll-triggered Navbar** — Transparent → forest green at 50px scroll threshold with `backdrop-blur`
-4. **Button hover states** — `scale-[1.02]` + background darkens 10%
-5. **Card hover** — `translateY(-6px)` + border changes to `brand-sand`, shadow deepens
-6. **Partner sections** — Sand border on hover
+The Admin interface now shares the same visual DNA as the public site:
+1. **Backgrounds:** Replaced dark mode with `brand-bone` (#e6e3d7) base.
+2. **Tables:** Berlin Sans headers (uppercase, track-widest) and neutral-olive rows.
+3. **Modals:** Cream cards with soft olive shadows, replacing sharp dark boxes.
+4. **Consistency:** Using `GlobalBackground` to maintain ambient glows even in the admin area.
 
 ---
 
-## Backend / QA Notes
+## Micro-Interactions & UX Improvements
 
-- **No API contracts changed.** All data flow is unchanged.
-- **Font files are local** — no CDN dependency. Files at `public/fonts/berlin_sans/` and `public/fonts/megante/`.
-- `Logo_principal_blanco.png` renders in Navbar via `next/image` with `fill` + `object-contain object-left`. Verify at various viewport widths.
-- The old `Input` component (`src/components/ui/Input.tsx`) is no longer used by `LeadForms` or `PropertyListing`. Candidate for deprecation.
-- **GlobalBackground** retains dark mode for admin routes. Public routes now use `#e6e3d7` bone base.
-
----
-
-## UX Risks & Assumptions
-
-1. **Font loading race** — Berlin Sans and MegantZ load from local files with `font-display: swap`. No FOIT risk, brief system fallback possible.
-2. **`Logo_principal_blanco.png` aspect ratio** — Navbar container is `h-10 w-40`. Adjust `w-40` if the logo crops at this ratio.
-3. **Availability Calendar** — Not styled in this session. Still uses internal styles. Recommend Session 023 to align with brand palette.
-4. **Admin Portal** — Not touched. Retains dark background and independent navigation.
+1. **Architectural Radius:** Strictly `rounded-sm` (2px) used across both public and admin cards to match the brand logo lines.
+2. **Search Button Stability:** Redesigned hero search triggers to prevent text-overflow in mobile and Spanish translations.
+3. **Image Tinting:** 20% Forest Green overlay on property hovers unified across all listing components.
+4. **Spinners:** Replaced generic loading indicators with brand-forest CSS spinners.
 
 ---
 
-## Pending for Session 023
+## Deployment & Versioning (v1.4.0)
 
-- [ ] `AvailabilityCalendar.tsx` — Apply brand colors (sage = available, olive/muted = booked)
-- [ ] `Input.tsx` UI component — Deprecate or update for admin forms
-- [ ] Production build validation — `npm run build` to verify TypeScript + Tailwind v4 compilation
-- [ ] Cross-browser testing — Verify font rendering on Safari with `.ttf` fallback
-- [ ] Admin sidebar alignment — Optional: forest-neutral palette for admin
+- **Version Tag:** `v1.4.0`
+- **Docker Workflow:** Troubleshooting notes added regarding `GitHub Actions Unicorn Error` (Related to Docker secrets and GitHub cache API outages).
+- **Git State:** All changes staged and ready for push with tags.
 
 ---
 
-*Session 022 — Frontend Agent | Elemnt Rentals | March 8, 2026*
+## Pending for Next Session (023)
+
+- [ ] **Availability Calendar Styling:** Finalize calendar colors to match Sage/Olive brand (Session 022 focused on layout and admin).
+- [ ] **Admin Sidebar Refinement:** Consider a full forest-green or neutral-bone sidebar for 100% theme coverage.
+- [ ] **Email Templates:** Rebrand transactional email styles if possible.
+
+---
+
+*Session 022 — Rebrand Architect | Elemnt Rentals | March 11, 2026*
