@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Property } from "@/types";
@@ -33,6 +35,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
     }, [property.main_image_url, property.images]);
 
     const [currentIdx, setCurrentIdx] = useState(0);
+    const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
     useEffect(() => {
         if (slideshowImages.length <= 1) return;
@@ -43,6 +46,26 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
 
         return () => clearInterval(timer);
     }, [slideshowImages]);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStartX(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+
+        // Swipe Left (Next)
+        if (diff > 50) {
+            setCurrentIdx((prev) => (prev + 1) % slideshowImages.length);
+        } 
+        // Swipe Right (Prev)
+        else if (diff < -50) {
+            setCurrentIdx((prev) => (prev - 1 + slideshowImages.length) % slideshowImages.length);
+        }
+        setTouchStartX(null);
+    };
 
     return (
         <div
@@ -62,72 +85,78 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
                 (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(75,61,28,0.08)';
             }}
         >
-            {/* Image — with forest tint overlay on hover and slideshow */}
-            <div className="relative h-64 w-full overflow-hidden">
-                {slideshowImages.length > 0 ? (
-                    <>
-                        {slideshowImages.map((url, index) => (
-                            <div 
-                                key={url}
-                                className={`absolute inset-0 transition-opacity duration-1000 ${index === currentIdx ? 'opacity-100' : 'opacity-0'}`}
-                            >
-                                <Image
-                                    src={getMediaUrl(url)}
-                                    alt={`${property.name} - ${index}`}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                    priority={index === 0}
-                                />
-                            </div>
-                        ))}
-                        {/* Forest tint overlay — 20% on hover */}
-                        <div
-                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                            style={{ backgroundColor: 'rgba(38,81,64,0.20)' }}
-                        />
-                        
-                        {/* Slideshow indicators (optional, but good for UX) */}
-                        {slideshowImages.length > 1 && (
-                            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                                {slideshowImages.map((_, i) => (
-                                    <div 
-                                        key={i}
-                                        className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                                        style={{ 
-                                            backgroundColor: i === currentIdx ? '#cfbb9b' : 'rgba(230,227,215,0.5)',
-                                            width: i === currentIdx ? '12px' : '6px'
-                                        }}
+            {/* Clickable Area: Image + Info */}
+            <Link href={`/${lang}/property/${property.slug}`} className="block">
+                {/* Image — with forest tint overlay on hover and slideshow */}
+                <div 
+                    className="relative h-64 w-full overflow-hidden"
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                >
+                    {slideshowImages.length > 0 ? (
+                        <>
+                            {slideshowImages.map((url, index) => (
+                                <div 
+                                    key={url}
+                                    className={`absolute inset-0 transition-opacity duration-1000 ${index === currentIdx ? 'opacity-100' : 'opacity-0'}`}
+                                >
+                                    <Image
+                                        src={getMediaUrl(url)}
+                                        alt={`${property.name} - ${index}`}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        priority={index === 0}
                                     />
-                                ))}
-                            </div>
-                        )}
-                    </>
-                ) : (
-                    <div
-                        className="w-full h-full flex items-center justify-center italic text-sm"
-                        style={{ backgroundColor: '#e6e3d7', color: 'rgba(75, 61, 28, 0.40)' }}
-                    >
-                        No image available
-                    </div>
-                )}
-                {/* Featured Badge */}
-                {property.featured && (
-                    <div
-                        className="absolute top-4 left-4 px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-sm z-10"
-                        style={{
-                            backgroundColor: '#cfbb9b',
-                            color: '#4b3d1c',
-                            fontFamily: "'Berlin Sans', sans-serif",
-                        }}
-                    >
-                        Featured
-                    </div>
-                )}
-            </div>
+                                </div>
+                            ))}
+                            {/* Forest tint overlay — 20% on hover */}
+                            <div
+                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                style={{ backgroundColor: 'rgba(38,81,64,0.20)' }}
+                            />
+                            
+                            {/* Slideshow indicators (optional, but good for UX) */}
+                            {slideshowImages.length > 1 && (
+                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                    {slideshowImages.map((_, i) => (
+                                        <div 
+                                            key={i}
+                                            className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                            style={{ 
+                                                backgroundColor: i === currentIdx ? '#cfbb9b' : 'rgba(230,227,215,0.5)',
+                                                width: i === currentIdx ? '12px' : '6px'
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div
+                            className="w-full h-full flex items-center justify-center italic text-sm"
+                            style={{ backgroundColor: '#e6e3d7', color: 'rgba(75, 61, 28, 0.40)' }}
+                        >
+                            No image available
+                        </div>
+                    )}
+                    {/* Featured Badge */}
+                    {property.featured && (
+                        <div
+                            className="absolute top-4 left-4 px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-sm z-10"
+                            style={{
+                                backgroundColor: '#cfbb9b',
+                                color: '#4b3d1c',
+                                fontFamily: "'Berlin Sans', sans-serif",
+                            }}
+                        >
+                            Featured
+                        </div>
+                    )}
+                </div>
 
-            {/* Card Body */}
-            <div className="p-6">
-                <div className="flex flex-col mb-4">
+                {/* Card Body (Info) */}
+                <div className="px-6 pt-6 pb-2">
+                    <div className="flex flex-col mb-4">
                     <h3
                         className="text-xl font-bold mb-1"
                         style={{ color: '#4b3d1c', fontFamily: "'Berlin Sans', sans-serif" }}
@@ -173,8 +202,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onWhatsApp
                         </span>
                     </span>
                 </div>
+                </div>
+            </Link>
 
-                {/* Actions */}
+            {/* Actions */}
+            <div className="px-6 pb-6 mt-1">
                 <div className="flex gap-3">
                     {/* View Details — forest outline */}
                     <Link href={`/${lang}/property/${property.slug}`} className="flex-1" id={`card-view-${property.id}`}>

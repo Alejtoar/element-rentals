@@ -8,11 +8,11 @@ import { Footer } from "@/components/layout/Footer";
 import { getDictionary } from "@/lib/get-dictionary";
 
 export const metadata: Metadata = {
-  title: "Elemnt Rentals | Estancias Premium en la Naturaleza",
-  description: "Descubre alojamientos exclusivos rodeados de naturaleza. Elemnt Rentals — hospedaje de lujo boutique en Colombia.",
+  title: "Elemnt Rentals | Estancias Premium",
+  description: "Descubre alojamientos exclusivos. Elemnt Rentals — hospedaje de lujo en Colombia.",
   openGraph: {
-    title: "Elemnt Rentals | Premium Nature Stays",
-    description: "Luxury boutique rental properties immersed in nature.",
+    title: "Elemnt Rentals | Premium Stays",
+    description: "Luxury boutique rental properties.",
     images: ["/images/brand/Logo_colores_principales.png"],
   },
 };
