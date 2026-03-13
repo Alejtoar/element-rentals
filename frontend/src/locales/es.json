@@ -1,9 +1,9 @@
 {
     "hero": {
         "badge": "Eleva tu Experiencia",
-        "title1": "Descubre Alquileres Excepcionales",
-        "title2": "Con Elemnt",
-        "subtitle": "Estancias premium seleccionadas a mano en los lugares más bellos del mundo. Diseñadas para quienes buscan más que un lugar para dormir.",
+        "title1": "Descubre Alojamientos Excepcionales",
+        "title2": "Con Elemnt Rentals",
+        "subtitle": "Espacios cuidadosamente diseñados para ofrecer comodidad, estilo y tranquilidad.",
         "cta_browse": "Ver Catálogo",
         "cta_list": "Publica tu Propiedad"
     },
@@ -11,14 +11,14 @@
         "featured_title": "Estancias Destacadas",
         "featured_subtitle": "Nuestras propiedades más exclusivas, verificadas por calidad y confort.",
         "catalog_title": "Catálogo de Propiedades",
-        "catalog_subtitle": "Explora nuestra colección completa de alquileres premium.",
+        "catalog_subtitle": "Explora nuestras propiedades y encuentra el espacio perfecto para tu próxima estancia.",
         "filter_city": "Ciudad (ej. Cartagena)",
         "filter_guests": "Huéspedes",
         "filter_featured": "Solo Destacados",
         "no_properties": "No se encontraron propiedades que coincidan con tus criterios.",
         "filter_check_in": "Entrada",
         "filter_check_out": "Salida",
-        "filter_dates": "Fechas de Viaje",
+        "filter_dates": "Reserva Ahora",
         "filter_search": "Disponibilidad"
     },
     "property_card": {

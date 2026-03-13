@@ -100,12 +100,15 @@ export const Hero: React.FC<HeroProps> = ({ dict, catalogDict, lang, onSearch })
 
                     {/* Subtitle — MegantZ */}
                     <p
-                        className="max-w-3xl mx-auto mb-12"
+                        className="max-w-4xl mx-auto mb-12"
                         style={{
-                            color: 'rgba(75,61,28,0.75)',  /* brand-olive 75% */
+                            // color: 'rgba(75,61,28,0.75)',  /* brand-olive 75% */
+                            // color: '#4b3d1c',               /* brand-olive solid */
+                            color: '#265140',               /* brand-forest (Verde Selva) */
+                            fontWeight: 'bold',
                             fontFamily: "'MegantZ', serif",
-                            fontSize: '1.45rem',            /* Increased 2pt (was text-xl/1.25rem) */
-                            lineHeight: 2.0,                /* Increased line height */
+                            fontSize: '1.65rem',            /* Increased another 2pt */
+                            lineHeight: 1.8,                /* Slightly adjusted for bold text strength */
                         }}
                     >
                         {dict.subtitle}
