@@ -1,7 +1,11 @@
-# Backend Architecture – Phase 1
+# Backend Architecture
 
-This document defines the backend architecture for the initial phase
-(Landing Page + Basic Property Management).
+> **Status:** Phase 2 (Operational Maturity) is implemented. This document originally described the
+> Phase 1 landing page; the architectural *principles* below still hold, but the scope is now the full
+> operating platform. Current scope: [phase_2_operational_maturity.md](../02_scope/phase_2_operational_maturity.md).
+> Historical Phase 1 scope: [mvp_phase_1.md](../02_scope/mvp_phase_1.md).
+
+This document defines the backend architecture and the rules every backend change must respect.
 
 The backend is designed to be:
 - Simple
@@ -15,54 +19,50 @@ The backend is designed to be:
 
 - Framework: FastAPI
 - Language: Python
-- Database: PostgreSQL
-- ORM: SQLAlchemy / SQLModel
-- Authentication: JWT (basic)
-- File Storage: Object storage (S3-compatible)
+- ORM: SQLModel (SQLAlchemy under the hood)
+- Migrations: Alembic
+- Database:
+  - **Production / Docker:** PostgreSQL (absolute requirement — see the Phase 2 scope).
+  - **Local dev / tests:** SQLite (`dev.db`; in-memory DB for the test suite). Keep models portable
+    across both.
+- Authentication: JWT
+- File Storage: `StorageProvider` abstraction — local disk in Phase 1 (`/uploads`), S3-compatible later.
 
 ---
 
-## Responsibilities (Phase 1)
+## Responsibilities
 
-The backend is responsible for:
-- Managing property data
-- Serving public property information to the website
-- Providing a minimal admin API
-- Handling authentication for admin users
+The backend owns the full operating platform:
+- Property, owner, and admin-user management (RBAC: Admin / Staff / Finance)
+- Public property listing/detail for the website + lead capture (guest & owner leads)
+- Guests, channels, and manual reservation + payment CRUD
+- Financial module: income, expenses (deductible/prorated), owner settlements, statements, PDF/Excel export
+- External calendar sync (iCal) and `CalendarBlock` availability
+- Management contracts
+- Authentication and authorization for admin users
 
 ---
 
 ## Core Modules
 
-- auth
-- properties
-- media (images)
-- users (admin only)
+Each lives under `backend/app/<module>/` following the layered structure below:
+
+`auth`, `users`, `owners`, `properties`, `reservations` (incl. channels, payments, charges),
+`finance` (payment methods, expenses, reporting/settlements), `contracts`, `calendar`, `guests`,
+`leads`, `media`, `notifications`, `utils`.
 
 ---
 
 ## API Exposure
 
-- Public endpoints:
-  - List properties
-  - Get property details
-- Private endpoints:
-  - Create / update properties
-  - Upload images
-  - Activate / deactivate properties
+All routes are versioned under `settings.API_V1_STR` (`/api/v1`). See
+[../../03_api/endpoints.md](../../03_api/endpoints.md) for the full contract.
 
----
-
-## Non-Goals (Phase 1)
-
-The backend will NOT handle:
-- Reservations
-- Payments
-- Financial reporting
-- External integrations
-- Owner portals
-
-These will be implemented in future phases.
+- Public endpoints (no auth — SEO / lead generation / browsing):
+  - List properties (with filtering), property detail, guest & owner lead submission
+- Private endpoints (JWT + RBAC):
+  - Property/owner/user CRUD, image upload, activate/deactivate
+  - Reservations, payments, channels, guests, expenses, financial reports, contracts, calendar sync
 
 ---
 

@@ -1,21 +1,27 @@
-# Frontend Architecture – Phase 1
+# Frontend Architecture
 
-This document defines the frontend architecture for the initial phase.
+> **Status:** Phase 2 implemented. The frontend now includes a full admin portal (reservations,
+> finance, owners, channels, calendar sync, contracts) in addition to the public marketing site.
+> Current scope: [../03_scope/phase_2_operational_maturity.md](../03_scope/phase_2_operational_maturity.md).
 
-The frontend is focused on:
+This document defines the frontend architecture and the rules every frontend change must respect.
+
+The frontend covers:
 - Public property presentation
 - Lead generation
-- Simple administration
+- Operational administration (admin portal)
 
 ---
 
 ## Technology Stack
 
-- Framework: React (SPA)
-- Build Tool: Vite or Create React App
+- Framework: **Next.js 16 (App Router)** — see [ADR 009](../../99_decisions/009_nextjs_app_router.md).
+- Library: React 19
 - Language: TypeScript
-- Styling: Tailwind CSS
-- UI Components: Template-based (admin + marketing)
+- Styling: **Tailwind CSS v4** — see [ADR 010](../../99_decisions/010_tailwind_v4.md).
+- Routing: file-based under `src/app/[lang]/` (language-prefixed). Public site at root; admin under
+  `[lang]/admin/`.
+- UI Components: brand design system (see [design_specification.md](../02_ui/design_specification.md)).
 
 ---
 
@@ -48,12 +54,11 @@ Includes:
 
 ---
 
-## Non-Goals (Phase 1)
+## Non-Goals
 
-- No booking flows
-- No payments
-- No dashboards or analytics
-- No user self-registration
+- No public self-service booking/checkout flow (reservations are created by staff in the admin portal)
+- No in-app payment processing (payments are *recorded*, not charged)
+- No public user self-registration (admin users are managed internally)
 
 ---
 
@@ -148,17 +153,7 @@ The frontend must:
 - Store JWT in memory or secure storage
 - Never expose tokens in URLs
 - Redirect unauthorized users to login
-
-
----
-
-
-## Authentication Handling
-
-The frontend must:
-- Store JWT in memory or secure storage
-- Never expose tokens in URLs
-- Redirect unauthorized users to login
+- Consume the backend through `NEXT_PUBLIC_API_URL` only; never hardcode API versions in components
 
 
 ---
