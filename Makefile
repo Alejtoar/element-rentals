@@ -22,7 +22,10 @@ test:
 	make -j 2 backend-test frontend-test
 
 
-# PROD (no hot reload)
+# ARCHIVE
+archive:
+	python scripts/create_archive.py
+
 backend-prod:
 	cd backend && source .venv/bin/activate && ENV=prod uvicorn app.main:app
 
